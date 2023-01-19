@@ -1,17 +1,24 @@
 import express from "express";
 
-// import UserController from "../controllers/UserController.js";
-// import AuthController from "../controllers/AuthController.js";
+import UserController from "../controllers/UserController.js";
+import AuthController from "../controllers/AuthController.js";
 
-// import verify from '../middleware/jwtAuth.js'
+import authJwt from "../middleware/authJwt.js"; 
 
 const router = express.Router()
+export default (app) => {
 
-// router.get("/users", verify, UserController.getUsers)
-// router.post("/users", UserController.register)
-// router.post("/login", AuthController.login)
-// router.get("/token", AuthController.refreshToken)
-// router.delete("/logout", AuthController.logout)
+    app.post("/login", AuthController.login)
+    app.post("/register", AuthController.register)
+    app.get("/token", AuthController.refreshToken)
+    app.delete("/logout", AuthController.logout)
+    
+    router.use(authJwt)
+    router.get("/user", UserController.getUser)
+    app.use(router)
+}
 
-export default router
+
+
+// export default router
 

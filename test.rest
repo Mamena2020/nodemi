@@ -1,0 +1,31 @@
+
+### register
+POST  http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "email": "Andre@gmail.com",
+    "name": "Andre",
+    "password": "7879",
+    "confirmPassword": "7879"
+}
+
+### login
+POST  http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "Andre@gmail.com",
+    "password": "7879"
+}
+
+
+### refresh token
+GET  http://localhost:5000/token
+
+### logout
+DELETE   http://localhost:5000/logout
+
+### get user
+GET   http://localhost:5000/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJBbmRyZUBnbWFpbC5jb20iLCJpYXQiOjE2NzQxNDUwMjMsImV4cCI6MTY3NDE1NTAyM30.b4BazjhpsDAIL0jcdmUrzERkJft75zifyGi09qG9yAQ

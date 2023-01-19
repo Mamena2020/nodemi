@@ -1,6 +1,7 @@
+import loadModels from "../../models/Models.js"
 import db from "./Database.js"
-import User from "../../models/User.js"
-import UserDetail from "../../models/UserDetail.js"
+// import User from "../../models/User.js"
+// import UserDetail from "../../models/UserDetail.js"
 
 
 const databaseSync = async () => {
@@ -8,14 +9,16 @@ const databaseSync = async () => {
 
     try {
         // process.env.PRODUCTION
-        await db.authenticate()
-        
-        // await User.sync({
-        //     alter: true,
-        // })
-        // await UserDetail.sync({
-        //     alter: true
-        // })
+        await db.authenticate(
+        )
+        // db.drop(
+        //     {
+        //         cascade: true
+        //     }
+        // )
+        // await db.sync({ force: true });
+
+        loadModels()
 
     } catch (error) {
         console.log(error)

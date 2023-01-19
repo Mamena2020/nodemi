@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import db from "../config/database/Database.js"
+import UserDetail from "./UserDetail.js";
 
 
 class User extends Model { }
@@ -25,8 +26,10 @@ User.init({
 
 }, {
   sequelize: db, // We need to pass the connection instance
+  // modelName: 'User', // We need to choose the model name
   modelName: 'User', // We need to choose the model name
   timestamps: true
 });
+
 
 export default User
