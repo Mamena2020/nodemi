@@ -9,8 +9,7 @@ const databaseSync = async () => {
 
     try {
         // process.env.PRODUCTION
-        await db.authenticate(
-        )
+        await db.authenticate()
         // db.drop(
         //     {
         //         cascade: true

@@ -6,11 +6,14 @@ const login = async (req, res) => {
 
 
     try {
+        console.log("login")
+        console.log(req.body)
         const { email, password } = req.body
+        console.log(email)
         const user = await User.findOne(
             {
                 where: {
-                    email: email
+                    email: email ?? ''
                 }
             }
         )
@@ -45,9 +48,12 @@ const login = async (req, res) => {
 const register = async (req, res) => {
     try {
         const { name, email, password, confirmPassword } = req.body;
-        if (password != confirmPassword) {
+        if (!name || !email || !password || !confirmPassword)
+            return res.json({ message: 'form still empty' }).status(402)
+
+        if (password != confirmPassword)
             return res.json({ message: 'password & confirm password not same' }).status(400)
-        }
+
         const salt = await bcrypt.genSalt()
         const hashPassword = await bcrypt.hash(password, salt)
         await User.create({
