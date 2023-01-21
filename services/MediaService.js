@@ -7,12 +7,16 @@ const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
 
 
 class Media extends Model {
+
     // getMediatable(options) {
     //     if (!this.mediatable_type) return Promise.resolve(null);
     //     const mixinMethodName = `get${uppercaseFirst(this.mediatable_type)}`;
     //     return this[mixinMethodName](options);
     // }
 }
+
+
+
 
 Media.init({
     name: {
@@ -43,6 +47,19 @@ Media.init({
         modelName: 'Media', // We need to choose the model name
         timestamps: true
     })
+
+Media.loadSync = async function ({ alter = false }) {
+    // handling for multiple index of url
+    try {
+        await db.query(`ALTER TABLE Medias DROP INDEX url`).then(() => {
+        })
+    } catch (error) {
+        console.log("error")
+    }
+    await Media.sync({
+        alter: alter,
+    })
+}
 
 const hasMedia = async (model = Model) => {
     model.hasMany(Media, {

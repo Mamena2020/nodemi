@@ -15,7 +15,10 @@ const databaseSync = async () => {
         //         cascade: true
         //     }
         // )
-        // await db.sync({ force: true });
+        // await db.sync({
+        //     // alter: true,
+          
+        // });
 
         loadModels()
 

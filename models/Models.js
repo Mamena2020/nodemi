@@ -6,15 +6,15 @@ import Media, { hasMedia } from '../services/MediaService.js'
 
 const loadModels = async () => {
 
-    await Media.sync({
-        alter: true,
-        // force: true
+    await Media.loadSync({
+        alter: true
     })
-    
     await User.sync({
         alter: true,
         // force: true
     })
+    await hasMedia(User)
+
     await UserDetail.sync({
         alter: true,
         // force: true
@@ -30,9 +30,8 @@ const loadModels = async () => {
         as: 'user'
     });
 
-  
 
-    await hasMedia(User)
+
 
 
 

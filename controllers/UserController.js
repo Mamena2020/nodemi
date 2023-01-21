@@ -137,7 +137,14 @@ const upload = async (req, res, next) => {
     req.pipe(bb);
 }
 const upload3 = async (req, res, next) => {
-    console.log(req.body)
+    // for(key in req.body)
+    // {
+    //     if(body[key].j)
+    //     console.log()
+    // } 
+    console.log(req.body['files[]'])
+    console.log(req.body['file'])
+
     res.status(200).json("upload successfuly")
 }
 
