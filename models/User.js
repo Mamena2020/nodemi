@@ -2,7 +2,14 @@ import { Model, DataTypes } from "sequelize";
 import db from "../config/database/Database.js"
 
 
-class User extends Model { }
+class User extends Model {
+  //  firstImage()=> {
+  //   return getMedia({
+  //     model: this,
+  //     single: true
+  //   })
+  // }
+}
 
 User.init({
   // Model attributes are defined here

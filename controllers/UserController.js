@@ -18,15 +18,18 @@ const getUser = async (req, res) => {
                 include: [{
                     model: UserDetail,
                     as: 'user_details',
-                    // required: true,
                     attributes: ['bio']
                 }]
             }
         )
 
         if (!user) return res.sendStatus(404)
-
-        res.json({ message: "get success", "user": user })
+        let newUser = {
+            id: user.id,
+            name: user.name,
+            url: user.firstMediaUrl
+        }
+        res.json({ message: "get success", "user": newUser })
 
     } catch (error) {
         console.log(error)
@@ -41,8 +44,8 @@ const upload = async (req, res) => {
 
     const user = await authUser(req)
     if (!user)
-    return res.status(403).json({ message: "need auth" })
-    
+        return res.status(403).json({ message: "need auth" })
+
     console.log("name", user.name)
     await user.saveMedia(
         req.body['file'],

@@ -12,7 +12,7 @@ const isArray = (name) => {
     return false
 }
 
-const FileParsing = async (req, res, next) => {
+const MediaRequestHandling = async (req, res, next) => {
 
     if (req.method === 'POST') {
         var bb = busboy({ headers: req.headers });
@@ -65,4 +65,4 @@ const FileParsing = async (req, res, next) => {
 
 }
 
-export default FileParsing
+export default MediaRequestHandling

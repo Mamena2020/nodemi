@@ -5,7 +5,7 @@ import path from 'path'
 import fse from 'fs-extra'
 import mediaConfig from "../config/MediaConfig.js";
 // Helper function
-const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
+// const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
 
 
 class Media extends Model {
@@ -17,9 +17,6 @@ class Media extends Model {
     // }
 
 }
-
-
-
 
 Media.init({
     name: {
@@ -33,6 +30,10 @@ Media.init({
     info: {
         type: DataTypes.JSON,
         allowNull: false,
+    },
+    local_storage: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
     },
     url: {
         type: DataTypes.STRING,
@@ -55,6 +56,13 @@ Media.init({
         timestamps: true
     })
 
+Media.addHook("afterDestroy", async (media) => {
+    try {
+        await fse.remove(media.url)
+    } catch (error) {
+    }
+})
+
 Media.loadSync = async function ({ alter = false }) {
     // handling for multiple index of url
     try {
@@ -68,27 +76,89 @@ Media.loadSync = async function ({ alter = false }) {
     })
 }
 
+// ------------------------------------------------------------------------------------------- binding with any model
 const hasMedia = async (model = Model) => {
+
     model.hasMany(Media, {
+        as: 'media',
         foreignKey: 'mediatable_id',
         constraints: false,
         scope: {
-            mediatable_type: model.modelName
+            mediatable_type: model
         }
     })
     Media.belongsTo(model, { foreignKey: 'mediatable_id', constraints: false });
 
     model.prototype.saveMedia = async function (file, name) {
         saveMedia({
-            file: file,
             model: this,
+            file: file,
             name: name
         })
     }
+
+
+    model.addHook("afterDestroy", (_model) => {
+        Media.destroy({
+            where: {
+                mediatable_id: _model.where.id,
+                mediatable_type: _model.constructor.name
+            }
+        })
+    })
+
+    model.addHook("afterFind", async function (_model) {
+        console.log("_model.constructor.name", _model.constructor.name)
+        const media = await Media.findAll({
+            where: {
+                mediatable_id: _model.id,
+                mediatable_type: _model.constructor.name
+            }
+        });
+        let newMedia = []
+        for (let m of media) {
+            if (m.local_storage) {
+                m.url = normalizeLocalStorageToUrl(m.url)
+            }
+            newMedia.push(m)
+        }
+        _model.media = newMedia;
+        _model.dataValues.media = newMedia;
+
+        _model.firstMedia = newMedia.length > 0 ? newMedia[0] : null
+        _model.firstMediaUrl = newMedia.length > 0 ? newMedia[0].url : null
+    })
 }
 
 // ------------------------------------------------------------------------------------------- get media function
 
+// const getMedia = async ({ model = Model, single = false }) => {
+
+//     const mediatable_id = model.id
+//     const mediatable_type = model.constructor.options.name.singular
+
+//     console.log(mediatable_id)
+//     console.log(mediatable_type)
+
+//     var media
+//     if (single) {
+//         media = await Media.findOne({
+//             where: {
+//                 mediatable_id: mediatable_id,
+//                 mediatable_type: mediatable_type,
+//             },
+//         })
+//     }
+//     else {
+//         media = await Media.findAll({
+//             where: {
+//                 mediatable_id: mediatable_id,
+//                 mediatable_type: mediatable_type,
+//             },
+//         })
+//     }
+//     return media
+// }
 
 
 // ------------------------------------------------------------------------------------------- store file functions
@@ -140,7 +210,8 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                 mediatable_type: mediatable_type,
                 url: targetDir,
                 info: JSON.stringify(file.info),
-                name: name
+                name: name,
+                local_storage: mediaConfig.usingLocalStorage
             })
         }
         else {
@@ -149,13 +220,23 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             } catch (error) {
             }
             await media.update({
-                url: targetDir
+                url: targetDir,
+                info: JSON.stringify(file.info),
+                local_storage: mediaConfig.usingLocalStorage
             })
 
         }
     }
 
     return targetDir
+}
+// -------------------------------------------------------------------------------------------  helpers
+const normalizeLocalStorageToUrl = (filePath) => {
+    let directories = filePath.split(path.sep);
+    directories = directories.slice(1);
+    let newPath = directories.join(path.sep);
+    console.log("newPath", newPath)
+    return mediaConfig.root_media_url + newPath
 }
 // ------------------------------------------------------------------------------------------- 
 

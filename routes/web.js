@@ -2,14 +2,14 @@ import express from "express";
 import UserController from "../controllers/UserController.js";
 import AuthController from "../controllers/AuthController.js";
 import authJwt from "../middleware/authJwt.js";
-import FileParsing from "../middleware/FilesParsing.js";
+import MediaRequestHandling from "../middleware/MediaRequestHandling.js";
 
 
 const routerAuth = express.Router()
 
 export default function routers(app) {
 
-    app.use(FileParsing)
+    app.use(MediaRequestHandling)
     app.post("/login", AuthController.login)
     app.post("/register", AuthController.register)
     app.get("/token", AuthController.refreshToken)

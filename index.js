@@ -4,8 +4,8 @@ import routers from "./routes/web.js";
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import databaseSync from "./config/database/DatabaseSync.js";
-
 dotenv.config()
+
 const port = process.env.PORT || 5000
 const app = express()
 
