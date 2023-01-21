@@ -1,19 +1,16 @@
-import express from "express";
-import router from "./routes/web.js";
-import cors from 'cors'
 import dotenv from 'dotenv'
+import express from "express";
+import routers from "./routes/web.js";
+import cors from 'cors'
 import cookieParser from "cookie-parser";
 import databaseSync from "./config/database/DatabaseSync.js";
-// import bb from 'express-busboy'
 
 dotenv.config()
 const port = process.env.PORT || 5000
-
-
 const app = express()
 
-
-// bb.extend(app);
+app.use(express.static("public"));
+app.use(express.static("storage"));
 
 // app.use(cors({
 //     credentials: true,
@@ -28,12 +25,9 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-router(app)
+routers(app)
 
 databaseSync()
-
-
-
 
 app.listen(port, () => {
     console.log(`server running on port: ${port}`)
