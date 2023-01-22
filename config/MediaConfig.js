@@ -3,7 +3,7 @@ dotenv.config()
 const app_url = process.env.APP_URL ?? ''
 
 const mediaConfig = {
-    localStorage: "storage",
+    localStorageDirectory: "storage",
     usingLocalStorage: true,
     root_media_url: app_url
 }

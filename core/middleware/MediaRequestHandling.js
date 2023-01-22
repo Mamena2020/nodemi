@@ -14,10 +14,13 @@ const isArray = (name) => {
 
 const MediaRequestHandling = async (req, res, next) => {
 
-    if (req.method === 'POST') {
+    if (req.method === 'POST'
+        && req.headers['content-type'].startsWith('multipart/form-data') ||
+        req.method === 'POST'
+        && req.headers['content-type'].startsWith('application/x-www-form-urlencoded')) {
         var bb = busboy({ headers: req.headers });
         bb.on('file', function (name, file, info) {
-            
+
             if (isArray(name)) {
                 if (!req.body[name]) {
                     req.body[name] = []
@@ -36,7 +39,7 @@ const MediaRequestHandling = async (req, res, next) => {
                 info.fileSize = fileSize
                 info.fileSizeUnit = "bytes"
                 info.fileExtension = path.extname(info.filename)
-                
+
                 if (isArray(name) && Array.isArray(req.body[name])) {
 
                     req.body[name].push({

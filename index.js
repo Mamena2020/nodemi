@@ -4,6 +4,8 @@ import routers from "./routes/web.js";
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import databaseSync from "./config/database/DatabaseSync.js";
+import Middleware from "./core/middleware/Middleware.js"
+
 dotenv.config()
 
 const port = process.env.PORT || 5000
@@ -24,6 +26,8 @@ app.use(cookieParser())
 // read reques body json & formData
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+// default middleware
+Middleware(app)
 
 routers(app)
 

@@ -1,9 +1,9 @@
 import { Model, DataTypes } from "sequelize";
-import db from "../config/database/Database.js"
+import db from "../../config/database/Database.js"
 import { v4 as uuid4 } from 'uuid'
 import path from 'path'
 import fse from 'fs-extra'
-import mediaConfig from "../config/MediaConfig.js";
+import mediaConfig from "../../config/MediaConfig.js";
 // Helper function
 // const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
 
@@ -58,7 +58,9 @@ Media.init({
 
 Media.addHook("afterDestroy", async (media) => {
     try {
-        await fse.remove(media.url)
+        if (media.local_storage) {
+            await fse.remove(media.url)
+        }
     } catch (error) {
     }
 })
@@ -130,41 +132,10 @@ const hasMedia = async (model = Model) => {
     })
 }
 
-// ------------------------------------------------------------------------------------------- get media function
-
-// const getMedia = async ({ model = Model, single = false }) => {
-
-//     const mediatable_id = model.id
-//     const mediatable_type = model.constructor.options.name.singular
-
-//     console.log(mediatable_id)
-//     console.log(mediatable_type)
-
-//     var media
-//     if (single) {
-//         media = await Media.findOne({
-//             where: {
-//                 mediatable_id: mediatable_id,
-//                 mediatable_type: mediatable_type,
-//             },
-//         })
-//     }
-//     else {
-//         media = await Media.findAll({
-//             where: {
-//                 mediatable_id: mediatable_id,
-//                 mediatable_type: mediatable_type,
-//             },
-//         })
-//     }
-//     return media
-// }
-
-
 // ------------------------------------------------------------------------------------------- store file functions
 const saveToLocal = async (file, mediatable_type, mediatable_id) => {
     return await new Promise(async (resolve, reject) => {
-        const folderName = mediaConfig.localStorage + "/" + mediatable_type + "-" + mediatable_id
+        const folderName = mediaConfig.localStorageDirectory + "/" + mediatable_type + "-" + mediatable_id
         const fileName = uuid4() + file.info.fileExtension
         const targetDir = path.join(folderName, fileName);
         // create folder if not exist
@@ -235,7 +206,6 @@ const normalizeLocalStorageToUrl = (filePath) => {
     let directories = filePath.split(path.sep);
     directories = directories.slice(1);
     let newPath = directories.join(path.sep);
-    console.log("newPath", newPath)
     return mediaConfig.root_media_url + newPath
 }
 // ------------------------------------------------------------------------------------------- 

@@ -20,7 +20,8 @@
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.0.1",
     "sequelize": "^6.28.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.5.2"

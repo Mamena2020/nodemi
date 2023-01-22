@@ -3,12 +3,6 @@ import db from "../config/database/Database.js"
 
 
 class User extends Model {
-  //  firstImage()=> {
-  //   return getMedia({
-  //     model: this,
-  //     single: true
-  //   })
-  // }
 }
 
 User.init({
@@ -36,7 +30,5 @@ User.init({
   modelName: 'User', // We need to choose the model name
   timestamps: true
 });
-
-
 
 export default User

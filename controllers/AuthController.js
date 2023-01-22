@@ -1,15 +1,27 @@
 import User from "../models/User.js"
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
+import LoginRequest from "../requests/auth/LoginRequest.js";
 
 const login = async (req, res) => {
 
 
     try {
         console.log("login")
-        console.log(req.body)
+
+        const check = new LoginRequest(req)
+
+        console.log("--------------------------1")
+        console.log("is error",check.isError())
+        if (check.isError()) {
+            console.log(check.errors)
+            return res.status(422).json(check.errors)
+        }
+        console.log("--------------------------2")
+
         const { email, password } = req.body
-        console.log(email)
+
+
         const user = await User.findOne(
             {
                 where: {

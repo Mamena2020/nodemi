@@ -24,9 +24,11 @@ const getUser = async (req, res) => {
         )
 
         if (!user) return res.sendStatus(404)
+
         let newUser = {
             id: user.id,
             name: user.name,
+            email: user.email,
             url: user.firstMediaUrl
         }
         res.json({ message: "get success", "user": newUser })
