@@ -17,8 +17,9 @@ class UserRequest extends RequestValidation {
                 "validation": ["required"],
             },
             "confirmPassword": {
-                "validation": ["required", "same:password"],
-            },
+                "validation": ["required", "match:password"],
+                "attribute":"Confirm password"
+            }
         };
     }
 }
@@ -28,7 +29,7 @@ var d = new UserRequest({
         "npm": 1,
         "ipk": 3.14,
         "password": "12313",
-        "confirmPassword": "1231232",
+        "confirmPassword": "12313",
     }
 })
 

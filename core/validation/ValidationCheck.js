@@ -6,12 +6,20 @@ import validator from "validator"
  * @param {*} field 
  * @returns bolean
  */
-const ValidationCheck = (validation, field) => {
+const ValidationCheck = (validation, field, { options }) => {
 
+    console.log("options...", options)
+    console.log(field)
 
     if (validation === "required") {
         if (field === undefined || field === null)
             return false
+    }
+
+    if (validation === "match") {
+
+        let d = validator.matches(field??" .", options?.fieldMatch??" ")
+        return d
     }
 
     if (validation === "email")
@@ -32,6 +40,7 @@ const ValidationCheck = (validation, field) => {
 
     return true
 }
+
 
 
 
