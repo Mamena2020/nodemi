@@ -1,4 +1,5 @@
 import validator from 'validator'
+import ValidationDB from './ValidationDB.js'
 
 const ValidationType = Object.freeze({
     required: "required",
@@ -11,7 +12,8 @@ const ValidationType = Object.freeze({
     min: "min",
     date: "date",
     array: "array",
-    digits_between: "digits_between", //1 - 2
+    exists: "exists"
+    // digits_between: "digits_between", //1 - 2
 })
 
 const MessageType = Object.freeze({
@@ -22,10 +24,11 @@ const MessageType = Object.freeze({
     validFormat: "must be valid format of",
     max: "should be less or equal than",
     min: "should be more or equal than",
-    digit: [
-        "should be",
-        "digit"
-    ]
+    exists: "not recorded in database"
+    // digit: [
+    //     "should be",
+    //     "digit"
+    // ]
 })
 
 
@@ -41,12 +44,12 @@ class RequestValidation {
         return !(JSON.stringify(this.errors) === JSON.stringify({}))
     }
 
-    loadRules(_rules) {
-        this.rules = _rules;
-        this.check()
+    async load(child) {
+        this.rules = child.rules();
+        // await this.check()
     }
 
-    check() {
+    async check() {
         this.errors = {}
         console.log("--------------------------------------------------- field")
         console.log(this.body)
@@ -55,7 +58,7 @@ class RequestValidation {
         console.log("=================================================== Checking")
         for (let ruleKey in this.rules) {
             if (this.#hasField(ruleKey)) {
-                this.#checking(ruleKey)
+                await this.#checking(ruleKey)
             }
             else {
                 if (this.#ruleHasRuleRequired(ruleKey)) {
@@ -127,6 +130,8 @@ class RequestValidation {
             return MessageType.max
         if (val === ValidationType.min)
             return MessageType.min
+        if (val === ValidationType.exists)
+            return MessageType.exists
 
         return MessageType.must
     }
@@ -147,7 +152,7 @@ class RequestValidation {
      * @param {*} ruleKey  ex: password, id, name, 
      * @returns 
      */
-    #checking(ruleKey) {
+    async #checking(ruleKey) {
         var field = this.body[ruleKey]
         let validations = this.rules[ruleKey].validation
         console.log(">>>>--------------------------------------->>>>")
@@ -175,8 +180,9 @@ class RequestValidation {
                 validationName = validation
                 console.log("not sCREATE PARAMS")
             }
+            let isValid = await this.ValidationCheck(validationName, field, { options: options })
 
-            if (!this.ValidationCheck(validationName, field, { options: options })) {
+            if (!isValid) {
                 console.log("ERROR")
                 console.log(validationName)
                 if (hasParams) {
@@ -236,6 +242,7 @@ class RequestValidation {
      * @param {*} field 
      */
     #createOptionsParams(ruleKey, validation) {
+
         let arr = validation.split(":")
         let options = {}
         if (arr.length > 1) {
@@ -243,22 +250,36 @@ class RequestValidation {
                 let fieldMatch = this.#getField(arr[1])
                 console.log("fieldMatch////////////////", fieldMatch)
                 if (!fieldMatch)
-                    return
+                    throw "not right format of validation: " + validation
                 options["fieldMatch"] = fieldMatch
             }
             if (arr[0] === ValidationType.max || arr[0] === ValidationType.min) {
                 let param = arr[1]
                 console.log("param////////////////", param)
                 if (!param)
-                    return
+                    throw "not right format of validation: " + validation
                 if (arr[0] === ValidationType.max)
                     options["fieldMax"] = param
                 if (arr[0] === ValidationType.min)
                     options["fieldMin"] = param
             }
+            if (arr[0] === ValidationType.exists) {
+                console.log("arr", arr)
+                let params = arr[1].split(",")
+                if (params.length < 2)
+                    throw "not right format of validation: " + validation
+
+                options["fieldTableName"] = params[0]
+                options["fieldColumnName"] = params[1]
+
+            }
+        }
+        else {
+            throw "not right format of validation: " + validation
         }
 
         return options
+
     }
 
 
@@ -268,11 +289,18 @@ class RequestValidation {
      * @param {*} field 
      * @returns bolean
      */
-    ValidationCheck(validationName, field, { options }) {
+    async ValidationCheck(validationName, field, { options }) {
 
         console.log("validationName...", validationName)
         console.log("field...", field)
         console.log("options...", options)
+
+        //------------------------------------------------------ database
+        if (validationName == ValidationType.exists) {
+            let d = await ValidationDB.exists(options.fieldTableName, options.fieldColumnName, field)
+            console.log("ddddddddddddddd", d)
+            return d
+        }
 
         //------------------------------------------------------ has params
         if (validationName === ValidationType.match)

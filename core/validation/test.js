@@ -2,39 +2,41 @@ import RequestValidation from "./RequestValidation.js";
 
 class UserRequest extends RequestValidation {
     constructor(req) {
-        super(req).loadRules(this.rules())
+        super(req).load(this)
     }
 
     rules() {
         return {
-            "npm": {
-                "validation": ["required", "integer", "length:4", "digits_between:2,5"],
+            "email": {
+                "validation": ["email", "exists:users,email"]
             },
-            "ipk": {
-                "validation": ["required", "float", "min:1", "max:4"],
-            },
-            "password": {
-                "validation": ["required"],
-            },
-            "birthdate": {
-                "validation": ["required", "date"],
-            },
-            "confirmPassword": {
-                "validation": ["required", "match:password"],
-                "attribute": "Confirm password"
-            },
-            "hobby": {
-                "validation": ["required", "array", "max:3"]
-            }
+            // "npm": {
+            //     "validation": ["required", "integer", "length:4", "digits_between:2,5"],
+            // },
+            // "ipk": {
+            //     "validation": ["required", "float", "min:1", "max:4"],
+            // },
+            // "password": {
+            //     "validation": ["required"],
+            // },
+            // "birthdate": {
+            //     "validation": ["required", "date"],
+            // },
+            // "confirmPassword": {
+            //     "validation": ["required", "match:password"],
+            //     "attribute": "Confirm password"
+            // },
+            // "hobby": {
+            //     "validation": ["required", "array", "max:3"]
+            // }
         };
     }
 }
 
 let birthdate = Date()
-console.log(birthdate.toString())
-console.log()
-var d = new UserRequest({
+var d =  new UserRequest({
     body: {
+        "email": "andres@gmail.com",
         "npm": 1,
         "ipk": 4,
         "password": "12313s",
@@ -44,6 +46,7 @@ var d = new UserRequest({
         "hobby": ["coding", "cooking"]
     }
 })
+await d.check()
 
 console.log("================================= ERROR MESSAGE")
 console.log(d.errors)

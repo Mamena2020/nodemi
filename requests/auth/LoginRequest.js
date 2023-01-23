@@ -3,7 +3,7 @@ import RequestValidation from "../../core/validation/RequestValidation.js";
 class LoginRequest extends RequestValidation {
 
     constructor(req) {
-        super(req).loadRules(this.rules())
+        super(req).load(this)
     }
 
     rules() {
