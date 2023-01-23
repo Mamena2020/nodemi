@@ -1,20 +1,33 @@
+import validator from 'validator'
 
-import ValidationCheck from "./ValidationCheck.js";
+const ValidationType = Object.freeze({
+    required: "required",
+    email: "email",
+    match: "match",
+    string: "string",
+    float: "float",
+    integer: "integer",
+    max: "max",
+    min: "min",
+    date: "date",
+    array: "array",
+    digits_between: "digits_between", //1 - 2
+})
 
-
-const TypeMessage = Object.freeze({
+const MessageType = Object.freeze({
     must: "must be",
     matchWith: "must be match with",
     is: "is",
     between: "between",
-    validFormat: "must be valid format"
+    validFormat: "must be valid format of",
+    max: "should be less or equal than",
+    min: "should be more or equal than",
+    digit: [
+        "should be",
+        "digit"
+    ]
 })
-const TypeValidationWithParams = Object.freeze({
-    match: "match",
-    min: "min",
-    max: "max",
-    digits_between: "digits_between"
-})
+
 
 class RequestValidation {
 
@@ -103,20 +116,25 @@ class RequestValidation {
         )
     }
     #errorTypeCategories(val) {
-        if (val === "email" || val === "date" || val === "float" || val === "integer")
-            return TypeMessage.validFormat
-        if (val === "required")
-            return TypeMessage.is
-        if (val === "match")
-            return TypeMessage.matchWith
+        if (val === ValidationType.email || val === ValidationType.date || val === ValidationType.float ||
+            val === ValidationType.integer || val == ValidationType.array)
+            return MessageType.validFormat
+        if (val === ValidationType.required)
+            return MessageType.is
+        if (val === ValidationType.match)
+            return MessageType.matchWith
+        if (val === ValidationType.max)
+            return MessageType.max
+        if (val === ValidationType.min)
+            return MessageType.min
 
-        return TypeMessage.must
+        return MessageType.must
     }
 
     #defaultErrorMessage(attribute, type, validation, options) {
         attribute = attribute[0].toUpperCase() + attribute.slice(1);
 
-        if (type === TypeMessage.matchWith) {
+        if (type === MessageType.matchWith || type === MessageType.max || type === MessageType.min) {
             validation = options
         }
 
@@ -144,28 +162,28 @@ class RequestValidation {
             console.log("--------------")
             console.log(validation, field)
             let options
-            let val
+            let validationName
             let hasParams = this.#isValidationHasParam(validation)
-            let paramsOfValidation
+            let validationParams
             // ex: max:3, min:5    
             if (hasParams) {
                 console.log("CREATE PARAMS")
                 options = this.#createOptionsParams(ruleKey, validation)
-                val = this.#getValidateNameFromValidationWithParams(validation)
+                validationName = this.#getValidateNameFromValidationWithParams(validation)
             }
             else {
-                val = validation
+                validationName = validation
                 console.log("not sCREATE PARAMS")
             }
 
-            if (!ValidationCheck(val, field, { options: options })) {
+            if (!this.ValidationCheck(validationName, field, { options: options })) {
                 console.log("ERROR")
-                console.log(validation)
+                console.log(validationName)
                 if (hasParams) {
-                    paramsOfValidation = this.#getValidateParams(validation)
-                    console.log(paramsOfValidation)
+                    validationParams = this.#getValidateParams(validation)
+                    console.log("validationParams", validationParams)
                 }
-                this.#setError(ruleKey, val, paramsOfValidation)
+                this.#setError(ruleKey, validationName, validationParams)
             } else {
                 console.log("NOT ERROR")
             }
@@ -204,6 +222,8 @@ class RequestValidation {
     #getValidateParams(validation) {
         let arr = validation.split(":")
         arr = arr.splice(1, 1);
+        console.log("arr", arr)
+        console.log("validation", validation)
         if (arr[0].indexOf(",") !== -1) {
             return arr[0].split(",")
         }
@@ -218,20 +238,102 @@ class RequestValidation {
     #createOptionsParams(ruleKey, validation) {
         let arr = validation.split(":")
         let options = {}
-
-        if (arr[0] === TypeValidationWithParams.match && arr.length === 2) {
-            let fieldMatch = this.#getField(arr[1])
-
-            console.log("fieldMatch////////////////", fieldMatch)
-
-            if (!fieldMatch)
-                return
-
-            options["fieldMatch"] = fieldMatch
+        if (arr.length > 1) {
+            if (arr[0] === ValidationType.match) {
+                let fieldMatch = this.#getField(arr[1])
+                console.log("fieldMatch////////////////", fieldMatch)
+                if (!fieldMatch)
+                    return
+                options["fieldMatch"] = fieldMatch
+            }
+            if (arr[0] === ValidationType.max || arr[0] === ValidationType.min) {
+                let param = arr[1]
+                console.log("param////////////////", param)
+                if (!param)
+                    return
+                if (arr[0] === ValidationType.max)
+                    options["fieldMax"] = param
+                if (arr[0] === ValidationType.min)
+                    options["fieldMin"] = param
+            }
         }
+
         return options
     }
 
+
+    /**
+     * 
+     * @param {*} validation ex: required, float
+     * @param {*} field 
+     * @returns bolean
+     */
+    ValidationCheck(validationName, field, { options }) {
+
+        console.log("validationName...", validationName)
+        console.log("field...", field)
+        console.log("options...", options)
+
+        //------------------------------------------------------ has params
+        if (validationName === ValidationType.match)
+            return validator.matches(field ?? " .", options?.fieldMatch ?? " ")
+        if (validationName === ValidationType.max) {
+            if (Array.isArray(field)) {
+                return field.length <= options.fieldMax
+            }
+            return validator.isFloat(field.toString() ?? "0", { max: options.fieldMax ?? " " })
+        }
+
+        if (validationName === ValidationType.min) {
+            if (Array.isArray(field)) {
+                return field.length >= options.fieldMin
+            }
+            return validator.isFloat(field.toString() ?? "0", { min: options.fieldMin ?? " " })
+        }
+
+
+        //------------------------------------------------------ has no params
+
+        if (validationName === ValidationType.required) {
+            if (field === undefined || field === null)
+                return false
+        }
+        if (validationName === ValidationType.email)
+            return validator.isEmail(field.toString())
+        if (validationName === ValidationType.float)
+            return (typeof field === "number")
+        if (validationName === ValidationType.integer)
+            return validator.isInt(field.toString())
+        if (validationName === ValidationType.date) {
+            let newDate = this.#formatDate(field)
+            return validator.isDate(newDate.toString())
+        }
+        if (validationName === ValidationType.string)
+            return (typeof field === "string")
+        if (validationName === ValidationType.array)
+            return (Array.isArray(field))
+
+
+        return true
+    }
+
+    #formatDate(date) {
+        try {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            return [year, month, day].join('/');
+        } catch (error) {
+
+        }
+        return date
+    }
 
 }
 
