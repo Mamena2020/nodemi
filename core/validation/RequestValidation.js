@@ -12,7 +12,8 @@ const ValidationType = Object.freeze({
     min: "min",
     date: "date",
     array: "array",
-    exists: "exists"
+    exists: "exists",
+    unique: "unique"
     // digits_between: "digits_between", //1 - 2
 })
 
@@ -24,7 +25,8 @@ const MessageType = Object.freeze({
     validFormat: "must be valid format of",
     max: "should be less or equal than",
     min: "should be more or equal than",
-    exists: "not recorded in database"
+    exists: "not recorded in database",
+    unique: "already used"
     // digit: [
     //     "should be",
     //     "digit"
@@ -95,12 +97,22 @@ class RequestValidation {
         return null
     }
 
+
+    /**
+     * 
+     * @param {*} ruleKey  ex: name, email, username
+     * @param {*} validation  ex: required, exist, match
+     * @param {*} options params of validation that has params. ex: match:password
+     */
     #setError(ruleKey, validation, options) {
         let message = this.#setErrorMessage(ruleKey, validation, options)
-        if (!this.errors[ruleKey]) {
-            this.errors[ruleKey] = []
+        if (Object.keys(this.errors).length === 0) {
+            this.errors["errors"] = {}
         }
-        this.errors[ruleKey].push(message)
+        if (!this.errors["errors"][ruleKey]) {
+            this.errors["errors"][ruleKey] = []
+        }
+        this.errors["errors"][ruleKey].push(message)
     }
 
 
@@ -132,6 +144,8 @@ class RequestValidation {
             return MessageType.min
         if (val === ValidationType.exists)
             return MessageType.exists
+        if (val === ValidationType.unique)
+            return MessageType.unique
 
         return MessageType.must
     }
@@ -142,6 +156,8 @@ class RequestValidation {
         if (type === MessageType.matchWith || type === MessageType.max || type === MessageType.min) {
             validation = options
         }
+        if (type === MessageType.exists || type === MessageType.unique)
+            return "The " + attribute + " " + type
 
         return "The " + attribute + " " + type + " " + validation
     }
@@ -271,6 +287,18 @@ class RequestValidation {
 
                 options["fieldTableName"] = params[0]
                 options["fieldColumnName"] = params[1]
+            }
+            if (arr[0] === ValidationType.unique) {
+                console.log("arr", arr)
+                let params = arr[1].split(",")
+                if (params.length < 2)
+                    throw "not right format of validation: " + validation
+
+                options["fieldTableName"] = params[0]
+                options["fieldColumnName"] = params[1]
+
+                if (params[2])
+                    options["fieldException"] = params[2]
 
             }
         }
@@ -298,7 +326,12 @@ class RequestValidation {
         //------------------------------------------------------ database
         if (validationName == ValidationType.exists) {
             let d = await ValidationDB.exists(options.fieldTableName, options.fieldColumnName, field)
-            console.log("ddddddddddddddd", d)
+            return d
+        }
+        if (validationName == ValidationType.unique) {
+            let d = await ValidationDB.unique(options.fieldTableName, options.fieldColumnName, field,
+                options.fieldException
+            )
             return d
         }
 

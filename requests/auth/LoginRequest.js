@@ -9,7 +9,7 @@ class LoginRequest extends RequestValidation {
     rules() {
         return {
             "email": {
-                "validation": ["required", "email"],
+                "validation": ["required", "email","exists:users,email"],
                 "attribute": "E-mail"
             },
             "password": {

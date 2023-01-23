@@ -16,6 +16,20 @@ class ValidationDB {
         })
         return result
     }
+    static async unique(tableName, column, field, exception) {
+        let result = await db.query(`select ${column} from ${tableName} where ${column} = :email and id <> :exception limit 1`, {
+            replacements: {
+                email: field,
+                exception: exception ?? ''
+            }
+        }).then((e) => {
+            if (e[0].length == 0) return true
+            return false
+        }).catch(() => {
+            return false
+        })
+        return result
+    }
 
 
 }

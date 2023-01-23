@@ -8,7 +8,7 @@ class UserRequest extends RequestValidation {
     rules() {
         return {
             "email": {
-                "validation": ["email", "exists:users,email"]
+                "validation": ["email", "unique:users,email"]
             },
             // "npm": {
             //     "validation": ["required", "integer", "length:4", "digits_between:2,5"],
@@ -36,7 +36,7 @@ class UserRequest extends RequestValidation {
 let birthdate = Date()
 var d =  new UserRequest({
     body: {
-        "email": "andres@gmail.com",
+        "email": "andre@gmail.com",
         "npm": 1,
         "ipk": 4,
         "password": "12313s",

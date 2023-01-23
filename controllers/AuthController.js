@@ -2,34 +2,23 @@ import User from "../models/User.js"
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
 import LoginRequest from "../requests/auth/LoginRequest.js";
+import RegisterRequest from "../requests/auth/RegisterRequest.js";
+import { authUser } from "../middleware/authJwt.js";
 
 const login = async (req, res) => {
 
 
     try {
         console.log("login")
-
-        const check = new LoginRequest(req)
-
-        console.log("--------------------------1")
-        console.log("is error",check.isError())
-        if (check.isError()) {
-            console.log(check.errors)
-            return res.status(422).json(check.errors)
-        }
-        console.log("--------------------------2")
+        const valid = new LoginRequest(req)
+        await valid.check()
+        if (valid.isError())
+            return res.json(valid.errors).status(402)
 
         const { email, password } = req.body
 
+        const user = await User.findOne({ where: { email: email } })
 
-        const user = await User.findOne(
-            {
-                where: {
-                    email: email ?? ''
-                }
-            }
-        )
-        if (!user) return res.json({ message: "email not found" }).status(404)
         const match = await bcrypt.compare(password, user.password)
         if (!match) return res.json({ message: "wrong password" }).status(400)
         const newData = {
@@ -59,13 +48,13 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
+
+        let valid = new RegisterRequest(req)
+        await valid.check()
+        if (valid.isError())
+            return res.json(valid.errors).status(402)
+
         const { name, email, password, confirmPassword } = req.body;
-        if (!name || !email || !password || !confirmPassword)
-            return res.json({ message: 'form still empty' }).status(402)
-
-        if (password != confirmPassword)
-            return res.json({ message: 'password & confirm password not same' }).status(400)
-
         const salt = await bcrypt.genSalt()
         const hashPassword = await bcrypt.hash(password, salt)
         await User.create({

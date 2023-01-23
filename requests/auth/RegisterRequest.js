@@ -1,6 +1,6 @@
 import RequestValidation from "../../core/validation/RequestValidation.js";
 
-class LoginRequest extends RequestValidation {
+class RegisterRequest extends RequestValidation {
 
     constructor(req) {
         super(req).load(this)
@@ -12,7 +12,7 @@ class LoginRequest extends RequestValidation {
                 "validation": ["required",],
             },
             "email": {
-                "validation": ["required", "email"],
+                "validation": ["required", "email","unique:users,email"],
                 "attribute": "E-mail"
             },
             "password": {
@@ -26,4 +26,4 @@ class LoginRequest extends RequestValidation {
     }
 }
 
-export default LoginRequest
+export default RegisterRequest
