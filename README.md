@@ -67,10 +67,21 @@ Template backend for nodejs.
    ```
    Save a file 
    ```
+    // save user avatar
     const user = await authUser(req)
     await user.saveMedia(
         req.body['file'],
         "avatar"
     )
+    
+    // save product image
+    const product = Product.findOne({
+        where: {
+          id: 1
+        }
+    }) 
+    
+    await product.saveMedia(req.body['file'],"product-image")
+    
    ```
    
