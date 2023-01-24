@@ -6,9 +6,7 @@ import Media, { hasMedia } from '../service/MediaService.js'
 
 const loadModels = async () => {
 
-    await Media.loadSync({
-        alter: true
-    })
+   
 
     await User.sync({
         alter: true,

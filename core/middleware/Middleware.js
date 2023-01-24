@@ -1,5 +1,5 @@
-import MediaRequestHandling from './MediaRequestHandling.js'
+import mediaRequestHandling from './MediaRequestHandling.js'
 
 export default (app) => {
-    app.use(MediaRequestHandling)
+    app.use(mediaRequestHandling)
 }

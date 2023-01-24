@@ -92,7 +92,7 @@ const hasMedia = async (model = Model) => {
     Media.belongsTo(model, { foreignKey: 'mediatable_id', constraints: false });
 
     model.prototype.saveMedia = async function (file, name) {
-        saveMedia({
+        await saveMedia({
             model: this,
             file: file,
             name: name
@@ -110,7 +110,7 @@ const hasMedia = async (model = Model) => {
     })
 
     model.addHook("afterFind", async function (_model) {
-        console.log("_model.constructor.name", _model.constructor.name)
+        // console.log("_model.constructor.name", _model.constructor.name)
         const media = await Media.findAll({
             where: {
                 mediatable_id: _model.id,
@@ -148,15 +148,15 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
             if (err) {
                 console.log("error when rename file to permanent storage")
                 console.log(err);
-                reject(err);
+                return reject(err);
             }
-            resolve(targetDir)
+            return resolve(targetDir)
         })
     })
 }
 
 const saveMedia = async ({ model = Model, file = Object, name = String }) => {
-    if (!file || !name|| !model) {
+    if (!file || !name || !model) {
         console.log("require all params")
         return
     }
@@ -196,7 +196,6 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                 info: JSON.stringify(file.info),
                 local_storage: mediaConfig.usingLocalStorage
             })
-
         }
     }
 
@@ -218,6 +217,13 @@ const normalizeLocalStorageToUrl = (filePath) => {
     return mediaConfig.root_media_url + newPath
 }
 // ------------------------------------------------------------------------------------------- 
+const loadMediaModel = async () => {
+    await Media.loadSync({
+        alter: true
+    })
+}
+
+// ------------------------------------------------------------------------------------------- 
 
 export default Media
-export { hasMedia, saveMedia }
+export { hasMedia, saveMedia, loadMediaModel }

@@ -1,10 +1,11 @@
 import { Sequelize } from "sequelize";
-import DatabaseConfig from "../../config/DatabaseConfig.js";
+import databaseConfig from "../../config/DatabaseConfig.js";
 
-const db = new Sequelize(DatabaseConfig.database, DatabaseConfig.username, DatabaseConfig.password,
+const db = new Sequelize(databaseConfig.database, databaseConfig.username, databaseConfig.password,
     {
-        'host': DatabaseConfig.host,
-        'dialect': DatabaseConfig.dialect
-    });
+        host: databaseConfig.host,
+        dialect: databaseConfig.dialect,
+        logging: databaseConfig.logging
+    })
 
 export default db

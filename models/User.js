@@ -3,6 +3,7 @@ import db from "../core/database/database.js"
 
 
 class User extends Model {
+  
 }
 
 User.init({

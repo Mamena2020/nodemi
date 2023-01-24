@@ -2,6 +2,7 @@ import routers from "../routes/web.js"
 import db from "./database/database.js"
 import loadModels from "./model/Models.js"
 import middleware from "./middleware/Middleware.js"
+import { loadMediaModel } from "./service/MediaService.js"
 
 const load = async (app) => {
 
@@ -14,6 +15,10 @@ const load = async (app) => {
         // await db.sync({alter: true})
         //------------------------------------------------------- 
 
+        //------------------------------------------------------- Media
+        await loadMediaModel()
+        //------------------------------------------------------- 
+        
         //------------------------------------------------------- Models
         loadModels()
         //------------------------------------------------------- 

@@ -39,8 +39,8 @@ const getUser = async (req, res) => {
 }
 
 const upload = async (req, res) => {
-    console.log(req.body['files[]'])
-    console.log(req.body['file'])
+    // console.log(req.body['files[]'])
+    // console.log(req.body['file'])
     if (!req.body['file'])
         return res.status(400).json({ message: "file not found" })
 
@@ -48,11 +48,11 @@ const upload = async (req, res) => {
     if (!user)
         return res.status(403).json({ message: "need auth" })
 
-    console.log("name", user.name)
     await user.saveMedia(
         req.body['file'],
         "avatar"
     )
+    
     res.status(200).json("upload successfuly")
 }
 
