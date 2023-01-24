@@ -85,3 +85,10 @@ Template backend for nodejs.
     
    ```
    
+ - Reqeust
+    
+   Handling Content-Type header for
+     - application/json 
+     - application/form-data 
+     - application/x-www-form-urlencoded
+   Handling all upload files

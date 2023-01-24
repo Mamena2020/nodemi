@@ -29,4 +29,4 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDU0OTQ4MSwiZXhwIjoxNjc0NTQ5NTAxfQ.pGkEfAmO_-1ycCqbT_QS6dNTXLE22k-KxkeUMMQqnHc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDU2NTI1MCwiZXhwIjoxNjc0NTY2MjUwfQ.OOdpl0J1-y4oYazdDBrUdA71hiFHpMUgH0m0w_3RNX8

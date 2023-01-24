@@ -26,9 +26,8 @@ const load = async (app) => {
         
         
         //------------------------------------------------------- Models
-        // media
-        await loadMediaModel()
-        await loadModels()
+        await loadMediaModel() // media model
+        await loadModels() // all model
         //------------------------------------------------------- 
 
 
