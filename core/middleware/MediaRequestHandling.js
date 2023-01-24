@@ -23,13 +23,13 @@ const isArray = (name) => {
  * @param {*} res response of expres 
  * @param {*} files files
  */
-const clearTempFiles = async (res, files) => {
-    res.on("finish", async () => {
+const clearTempFiles = (res, files) => {
+    res.on("finish", () => {
         try {
-            for (let file in files) {
+            for (let fieldName in files) {
                 try {
-                    if (fse.pathExistsSync(files[file].tempDir))
-                        fse.removeSync(files[file].tempDir)
+                    if (fse.pathExistsSync(files[fieldName].tempDir))
+                        fse.removeSync(files[fieldName].tempDir)
                 } catch (error1) {
                     console.log(error1)
                 }
@@ -39,6 +39,8 @@ const clearTempFiles = async (res, files) => {
         }
     })
 }
+
+
 
 const mediaRequestHandling = async (req, res, next) => {
 
@@ -50,13 +52,13 @@ const mediaRequestHandling = async (req, res, next) => {
         var bb = busboy({ headers: req.headers });
         let tempFiles = {}
 
-        bb.on('file', function (fieldname, file, info) {
+        bb.on('file', function (fieldName, file, info) {
 
             //ex: file[]
-            if (isArray(fieldname)) {
-                if (!req.body[fieldname]) {
-                    req.body[fieldname] = []
-                    tempFiles[fieldname] = []
+            if (isArray(fieldName)) {
+                if (!req.body[fieldName]) {
+                    req.body[fieldName] = []
+                    tempFiles[fieldName] = []
                 }
             }
             let tempDir = path.join(os.tmpdir(), info.filename);
@@ -68,30 +70,30 @@ const mediaRequestHandling = async (req, res, next) => {
                 fileSize += data.length
             })
             file.on('end', function () {
-                // additional info
-                info.fileSize = fileSize
-                info.fileSizeUnit = "bytes"
-                info.fileExtension = path.extname(info.filename)
 
                 let newFile = {
-                    name: fieldname,
-                    info: info,
+                    name: info.filename,
+                    encoding: info.encoding,
+                    type: info.mimeType,
+                    size: fileSize,
+                    sizeUnit: 'bytes',
+                    extension: path.extname(info.filename),
                     tempDir: tempDir
                 }
 
-                if (isArray(fieldname) && Array.isArray(req.body[fieldname])) {
-                    req.body[fieldname].push(newFile)
-                    tempFiles[fieldname].push(newFile)
+                if (isArray(fieldName) && Array.isArray(req.body[fieldName])) {
+                    req.body[fieldName].push(newFile)
+                    tempFiles[fieldName].push(newFile)
                 }
                 else {
-                    req.body[fieldname] = newFile
-                    tempFiles[fieldname] = newFile
+                    req.body[fieldName] = newFile
+                    tempFiles[fieldName] = newFile
                 }
             });
         });
 
-        bb.on('field', (fieldname, val) => {
-            req.body[fieldname] = val
+        bb.on('field', (fieldName, val) => {
+            req.body[fieldName] = val
         });
 
         bb.on("close", () => {

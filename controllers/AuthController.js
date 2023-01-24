@@ -25,10 +25,10 @@ const login = async (req, res) => {
             name: user.name,
             email: user.email
         }
-        const accessToken = jwt.sign(newData, process.env.ACCESS_TOKEN_SECRET, {
+        const accessToken = jwt.sign(newData, process.env.JWT_ACCESS_TOKEN_SECRET, {
             expiresIn: '20s'
         })
-        const refreshToken = jwt.sign(newData, process.env.REFRESH_TOKEN_SECRET, {
+        const refreshToken = jwt.sign(newData, process.env.JWT_REFRESH_TOKEN_SECRET, {
             expiresIn: '1d'
         })
         await user.update({
@@ -82,14 +82,14 @@ const refreshToken = async (req, res) => {
         )
 
         if (!user) return res.sendStatus(403)
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+        jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET, (err, decoded) => {
             if (err) return res.sendStatus(403)
             const newData = {
                 id: user.id,
                 name: user.name,
                 email: user.email
             }
-            const accessToken = jwt.sign(newData, process.env.ACCESS_TOKEN_SECRET, {
+            const accessToken = jwt.sign(newData, process.env.JWT_ACCESS_TOKEN_SECRET, {
                 expiresIn: '1000s'
             })
             res.json({ message: "get token success", "accessToken": accessToken })

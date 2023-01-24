@@ -139,7 +139,7 @@ const hasMedia = async (model = Model) => {
 const saveToLocal = async (file, mediatable_type, mediatable_id) => {
     return await new Promise(async (resolve, reject) => {
         const folderName = mediaConfig.localStorageDirectory + "/" + mediatable_type + "-" + mediatable_id
-        const fileName = uuid4() + file.info.fileExtension
+        const fileName = uuid4() + file.extension
         const targetDir = path.join(folderName, fileName);
         // create folder if not exist
         if (!fse.existsSync(folderName)) {
@@ -178,6 +178,9 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
         targetDir = await saveToLocal(file, mediatable_type, mediatable_id)
     }
     if (targetDir) {
+
+        delete file.tempDir
+
         const media = await Media.findOne({
             where: {
                 mediatable_id: mediatable_id,
@@ -190,7 +193,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                 mediatable_id: mediatable_id,
                 mediatable_type: mediatable_type,
                 url: targetDir,
-                info: JSON.stringify(file.info),
+                info: JSON.stringify(file),
                 name: name,
                 local_storage: mediaConfig.usingLocalStorage
             })
@@ -202,7 +205,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             }
             await media.update({
                 url: targetDir,
-                info: JSON.stringify(file.info),
+                info: JSON.stringify(file),
                 local_storage: mediaConfig.usingLocalStorage
             })
         }

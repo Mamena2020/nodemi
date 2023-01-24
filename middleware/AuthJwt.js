@@ -8,7 +8,7 @@ const authJwt = async (req, res, next) => {
     if (!token) {
         return res.status(403).json({ message: "unauthorized" })
     }
-    await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    await jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (err, decoded) => {
 
         if (err) return res.status(403).json({ message: "unauthorized" })
         const currentDate = new Date()
