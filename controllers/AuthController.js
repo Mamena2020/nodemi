@@ -3,17 +3,16 @@ import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
 import LoginRequest from "../requests/auth/LoginRequest.js";
 import RegisterRequest from "../requests/auth/RegisterRequest.js";
-import { authUser } from "../middleware/authJwt.js";
 
 const login = async (req, res) => {
 
 
     try {
         console.log("login")
-        const valid = new LoginRequest(req)
-        await valid.check()
-        if (valid.isError())
-            return res.json(valid.errors).status(402)
+        // const valid = await new LoginRequest(req)
+        // await valid.check()
+        // if (valid.isError())
+        //     return res.json(valid.errors).status(402)
 
         const { email, password } = req.body
 

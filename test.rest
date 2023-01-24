@@ -1,13 +1,14 @@
 
+### install REST Client extentions, before use this
 ### register
 POST  http://localhost:5000/register
 Content-Type: application/json
 
 {
-    "email": "Andre@gmail.com",
     "name": "Andre",
+    "email": "Andredd@gmail.com",
     "password": "7879",
-    "confirmPassword": "787s9"
+    "confirmPassword": "7879"
 }
 
 ### login
@@ -15,7 +16,7 @@ POST  http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email": "Andre@gmail.com",
+    "email": "andre@gmail.com",
     "password": "7879"
 }
 
@@ -28,4 +29,4 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDQwMzUxNCwiZXhwIjoxNjc0NDA0NTE0fQ.Am4_YM8MxzczHO0IBq2oQEAxrEdTNS_QJUjyT2Eqb8c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDQ3OTc4MSwiZXhwIjoxNjc0NDgwNzgxfQ.rP6U2mptl2_sTx7hHSNu4csm1SmVjiWs9wflnOHc5NM

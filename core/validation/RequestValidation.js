@@ -37,19 +37,19 @@ const MessageType = Object.freeze({
 class RequestValidation {
 
     errors = {}
-
     constructor(req) {
-        this.body = req.body
-    }
-
-    isError() {
-        return !(JSON.stringify(this.errors) === JSON.stringify({}))
+        this.body = req?.body ?? {}
     }
 
     async load(child) {
         this.rules = child.rules();
         // await this.check()
     }
+
+    isError() {
+        return !(JSON.stringify(this.errors) === JSON.stringify({}))
+    }
+
 
     async check() {
         this.errors = {}
@@ -63,9 +63,8 @@ class RequestValidation {
                 await this.#checking(ruleKey)
             }
             else {
-                if (this.#ruleHasRuleRequired(ruleKey)) {
+                if (this.#ruleHasRuleRequired(ruleKey))
                     this.#setError(ruleKey, "required")
-                }
             }
         }
         return this.isError()
@@ -117,6 +116,13 @@ class RequestValidation {
 
 
 
+    /**
+     * 
+     * @param {*} ruleKey ex: name, username, birthdate
+     * @param {*} validation ex: required, email, max,min
+     * @param {*} options params of validation that has params. ex: match:password
+     * @returns 
+     */
     #setErrorMessage(ruleKey, validation, options) {
         if (this.rules[ruleKey].message && this.rules[ruleKey].message[validation]) {
             return this.rules[ruleKey].message[validation]
@@ -130,6 +136,12 @@ class RequestValidation {
             options
         )
     }
+
+    /**
+     * 
+     * @param {*} val ex: ex: required, email, max,min
+     * @returns MessageType  is category message. ex:  { matchWith: "must be match with"}
+     */
     #errorTypeCategories(val) {
         if (val === ValidationType.email || val === ValidationType.date || val === ValidationType.float ||
             val === ValidationType.integer || val == ValidationType.array)
@@ -150,25 +162,33 @@ class RequestValidation {
         return MessageType.must
     }
 
-    #defaultErrorMessage(attribute, type, validation, options) {
+    /**
+     * 
+     * @param {*} attribute ex: E-Mail
+     * @param {*} type      MessageType  is category message. ex:  { matchWith: "must be match with"}
+     * @param {*} validation ex: ex: required, email, max,min
+     * @param {*} options params of the validation. ex: max:3, then options is "3"
+     * @returns 
+     */
+    #defaultErrorMessage(attribute, messageType, validation, options) {
         attribute = attribute[0].toUpperCase() + attribute.slice(1);
 
-        if (type === MessageType.matchWith || type === MessageType.max || type === MessageType.min) {
+        if (messageType === MessageType.matchWith || messageType === MessageType.max || messageType === MessageType.min) {
             validation = options
         }
-        if (type === MessageType.exists || type === MessageType.unique)
-            return "The " + attribute + " " + type
+        if (messageType === MessageType.exists || messageType === MessageType.unique)
+            return "The " + attribute + " " + messageType
 
-        return "The " + attribute + " " + type + " " + validation
+        return "The " + attribute + " " + messageType + " " + validation
     }
 
 
     /**
      * 
      * @param {*} ruleKey  ex: password, id, name, 
-     * @returns 
+     * @returns void
      */
-    async #checking(ruleKey) {
+    async  #checking(ruleKey) {
         var field = this.body[ruleKey]
         let validations = this.rules[ruleKey].validation
         console.log(">>>>--------------------------------------->>>>")
