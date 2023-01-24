@@ -3,6 +3,12 @@ import path from "path";
 import os from 'os'
 import busboy from "busboy";
 
+
+// the body - parser middleware is configured to handle application / json 
+// and application / x - www - form - urlencoded content types.
+// To handle form - data using middleware like multer or busboy
+
+
 const isArray = (name) => {
     const a = name.indexOf("[")
     const b = name.indexOf("]")
@@ -40,15 +46,17 @@ const mediaRequestHandling = async (req, res, next) => {
         && req.headers['content-type'].startsWith('multipart/form-data') ||
         req.method === 'POST'
         && req.headers['content-type'].startsWith('application/x-www-form-urlencoded')) {
+
         var bb = busboy({ headers: req.headers });
         let tempFiles = {}
-        bb.on('file', function (name, file, info) {
+
+        bb.on('file', function (fieldname, file, info) {
 
             //ex: file[]
-            if (isArray(name)) {
-                if (!req.body[name]) {
-                    req.body[name] = []
-                    tempFiles[name] = []
+            if (isArray(fieldname)) {
+                if (!req.body[fieldname]) {
+                    req.body[fieldname] = []
+                    tempFiles[fieldname] = []
                 }
             }
             let tempDir = path.join(os.tmpdir(), info.filename);
@@ -66,26 +74,33 @@ const mediaRequestHandling = async (req, res, next) => {
                 info.fileExtension = path.extname(info.filename)
 
                 let newFile = {
-                    name: name,
+                    name: fieldname,
                     info: info,
                     tempDir: tempDir
                 }
 
-                if (isArray(name) && Array.isArray(req.body[name])) {
-                    req.body[name].push(newFile)
-                    tempFiles[name].push(newFile)
+                if (isArray(fieldname) && Array.isArray(req.body[fieldname])) {
+                    req.body[fieldname].push(newFile)
+                    tempFiles[fieldname].push(newFile)
                 }
                 else {
-                    req.body[name] = newFile
-                    tempFiles[name] = newFile
+                    req.body[fieldname] = newFile
+                    tempFiles[fieldname] = newFile
                 }
             });
+        });
+
+        bb.on('field', (fieldname, val) => {
+            req.body[fieldname] = val
         });
 
         bb.on("close", () => {
             clearTempFiles(res, tempFiles)
             next()
         });
+
+
+
         req.pipe(bb);
     }
     else {

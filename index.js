@@ -1,17 +1,14 @@
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv'
 import express from "express";
-import cors from 'cors'
-import cookieParser from "cookie-parser";
 import core from "./core/core.js"
-
+import cors from 'cors'
 
 dotenv.config()
 
 const port = process.env.PORT || 5000
 const app = express()
 
-app.use(express.static("public"));
-app.use(express.static("storage"));
 
 // app.use(cors({
 //     credentials: true,
@@ -20,6 +17,9 @@ app.use(express.static("storage"));
 
 app.use(cors())
 
+app.use(express.static("public"));
+app.use(express.static("storage"));
+
 // read cookie from client 
 app.use(cookieParser())
 
@@ -27,7 +27,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-core(app)
+await core(app)
 
 
 app.listen(port, () => {

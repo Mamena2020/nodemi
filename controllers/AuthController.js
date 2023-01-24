@@ -75,7 +75,9 @@ const refreshToken = async (req, res) => {
         if (!refreshToken) return res.sendStatus(401)
         const user = await User.findOne(
             {
-                refresh_token: refreshToken
+                where: {
+                    refresh_token: refreshToken
+                }
             }
         )
 

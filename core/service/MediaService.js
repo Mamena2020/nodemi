@@ -111,25 +111,27 @@ const hasMedia = async (model = Model) => {
 
     model.addHook("afterFind", async function (_model) {
         // console.log("_model.constructor.name", _model.constructor.name)
-        const media = await Media.findAll({
-            where: {
-                mediatable_id: _model.id,
-                mediatable_type: _model.constructor.name
-            }
-        });
+        if (_model) {
+            const media = await Media.findAll({
+                where: {
+                    mediatable_id: _model.id,
+                    mediatable_type: _model.constructor.name
+                }
+            });
 
-        let newMedia = []
-        for (let m of media) {
-            if (m.local_storage) {
-                m.url = normalizeLocalStorageToUrl(m.url)
+            let newMedia = []
+            for (let m of media) {
+                if (m.local_storage) {
+                    m.url = normalizeLocalStorageToUrl(m.url)
+                }
+                newMedia.push(m)
             }
-            newMedia.push(m)
+            _model.media = newMedia;
+            _model.dataValues.media = newMedia;
+
+            _model.firstMedia = newMedia.length > 0 ? newMedia[0] : null
+            _model.firstMediaUrl = newMedia.length > 0 ? newMedia[0].url : null
         }
-        _model.media = newMedia;
-        _model.dataValues.media = newMedia;
-
-        _model.firstMedia = newMedia.length > 0 ? newMedia[0] : null
-        _model.firstMediaUrl = newMedia.length > 0 ? newMedia[0].url : null
     })
 }
 
@@ -155,6 +157,13 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
     })
 }
 
+
+
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const saveMedia = async ({ model = Model, file = Object, name = String }) => {
     if (!file || !name || !model) {
         console.log("require all params")
@@ -226,4 +235,4 @@ const loadMediaModel = async () => {
 // ------------------------------------------------------------------------------------------- 
 
 export default Media
-export { hasMedia, saveMedia, loadMediaModel }
+export { hasMedia, loadMediaModel }
