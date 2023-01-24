@@ -75,7 +75,7 @@ Template backend for nodejs.
     )
     
     // save product image
-    const product = Product.findOne({
+    const product = await Product.findOne({
         where: {
           id: 1
         }
