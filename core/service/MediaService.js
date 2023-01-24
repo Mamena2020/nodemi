@@ -1,8 +1,8 @@
 import { Model, DataTypes } from "sequelize";
-import db from "../../config/database/Database.js"
 import { v4 as uuid4 } from 'uuid'
 import path from 'path'
 import fse from 'fs-extra'
+import db from "../../core/database/database.js"
 import mediaConfig from "../../config/MediaConfig.js";
 // Helper function
 // const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
@@ -117,6 +117,7 @@ const hasMedia = async (model = Model) => {
                 mediatable_type: _model.constructor.name
             }
         });
+
         let newMedia = []
         for (let m of media) {
             if (m.local_storage) {
@@ -155,26 +156,26 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
 }
 
 const saveMedia = async ({ model = Model, file = Object, name = String }) => {
-    if (!file || !name) {
-        console.log("need file & name")
+    if (!file || !name|| !model) {
+        console.log("require all params")
         return
     }
     const mediatable_id = model.id
     const mediatable_type = model.constructor.options.name.singular
 
-    const media = await Media.findOne({
-        where: {
-            mediatable_id: mediatable_id,
-            mediatable_type: mediatable_type,
-            name: name
-        }
-    })
 
     var targetDir
     if (mediaConfig.usingLocalStorage) {
         targetDir = await saveToLocal(file, mediatable_type, mediatable_id)
     }
     if (targetDir) {
+        const media = await Media.findOne({
+            where: {
+                mediatable_id: mediatable_id,
+                mediatable_type: mediatable_type,
+                name: name
+            }
+        })
         if (!media) {
             await Media.create({
                 mediatable_id: mediatable_id,
@@ -202,6 +203,14 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
     return targetDir
 }
 // -------------------------------------------------------------------------------------------  helpers
+/**
+ * normalize media path to url
+ * ex: path   =>  /storage/user-1/image.jpg
+ *     result => http://localhost:8000/storage/user-1/image.jpd
+ * @param {*} filePath 
+ * @returns url
+ */
+
 const normalizeLocalStorageToUrl = (filePath) => {
     let directories = filePath.split(path.sep);
     directories = directories.slice(1);

@@ -10,7 +10,6 @@ const loadModels = async () => {
         alter: true
     })
 
-
     await User.sync({
         alter: true,
         // force: true

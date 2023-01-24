@@ -1,6 +1,6 @@
 import LoginRequest from "../requests/auth/LoginRequest.js"
 
-class Request {
+class Requests {
 
 
     static async login(req, res, next) {
@@ -19,4 +19,4 @@ class Request {
 
 }
 
-export default Request
+export default Requests

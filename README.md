@@ -6,4 +6,5 @@ template backend for nodejs.
    - jwt auth
    - request validation
    - ORM
+   - File request handling
    - Media binding to any Model
