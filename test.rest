@@ -1,7 +1,7 @@
 
 ### install REST Client extentions, before use this
 ### register
-POST  http://localhost:5000/register
+POST  http://localhost:5000/api/register
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### login
-POST  http://localhost:5000/login
+POST  http://localhost:5000/api/login
 Content-Type: application/json
 
 {
@@ -22,11 +22,13 @@ Content-Type: application/json
 
 
 ### refresh token
-GET  http://localhost:5000/token
+GET  http://localhost:5000/api/token
 
 ### logout
 DELETE   http://localhost:5000/logout
 
 ### get user
-GET   http://localhost:5000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDU2NTI1MCwiZXhwIjoxNjc0NTY2MjUwfQ.OOdpl0J1-y4oYazdDBrUdA71hiFHpMUgH0m0w_3RNX8
+GET   http://localhost:5000/api/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDY1NDg0OSwiZXhwIjoxNjc0NjU1ODQ5fQ.CkMnch_bpMH34-SqUA2BxlDz3cbzBy_jVHlDo6gPPa0
+### get list routes
+GET   http://localhost:5000/apis

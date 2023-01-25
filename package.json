@@ -26,6 +26,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "nodemi-cli": "^1.0.10",
     "sequelize-cli": "^6.5.2"
   }
 }

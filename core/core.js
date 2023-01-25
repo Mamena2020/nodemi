@@ -1,14 +1,16 @@
-import routers from "../routes/web.js"
+
+import express from "express";
 import db from "./database/database.js"
 import loadModels from "./model/Models.js"
 import middleware from "./middleware/Middleware.js"
 import { loadMediaModel } from "./service/MediaService.js"
+import routers from "../routes/web.js"
+import api from "../routes/api.js"
 
 const load = async (app) => {
 
     try {
-
-
+        console.log("load core....")
         //------------------------------------------------------- Database
         // process.env.PRODUCTION
         await db.authenticate()
@@ -17,14 +19,13 @@ const load = async (app) => {
         //------------------------------------------------------- 
 
 
-
         //------------------------------------------------------- Services
-        
-        
+
+
         //------------------------------------------------------- 
-        
-        
-        
+
+
+
         //------------------------------------------------------- Models
         await loadMediaModel() // media model
         await loadModels() // all model
@@ -39,7 +40,12 @@ const load = async (app) => {
 
 
         //------------------------------------------------------- Routers
-        routers(app)
+        app.use(express.static("public"));
+        app.use(express.static("storage"));
+
+        api(app)
+        // routers(app)
+
         //------------------------------------------------------- 
 
         console.log("Ready!")
