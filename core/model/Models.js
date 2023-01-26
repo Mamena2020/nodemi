@@ -12,6 +12,8 @@ const loadModels = async () => {
         alter: true,
         // force: true
     })
+
+
     await hasMedia(User)
 
 
@@ -28,13 +30,13 @@ const loadModels = async () => {
     UserDetail.belongsTo(User, {
         foreignKey: 'user_id',
         as: 'user'
-    });
+    })
+
 
 
 }
 
 export default loadModels
-
 
 
 

@@ -22,10 +22,10 @@ class UserRequest extends RequestValidation {
             // "birthdate": {
             //     "validation": ["required", "date"],
             // },
-            // "confirmPassword": {
-            //     "validation": ["required", "match:password"],
-            //     "attribute": "Confirm password"
-            // },
+            "confirmPassword": {
+                "validation": ["required", "match:password"],
+                "attribute": "Confirm password",
+            },
             // "hobby": {
             //     "validation": ["required", "array", "max:3"]
             // }
@@ -34,7 +34,7 @@ class UserRequest extends RequestValidation {
 }
 
 let birthdate = Date()
-var d =  new UserRequest({
+var d = new UserRequest({
     body: {
         "email": "andre@gmail.com",
         "npm": 1,

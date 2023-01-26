@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import UserDetail from "../models/UserDetail.js";
 import { authUser } from "../middleware/authJwt.js";
+import RequestValidation from "../core/validation/RequestValidation.js";
 
 
 const getUser = async (req, res) => {
@@ -38,9 +39,35 @@ const getUser = async (req, res) => {
     }
 }
 
+class UploadRequest extends RequestValidation {
+
+    constructor(req) {
+        super(req).load(this)
+    }
+
+    rules() {
+        return {
+            "file": {
+                // "validation": ["required", "mimetypes:video/avi,video/mpeg,video/quicktime"]
+                "validation": ["required", "mimetypes:image/jpeg,image/png", "mimes:png,jpg", "maxfile:1000,KB"]
+            },
+            "file_name": {
+                "validation": ["required"],
+            }
+        };
+    }
+}
+
+
 const upload = async (req, res) => {
     // console.log(req.body['files[]'])
     // console.log(req.body['file'])
+
+    let valid = new UploadRequest(req)
+    await valid.check()
+    if (valid.isError())
+        return res.json(valid.errors).status(402)
+
 
     console.log(req.body)
 

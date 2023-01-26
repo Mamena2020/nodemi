@@ -13,7 +13,10 @@ const ValidationType = Object.freeze({
     date: "date",
     array: "array",
     exists: "exists",
-    unique: "unique"
+    unique: "unique",
+    mimetypes: "mimetypes",
+    mimes: "mimes",
+    maxfile: "maxfile",
     // digits_between: "digits_between", //1 - 2
 })
 
@@ -26,7 +29,7 @@ const MessageType = Object.freeze({
     max: "should be less or equal than",
     min: "should be more or equal than",
     exists: "not recorded in database",
-    unique: "already used"
+    unique: "already used",
     // digit: [
     //     "should be",
     //     "digit"
@@ -101,7 +104,7 @@ class RequestValidation {
      * 
      * @param {*} ruleKey  ex: name, email, username
      * @param {*} validation  ex: required, exist, match
-     * @param {*} options params of validation that has params. ex: match:password
+     * @param {*} options params of validation that has params. ex: match:password, return password
      */
     #setError(ruleKey, validation, options) {
         let message = this.#setErrorMessage(ruleKey, validation, options)
@@ -124,14 +127,17 @@ class RequestValidation {
      * @returns 
      */
     #setErrorMessage(ruleKey, validation, options) {
+        // ---------- set custom message
         if (this.rules[ruleKey].message && this.rules[ruleKey].message[validation]) {
             return this.rules[ruleKey].message[validation]
         }
+        // ---------- set default message
         let attribute = this.rules[ruleKey].attribute ?? ruleKey
-        let type = this.#errorTypeCategories(validation)
+        let messageType = this.#errorTypeCategories(validation)
         return this.#defaultErrorMessage(
             attribute,
-            type,
+            validation,
+            messageType,
             validation,
             options
         )
@@ -144,13 +150,16 @@ class RequestValidation {
      */
     #errorTypeCategories(val) {
         if (val === ValidationType.email || val === ValidationType.date || val === ValidationType.float ||
-            val === ValidationType.integer || val == ValidationType.array)
+            val === ValidationType.integer || val === ValidationType.array || val === ValidationType.mimetypes ||
+            val === ValidationType.mimes)
             return MessageType.validFormat
+
+
         if (val === ValidationType.required)
             return MessageType.is
         if (val === ValidationType.match)
             return MessageType.matchWith
-        if (val === ValidationType.max)
+        if (val === ValidationType.max || val === ValidationType.maxfile)
             return MessageType.max
         if (val === ValidationType.min)
             return MessageType.min
@@ -165,18 +174,29 @@ class RequestValidation {
     /**
      * 
      * @param {*} attribute ex: E-Mail
-     * @param {*} type      MessageType  is category message. ex:  { matchWith: "must be match with"}
+     * @param {*} validationType ex: mimetypes, required, exist
+     * @param {*} messageType      MessageType  is category message. ex:  { matchWith: "must be match with"}
      * @param {*} validation ex: ex: required, email, max,min
      * @param {*} options params of the validation. ex: max:3, then options is "3"
      * @returns 
      */
-    #defaultErrorMessage(attribute, messageType, validation, options) {
+    #defaultErrorMessage(attribute, validationType, messageType, validation, options) {
         attribute = attribute[0].toUpperCase() + attribute.slice(1);
 
-        if (messageType === MessageType.matchWith || messageType === MessageType.max || messageType === MessageType.min) {
+        if (validationType === ValidationType.matchWith || validationType === ValidationType.max || validationType === ValidationType.min ||
+            validationType === ValidationType.mimetypes || validationType === ValidationType.mimes
+        ) {
             validation = options
         }
-        if (messageType === MessageType.exists || messageType === MessageType.unique)
+
+        if (validationType === ValidationType.maxfile) {
+            validation = options.join(" ") // ["100","KB"] => "100 KB" 
+        }
+
+        console.log("options", options)
+
+
+        if (validationType === ValidationType.exists || validationType === ValidationType.unique)
             return "The " + attribute + " " + messageType
 
         return "The " + attribute + " " + messageType + " " + validation
@@ -190,11 +210,11 @@ class RequestValidation {
      */
     async  #checking(ruleKey) {
         var field = this.body[ruleKey]
-        let validations = this.rules[ruleKey].validation
+        let validations = this.rules[ruleKey].validation // ["required","match:password","min:1","max:2"]
         console.log(">>>>--------------------------------------->>>>")
         console.log(validations)
         if (!Array.isArray(validations)) {
-            // console.log("validations not an array", key)
+            console.log("\x1b[31m", "validations not an array", key, "\x1b[0m");
             return null;
         }
 
@@ -226,8 +246,6 @@ class RequestValidation {
                     console.log("validationParams", validationParams)
                 }
                 this.#setError(ruleKey, validationName, validationParams)
-            } else {
-                console.log("NOT ERROR")
             }
 
         }
@@ -281,49 +299,67 @@ class RequestValidation {
 
         let arr = validation.split(":")
         let options = {}
-        if (arr.length > 1) {
-            if (arr[0] === ValidationType.match) {
-                let fieldMatch = this.#getField(arr[1])
-                console.log("fieldMatch////////////////", fieldMatch)
-                if (!fieldMatch)
-                    throw "not right format of validation: " + validation
-                options["fieldMatch"] = fieldMatch
-            }
-            if (arr[0] === ValidationType.max || arr[0] === ValidationType.min) {
-                let param = arr[1]
-                console.log("param////////////////", param)
-                if (!param)
-                    throw "not right format of validation: " + validation
-                if (arr[0] === ValidationType.max)
-                    options["fieldMax"] = param
-                if (arr[0] === ValidationType.min)
-                    options["fieldMin"] = param
-            }
-            if (arr[0] === ValidationType.exists) {
-                console.log("arr", arr)
-                let params = arr[1].split(",")
-                if (params.length < 2)
-                    throw "not right format of validation: " + validation
+        try {
+            if (arr.length > 1) {
+                if (arr[0] === ValidationType.match) {
+                    let fieldMatch = this.#getField(arr[1])
+                    if (!fieldMatch)
+                        throw "Not right format of validation: " + validation
+                    options["fieldMatch"] = fieldMatch
+                }
+                if (arr[0] === ValidationType.max || arr[0] === ValidationType.min) {
+                    let param = arr[1]
+                    if (!param) throw "Not right format of validation: " + validation
 
-                options["fieldTableName"] = params[0]
-                options["fieldColumnName"] = params[1]
+                    if (arr[0] === ValidationType.max)
+                        options["fieldMax"] = param
+                    if (arr[0] === ValidationType.min)
+                        options["fieldMin"] = param
+                }
+                if (arr[0] === ValidationType.exists) {
+                    let params = arr[1].split(",")
+                    if (params.length < 2) throw "Not right format of validation: " + validation
+
+
+                    options["fieldTableName"] = params[0]
+                    options["fieldColumnName"] = params[1]
+                }
+                if (arr[0] === ValidationType.unique) {
+                    let params = arr[1].split(",")
+                    if (params.length < 2) throw "Not right format of validation: " + validation
+
+
+                    options["fieldTableName"] = params[0]
+                    options["fieldColumnName"] = params[1]
+
+                    if (params[2])
+                        options["fieldException"] = params[2]
+
+                }
+
+                if (arr[0] === ValidationType.mimetypes || arr[0] === ValidationType.mimes) {
+                    let params = arr[1].split(",")
+                    options["fieldMimetypes"] = params
+                }
+
+                if (arr[0] === ValidationType.maxfile) {
+                    let params = arr[1].split(",")
+                    if (params.length < 1) throw "Not right format of validation: " + validation
+
+
+                    if (!validator.isInt(params[0]) || !this.#isValidFileUnit(params[1]))
+                        throw "Not right format of validation: " + validation + ". Valid maxfile:1000,MB -> [BG,MB,KB,Byte]"
+
+                    options["fieldMaxSize"] = params[0]
+                    options["fieldUnit"] = params[1]
+                }
+
             }
-            if (arr[0] === ValidationType.unique) {
-                console.log("arr", arr)
-                let params = arr[1].split(",")
-                if (params.length < 2)
-                    throw "not right format of validation: " + validation
-
-                options["fieldTableName"] = params[0]
-                options["fieldColumnName"] = params[1]
-
-                if (params[2])
-                    options["fieldException"] = params[2]
-
+            else {
+                throw "Not right format of validation: " + validation
             }
-        }
-        else {
-            throw "not right format of validation: " + validation
+        } catch (error) {
+            console.log("\x1b[31m", error, "\x1b[0m");
         }
 
         return options
@@ -349,15 +385,25 @@ class RequestValidation {
             return d
         }
         if (validationName == ValidationType.unique) {
-            let d = await ValidationDB.unique(options.fieldTableName, options.fieldColumnName, field,
+            return await ValidationDB.unique(options.fieldTableName, options.fieldColumnName, field,
                 options.fieldException
             )
-            return d
         }
 
         //------------------------------------------------------ has params
+
+        if (validationName === ValidationType.maxfile) {
+
+            if (!field)
+                return true
+
+            let size = this.#convertByteToAnyUnit(field.size, options.fieldUnit)
+            return parseFloat(size) <= parseFloat(options.fieldMaxSize)
+        }
+
         if (validationName === ValidationType.match)
             return validator.matches(field ?? " .", options?.fieldMatch ?? " ")
+
         if (validationName === ValidationType.max) {
             if (Array.isArray(field)) {
                 return field.length <= options.fieldMax
@@ -372,25 +418,44 @@ class RequestValidation {
             return validator.isFloat(field.toString() ?? "0", { min: options.fieldMin ?? " " })
         }
 
+        if (validationName === ValidationType.mimetypes) {
+            if (!Array.isArray(options.fieldMimetypes) || !field.type) {
+                return false
+            }
+            return validator.isIn(field.type, options.fieldMimetypes)
+        }
+
+        if (validationName === ValidationType.mimes) {
+            if (!Array.isArray(options.fieldMimetypes) || !field.extension) {
+                return false
+            }
+            return validator.isIn(field.extension.split('.').join(""), options.fieldMimetypes)
+        }
+
 
         //------------------------------------------------------ has no params
 
         if (validationName === ValidationType.required) {
-            if (field === undefined || field === null)
+            if (field === undefined || field === null || field === "")
                 return false
         }
+
         if (validationName === ValidationType.email)
             return validator.isEmail(field.toString())
+
         if (validationName === ValidationType.float)
             return (typeof field === "number")
         if (validationName === ValidationType.integer)
             return validator.isInt(field.toString())
+
         if (validationName === ValidationType.date) {
             let newDate = this.#formatDate(field)
             return validator.isDate(newDate.toString())
         }
+
         if (validationName === ValidationType.string)
             return (typeof field === "string")
+
         if (validationName === ValidationType.array)
             return (Array.isArray(field))
 
@@ -414,6 +479,44 @@ class RequestValidation {
 
         }
         return date
+    }
+
+    fileUnits = {
+        GB: "GB", MB: "MB", KB: "KB", Byte: "Byte"
+    }
+
+
+    /**
+     * check if unit input is valid
+     * @param {*} unitFile 
+     * @returns 
+     */
+    #isValidFileUnit(unitFile) {
+
+        for (let unit in this.fileUnits) {
+            if (unitFile == unit)
+                return true
+        }
+        return false
+    }
+
+    #convertByteToAnyUnit(sizeInByte, unit) {
+
+        console.log("convert...")
+        console.log("unit", unit)
+        console.log("this.filebytes", this.fileUnits.KB)
+        if (unit === this.fileUnits.KB) {
+            console.log("convert to KB FROM Bytes")
+            return (sizeInByte / 1024).toFixed(2)
+        }
+
+        if (unit === this.fileUnits.MB)
+            return (sizeInByte / 1048576).toFixed(2)
+
+        if (unit === this.fileUnits.GB)
+            return (sizeInByte / 1073741824).toFixed(2)
+
+        return sizeInByte
     }
 
 }
