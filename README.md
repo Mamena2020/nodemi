@@ -102,9 +102,6 @@ Template backend for nodejs.
 #todo 
 
 - request 
- - file type done
- - max file size done
- - date after, before
  - digit
  - digit between
 - role permission

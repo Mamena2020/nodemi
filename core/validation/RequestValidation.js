@@ -17,6 +17,9 @@ const ValidationType = Object.freeze({
     mimetypes: "mimetypes",
     mimes: "mimes",
     maxfile: "maxfile",
+    image: "image",
+    date_after: "date_after",
+    date_before: "date_before"
     // digits_between: "digits_between", //1 - 2
 })
 
@@ -30,6 +33,8 @@ const MessageType = Object.freeze({
     min: "should be more or equal than",
     exists: "not recorded in database",
     unique: "already used",
+    after: "date must be after the",
+    before: "date must be before the "
     // digit: [
     //     "should be",
     //     "digit"
@@ -167,6 +172,10 @@ class RequestValidation {
             return MessageType.exists
         if (val === ValidationType.unique)
             return MessageType.unique
+        if (val === ValidationType.date_before)
+            return MessageType.before
+        if (val === ValidationType.date_after)
+            return MessageType.after
 
         return MessageType.must
     }
@@ -193,13 +202,17 @@ class RequestValidation {
             validation = options.join(" ") // ["100","KB"] => "100 KB" 
         }
 
+        if (validationType === ValidationType.date_after || validationType === ValidationType.date_before) {
+            validation = options + "'s date"
+        }
+
         console.log("options", options)
 
 
         if (validationType === ValidationType.exists || validationType === ValidationType.unique)
             return "The " + attribute + " " + messageType
 
-        return "The " + attribute + " " + messageType + " " + validation
+        return ("The " + attribute + " " + messageType + " " + validation).split("_").join(" ")
     }
 
 
@@ -214,7 +227,7 @@ class RequestValidation {
         console.log(">>>>--------------------------------------->>>>")
         console.log(validations)
         if (!Array.isArray(validations)) {
-            console.log("\x1b[31m", "validations not an array", key, "\x1b[0m");
+            console.log("\x1b[31m", "validations not an array", ruleKey, "\x1b[0m");
             return null;
         }
 
@@ -354,6 +367,14 @@ class RequestValidation {
                     options["fieldUnit"] = params[1]
                 }
 
+                if (arr[0] === ValidationType.date_after || arr[0] === ValidationType.date_before) {
+                    let params = arr[1]
+                    let targetDate = this.#getField(params)
+                    if (!targetDate && params == "now")
+                        targetDate = new Date()
+                    options["fieldDate"] = targetDate
+                }
+
             }
             else {
                 throw "Not right format of validation: " + validation
@@ -426,14 +447,27 @@ class RequestValidation {
         }
 
         if (validationName === ValidationType.mimes) {
-            if (!Array.isArray(options.fieldMimetypes) || !field.extension) {
-                return false
-            }
+            if (!Array.isArray(options.fieldMimetypes) || !field.extension) return false
+
             return validator.isIn(field.extension.split('.').join(""), options.fieldMimetypes)
+        }
+        if (validationName === ValidationType.date_after || validationName === ValidationType.date_before) {
+            if (!options.fieldDate || !field) return false
+            let _date = this.#formatDate(field)
+            let _dateCompare = this.#formatDate(options.fieldDate)
+            if (validationName == ValidationType.date_before)
+                return validator.isBefore(_date, _dateCompare)
+            return validator.isAfter(_date, _dateCompare)
         }
 
 
         //------------------------------------------------------ has no params
+
+        if (validationName === ValidationType.image) {
+            if (!field || !field.extension)
+                return false
+            return validator.isIn(field.extension.split('.').join(""), Object.values(this.imageFormats))
+        }
 
         if (validationName === ValidationType.required) {
             if (field === undefined || field === null || field === "")
@@ -484,6 +518,17 @@ class RequestValidation {
     fileUnits = {
         GB: "GB", MB: "MB", KB: "KB", Byte: "Byte"
     }
+
+    imageFormats = {
+        jpg: "jpg",
+        jpeg: "jpeg",
+        png: "png",
+        bmp: "bmp",
+        gif: "gif",
+        svg: "svg",
+        webp: "webp",
+    }
+
 
 
     /**

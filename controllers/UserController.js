@@ -48,8 +48,19 @@ class UploadRequest extends RequestValidation {
     rules() {
         return {
             "file": {
-                // "validation": ["required", "mimetypes:video/avi,video/mpeg,video/quicktime"]
-                "validation": ["required", "mimetypes:image/jpeg,image/png", "mimes:png,jpg", "maxfile:1000,KB"]
+                "validation": [
+                    "required",
+                    "image",
+                    // "mimetypes:image/jpeg,image/png",
+                    // "mimes:png,jpg",
+                    "maxfile:1000,KB",
+                ]
+            },
+            "hari_ini": {
+                "validation": ["required", "date", "date_before:now"]
+            },
+            "besok": {
+                "validation": ["required", "date", "date_after:hari_ini"]
             },
             "file_name": {
                 "validation": ["required"],
