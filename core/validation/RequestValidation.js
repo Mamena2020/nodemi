@@ -19,7 +19,16 @@ const ValidationType = Object.freeze({
     maxfile: "maxfile",
     image: "image",
     date_after: "date_after",
-    date_before: "date_before"
+    date_after_or_equal: "date_after_or_equal",
+    date_before: "date_before",
+    date_before_or_equal: "date_before_or_equal",
+    bolean: "bolean",
+    in_array: "in_array",
+    not_in_array: "not_in_array",
+    ip: "ip",
+    url: "url",
+    json: "json",
+    digit: "digit"
     // digits_between: "digits_between", //1 - 2
 })
 
@@ -28,13 +37,17 @@ const MessageType = Object.freeze({
     matchWith: "must be match with",
     is: "is",
     between: "between",
-    validFormat: "must be valid format of",
+    digit: ["must be", "digit"],
+    invalidFormat: "must be valid format of",
     max: "should be less or equal than",
     min: "should be more or equal than",
     exists: "not recorded in database",
     unique: "already used",
     after: "date must be after the",
-    before: "date must be before the "
+    before: "date must be before the ",
+    after_or_equal: "date must be after or equal the",
+    before_or_equal: "date must be before or equal the",
+    invalidSelected: "selected field is invalid",
     // digit: [
     //     "should be",
     //     "digit"
@@ -156,10 +169,15 @@ class RequestValidation {
     #errorTypeCategories(val) {
         if (val === ValidationType.email || val === ValidationType.date || val === ValidationType.float ||
             val === ValidationType.integer || val === ValidationType.array || val === ValidationType.mimetypes ||
-            val === ValidationType.mimes)
-            return MessageType.validFormat
+            val === ValidationType.mimes || val === ValidationType.bolean || val === ValidationType.ip || val == ValidationType.url ||
+            val === ValidationType.json
+        )
+            return MessageType.invalidFormat
 
 
+
+        if (val === ValidationType.in_array || val === ValidationType.not_in_array)
+            return MessageType.invalidSelected
         if (val === ValidationType.required)
             return MessageType.is
         if (val === ValidationType.match)
@@ -172,10 +190,18 @@ class RequestValidation {
             return MessageType.exists
         if (val === ValidationType.unique)
             return MessageType.unique
+
         if (val === ValidationType.date_before)
             return MessageType.before
         if (val === ValidationType.date_after)
             return MessageType.after
+        if (val === ValidationType.date_before_or_equal)
+            return MessageType.before_or_equal
+        if (val === ValidationType.date_after_or_equal)
+            return MessageType.after_or_equal
+
+        if (val === ValidationType.digit)
+            return MessageType.digit
 
         return MessageType.must
     }
@@ -202,17 +228,23 @@ class RequestValidation {
             validation = options.join(" ") // ["100","KB"] => "100 KB" 
         }
 
-        if (validationType === ValidationType.date_after || validationType === ValidationType.date_before) {
+        if (validationType === ValidationType.date_after || validationType === ValidationType.date_before ||
+            validationType === ValidationType.date_after_or_equal || validationType === ValidationType.date_before_or_equal) {
             validation = options + "'s date"
         }
 
-        console.log("options", options)
-
-
-        if (validationType === ValidationType.exists || validationType === ValidationType.unique)
+        if (validationType === ValidationType.exists || validationType === ValidationType.unique ||
+            validationType === ValidationType.in_array || validationType === ValidationType.not_in_array)
             return "The " + attribute + " " + messageType
 
+        if (validationType === ValidationType.ip)
+            return "The " + attribute + " " + messageType + " IP address"
+
+        if (validationType === ValidationType.digit)
+            return "The " + attribute + " " + messageType[0] + " " + options + " " + messageType[1]
+
         return ("The " + attribute + " " + messageType + " " + validation).split("_").join(" ")
+
     }
 
 
@@ -367,12 +399,27 @@ class RequestValidation {
                     options["fieldUnit"] = params[1]
                 }
 
-                if (arr[0] === ValidationType.date_after || arr[0] === ValidationType.date_before) {
+                if (arr[0] === ValidationType.date_after || arr[0] === ValidationType.date_before ||
+                    arr[0] === ValidationType.date_after_or_equal || arr[0] === ValidationType.date_before_or_equal) {
                     let params = arr[1]
                     let targetDate = this.#getField(params)
                     if (!targetDate && params == "now")
                         targetDate = new Date()
                     options["fieldDate"] = targetDate
+                }
+
+                if (arr[0] === ValidationType.in_array || arr[0] === ValidationType.not_in_array) {
+                    let params = arr[1].split(",")
+                    if (!params)
+                        throw "Not right format of validation: " + validation
+                    options["fieldArray"] = params
+                }
+
+                if (arr[0] === ValidationType.digit) {
+                    let params = arr[1]
+                    if (!validator.isInt(params))
+                        throw "Not right format of validation: " + validation
+                    options["fieldDigit"] = params
                 }
 
             }
@@ -413,6 +460,12 @@ class RequestValidation {
 
         //------------------------------------------------------ has params
 
+        if (validationName === ValidationType.digit) {
+            if (!field)
+                return true
+
+            return (field.toString().length === parseInt(options.fieldDigit))
+        }
         if (validationName === ValidationType.maxfile) {
 
             if (!field)
@@ -459,6 +512,30 @@ class RequestValidation {
                 return validator.isBefore(_date, _dateCompare)
             return validator.isAfter(_date, _dateCompare)
         }
+        if (validationName === ValidationType.date_after_or_equal || validationName === ValidationType.date_before_or_equal) {
+            if (!options.fieldDate || !field) return false
+
+            let _date = this.#formatDate(field)
+            let _dateCompare = this.#formatDate(options.fieldDate)
+
+            if (validationName == ValidationType.date_before_or_equal) {
+                let isBefore = validator.isBefore(_date, _dateCompare)
+                if (isBefore || !isBefore && validator.equals(_date, _dateCompare))
+                    return true
+                return false
+            }
+            let isAfter = validator.isAfter(_date, _dateCompare)
+            if (isAfter || !isAfter && validator.equals(_date, _dateCompare))
+                return true
+            return false
+        }
+
+        if (validationName === ValidationType.in_array) {
+            return validator.isIn(field, options.fieldArray)
+        }
+        if (validationName === ValidationType.not_in_array) {
+            return !validator.isIn(field, options.fieldArray)
+        }
 
 
         //------------------------------------------------------ has no params
@@ -477,6 +554,9 @@ class RequestValidation {
         if (validationName === ValidationType.email)
             return validator.isEmail(field.toString())
 
+        if (validationName === ValidationType.bolean)
+            return validator.isBoolean(field.toString())
+
         if (validationName === ValidationType.float)
             return (typeof field === "number")
         if (validationName === ValidationType.integer)
@@ -492,6 +572,15 @@ class RequestValidation {
 
         if (validationName === ValidationType.array)
             return (Array.isArray(field))
+
+        if (validationName === ValidationType.ip)
+            return validator.isIP(field)
+
+        if (validationName === ValidationType.url)
+            return validator.isURL(field)
+
+        if (validationName === ValidationType.json)
+            return validator.isJSON(field)
 
 
         return true

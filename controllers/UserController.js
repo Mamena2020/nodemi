@@ -45,6 +45,8 @@ class UploadRequest extends RequestValidation {
         super(req).load(this)
     }
 
+    data = ["a", "b", "c"]
+
     rules() {
         return {
             "file": {
@@ -57,13 +59,19 @@ class UploadRequest extends RequestValidation {
                 ]
             },
             "hari_ini": {
-                "validation": ["required", "date", "date_before:now"]
+                "validation": ["required", "date", "date_before_or_equal:now"]
             },
             "besok": {
                 "validation": ["required", "date", "date_after:hari_ini"]
             },
-            "file_name": {
-                "validation": ["required"],
+            "npm": {
+                "validation": ["required","digit:12"],
+            },
+            "status": {
+                "validation": ["required", "bolean"]
+            },
+            "pilih": {
+                "validation": ["required", "not_in_array:" + this.data.join(",")]
             }
         };
     }

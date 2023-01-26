@@ -94,6 +94,36 @@ Template backend for nodejs.
    
    Handling all upload files
 
+ - Validation 
+   
+   - list of rules
+   ```
+        required
+        email
+        match
+        string
+        float
+        integer
+        max
+        min
+        date
+        array
+        exists
+        unique
+        mimetypes
+        mimes
+        maxfile
+        image
+        date_after
+        date_after_or_equal
+        date_before
+        date_before_or_equal
+        bolean
+        in_array
+        not_in_array
+
+   ```
+
 
 
 
@@ -101,8 +131,11 @@ Template backend for nodejs.
 
 #todo 
 
+ 
+
 - request 
- - digit
+ - max_digit
+ - min_digit
  - digit between
 - role permission
 

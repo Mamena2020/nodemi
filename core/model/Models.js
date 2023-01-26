@@ -1,12 +1,12 @@
 import User from "../../models/User.js";
 import UserDetail from "../../models/UserDetail.js";
-import Media, { hasMedia } from '../service/MediaService.js'
+import { hasMedia } from '../service/MediaService.js'
 
 
 
 const loadModels = async () => {
 
-   
+
 
     await User.sync({
         alter: true,
