@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import path from 'path'
 import fse from 'fs-extra'
 import db from "../../core/database/database.js"
-import mediaConfig from "../../config/MediaConfig.js";
+import mediaConfig from "../config/media.js";
 // Helper function
 // const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
 

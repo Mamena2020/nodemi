@@ -2,7 +2,7 @@
 import express from "express";
 import AuthController from "../controllers/AuthController.js";
 import UserController from "../controllers/UserController.js";
-import authJwt from "../middleware/authJwt.js";
+import authJwt from "../core/middleware/AuthJwt.js";
 import Requests from "../middleware/Requests.js";
 
 const routerApi = express.Router()

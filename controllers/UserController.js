@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import UserDetail from "../models/UserDetail.js";
-import { authUser } from "../middleware/authJwt.js";
+import { authUser } from "../core/middleware/AuthJwt.js";
 import RequestValidation from "../core/validation/RequestValidation.js";
 
 

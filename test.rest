@@ -29,6 +29,6 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZUBnbWFpbC5jb20iLCJpYXQiOjE2NzQ4OTgyOTksImV4cCI6MTY3NDg5OTI5OX0.35Pmed2q3eYOMwr3D3Fil9KfdcAXQPJto4heBWwdxMk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZUBnbWFpbC5jb20iLCJpYXQiOjE2NzQ5MDE1NDIsImV4cCI6MTY3NDkwMjU0Mn0.Oi5lBSzd1lO23It4CbtLOxEmBZs_hmEnFhdf-WyWsbg
 ### get list routes
 GET   http://localhost:5000/apis

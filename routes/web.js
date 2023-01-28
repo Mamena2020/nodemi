@@ -1,7 +1,7 @@
 import express from "express";
 import UserController from "../controllers/UserController.js";
 import AuthController from "../controllers/AuthController.js";
-import authJwt from "../middleware/authJwt.js";
+import authJwt from "../core/middleware/AuthJwt.js";
 import Requests from "../middleware/Requests.js";
 
 

@@ -4,8 +4,7 @@ dotenv.config()
 let logging = false
 if (process.env.DB_DEBUG_LOG == "true" || process.env.DB_DEBUG_LOG == true)
     logging = true
-
-export default {
+const databaseConfig = {
     "username": process.env.DB_USERNAME ?? 'root',
     "password": process.env.DB_PASSWORD ?? null,
     "database": process.env.DB_DATABASE ?? "2023_dapp",
@@ -13,3 +12,4 @@ export default {
     "dialect": process.env.DB_CONNECTION,
     "logging": logging
 }
+export default databaseConfig
