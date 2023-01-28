@@ -54,7 +54,8 @@ Media.init({
         tableName: "Medias",
         modelName: 'Media', // We need to choose the model name
         timestamps: true
-    })
+    }
+)
 
 Media.addHook("afterDestroy", async (media) => {
     try {

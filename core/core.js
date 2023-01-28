@@ -6,6 +6,8 @@ import middleware from "./middleware/Middleware.js"
 import { loadMediaModel } from "./service/MediaService.js"
 import routers from "../routes/web.js"
 import api from "../routes/api.js"
+import loadRolePermission from "./service/RolePermission/Service.js";
+import seeder from "./seeder/Seeder.js";
 
 const load = async (app) => {
 
@@ -27,8 +29,12 @@ const load = async (app) => {
 
 
         //------------------------------------------------------- Models
+        await loadRolePermission()
         await loadMediaModel() // media model
         await loadModels() // all model
+        //------------------------------------------------------- Seeder
+        await seeder()
+
         //------------------------------------------------------- 
 
 

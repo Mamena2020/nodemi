@@ -53,14 +53,18 @@ const register = async (req, res) => {
         if (valid.isError())
             return res.json(valid.errors).status(402)
 
-        const { name, email, password, confirmPassword } = req.body;
+        const { name, email, password } = req.body;
         const salt = await bcrypt.genSalt()
         const hashPassword = await bcrypt.hash(password, salt)
-        await User.create({
+        let user  = await User.create({
             name: name,
             email: email,
             password: hashPassword
         })
+
+        user.setRole(13)
+        console.log("user.name", user.name)
+
         res.json({ message: "register success" }).status(200)
     } catch (error) {
         console.log(error)

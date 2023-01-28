@@ -16,11 +16,11 @@ const getUser = async (req, res) => {
                     refresh_token: refreshToken
                 },
                 attributes: ['id', 'name', 'email'],
-                include: [{
+                include: {
                     model: UserDetail,
                     as: 'user_details',
                     attributes: ['bio']
-                }]
+                }
             }
         )
 
@@ -30,8 +30,13 @@ const getUser = async (req, res) => {
             id: user.id,
             name: user.name,
             email: user.email,
-            url: user.firstMediaUrl
+            detail: user.user_details,
+            url: user.firstMediaUrl,
         }
+
+        console.log("user.role", user.role)
+        console.log("user.permissions", user.role.permissions)
+
         res.json({ message: "get success", "user": newUser })
 
     } catch (error) {
@@ -65,7 +70,7 @@ class UploadRequest extends RequestValidation {
                 "validation": ["required", "date", "date_after:hari_ini"]
             },
             "npm": {
-                "validation": ["required","digit:12"],
+                "validation": ["required", "digit:12"],
             },
             "status": {
                 "validation": ["required", "bolean"]
