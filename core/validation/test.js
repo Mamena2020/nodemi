@@ -8,27 +8,27 @@ class UserRequest extends RequestValidation {
     rules() {
         return {
             "email": {
-                "validation": ["email", "unique:users,email"]
+                "rules": ["email", "unique:users,email"]
             },
-            // "npm": {
-            //     "validation": ["required", "integer", "length:4", "digits_between:2,5"],
-            // },
-            // "ipk": {
-            //     "validation": ["required", "float", "min:1", "max:4"],
-            // },
-            // "password": {
-            //     "validation": ["required"],
-            // },
-            // "birthdate": {
-            //     "validation": ["required", "date"],
-            // },
+            "npm": {
+                "rules": ["required", "integer", "length:4", "digits_between:2,5"],
+            },
+            "ipk": {
+                "rules": ["required", "float", "min:1", "max:4"],
+            },
+            "password": {
+                "rules": ["required"],
+            },
+            "birthdate": {
+                "rules": ["required", "date"],
+            },
             "confirmPassword": {
-                "validation": ["required", "match:password"],
+                "rules": ["required", "match:password"],
                 "attribute": "Confirm password",
             },
-            // "hobby": {
-            //     "validation": ["required", "array", "max:3"]
-            // }
+            "hobby": {
+                "rules": ["required", "array", "max:1"]
+            }
         };
     }
 }
@@ -38,8 +38,8 @@ var d = new UserRequest({
     body: {
         "email": "andre@gmail.com",
         "npm": 1,
-        "ipk": 4,
-        "password": "12313s",
+        "ipk": 5,
+        "password": "12313ss",
         "birthdate": birthdate.toString(),
         // "birthdate": "2014-05-11",
         "confirmPassword": "12313s",

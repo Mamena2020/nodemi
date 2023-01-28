@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
     "name": "Andre",
-    "email": "Andredd@gmail.com",
+    "email": "andre222@gmail.com",
     "password": "7879",
     "confirmPassword": "7879"
 }
@@ -29,6 +29,6 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImFuZHJlXG4iLCJlbWFpbCI6ImFuZHJlQGdtYWlsLmNvbSIsImlhdCI6MTY3NDY1NDg0OSwiZXhwIjoxNjc0NjU1ODQ5fQ.CkMnch_bpMH34-SqUA2BxlDz3cbzBy_jVHlDo6gPPa0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZUBnbWFpbC5jb20iLCJpYXQiOjE2NzQ4OTgyOTksImV4cCI6MTY3NDg5OTI5OX0.35Pmed2q3eYOMwr3D3Fil9KfdcAXQPJto4heBWwdxMk
 ### get list routes
 GET   http://localhost:5000/apis

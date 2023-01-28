@@ -9,18 +9,18 @@ class RegisterRequest extends RequestValidation {
     rules() {
         return {
             "name": {
-                "validation": ["required",],
+                "rules": ["required",],
             },
             "email": {
-                "validation": ["required", "email","unique:users,email"],
+                "rules": ["required", "email","unique:users,email"],
                 "attribute": "E-mail"
             },
             "password": {
-                "validation": ["required"],
+                "rules": ["required"],
                 "attribute": "Password"
             },
             "confirmPassword": {
-                "validation": ["required","match:password"],
+                "rules": ["required","match:password"],
             },
         };
     }
