@@ -82,17 +82,18 @@ class RequestValidation {
         for (let fieldKey in this.rules) {
 
             if (this.#isNested(fieldKey)) {
-                this.#nestedProcess(fieldKey)
-
-            }
-
-            if (this.#hasData(fieldKey)) {
-                await this.#checking(fieldKey)
+                await this.#nestedProcess(fieldKey)
             }
             else {
-                if (this.#hasRuleRequired(fieldKey))
-                    this.#setError(fieldKey, "required")
+                if (this.#hasData(fieldKey)) {
+                    await this.#checking(fieldKey, this.body[fieldKey])
+                }
+                else {
+                    if (this.#hasRuleRequired(fieldKey))
+                        this.#setError(fieldKey, "required")
+                }
             }
+
         }
         return this.isError()
     }
@@ -135,15 +136,17 @@ class RequestValidation {
      * @param {*} rule  ex: required, exist, match
      * @param {*} options params of rule that has params. ex: match:password, return password
      */
-    #setError(fieldKey, rule, options) {
-        let message = this.#setErrorMessage(fieldKey, rule, options)
+    #setError(fieldKey, rule, attribute, options) {
+        let message = this.#setErrorMessage(fieldKey, rule, attribute, options)
         if (Object.keys(this.errors).length === 0) {
             this.errors["errors"] = {}
         }
-        if (!this.errors["errors"][fieldKey]) {
-            this.errors["errors"][fieldKey] = []
+        let keyError = attribute ?? fieldKey
+
+        if (!this.errors["errors"][keyError]) {
+            this.errors["errors"][keyError] = []
         }
-        this.errors["errors"][fieldKey].push(message)
+        this.errors["errors"][keyError].push(message)
     }
 
 
@@ -155,13 +158,13 @@ class RequestValidation {
      * @param {*} options params of rule that has params. ex: match:password
      * @returns 
      */
-    #setErrorMessage(fieldKey, rule, options) {
+    #setErrorMessage(fieldKey, rule, attribute, options) {
         // ---------- set custom message
         if (this.rules[fieldKey].message && this.rules[fieldKey].message[rule]) {
             return this.rules[fieldKey].message[rule]
         }
         // ---------- set default message
-        let attribute = this.rules[fieldKey].attribute ?? fieldKey
+        attribute = this.rules[fieldKey].attribute ?? (attribute ?? fieldKey)
         let messageType = this.#errorTypeCategories(rule)
         return this.#defaultErrorMessage(
             attribute,
@@ -264,8 +267,8 @@ class RequestValidation {
      * @param {*} fieldKey  ex: password, id, name, 
      * @returns void
      */
-    async  #checking(fieldKey) {
-        var field = this.body[fieldKey]
+    async  #checking(fieldKey, field, attribute) {
+        // var field = this.body[fieldKey]
         let rules = this.rules[fieldKey].rules // ["required","match:password","min:1","max:2"]
         console.log(">>>>--------------------------------------->>>>")
         console.log(rules)
@@ -301,7 +304,7 @@ class RequestValidation {
                     ruleParams = this.#getValidateParams(rule)
                     console.log("validationParams", ruleParams)
                 }
-                this.#setError(fieldKey, ruleName, ruleParams)
+                this.#setError(fieldKey, ruleName, attribute, ruleParams)
             }
 
         }
@@ -569,7 +572,10 @@ class RequestValidation {
             return validator.isBoolean(field.toString())
 
         if (ruleName === ValidationType.float)
-            return (typeof field === "number")
+            {
+                console.log("fi",field)
+                return validator.isFloat(field.toString())
+            }
         if (ruleName === ValidationType.integer)
             return validator.isInt(field.toString())
 
@@ -668,46 +674,47 @@ class RequestValidation {
     // -------------------------------------------------------------------------------------------------------- nested process
 
 
-    #nestedProcess(fieldKey) {
+    async #nestedProcess(fieldKey) {
         console.log("start nested validation")
-        let nestedArray = fieldKey.split(".")
-        this.#recursizeNested(nestedArray, this.body, "", 0)
+        let fieldArray = fieldKey.split(".")
+        await this.#recursizeNested(fieldKey, fieldArray, this.body, "", 0)
     }
 
     /**
      * 
-     * @param {*} nestedArray [item, * , name]
+     * @param {*} fieldArray [item, * , name]
      * @param {*} currentField this.body[item] |  this.body[item][0] | this.body[item][0][name]
      * @param {*} indexNested 
      * @returns 
      */
-    async #recursizeNested(nestedArray, currentField, attribute, indexNested) {
+    async #recursizeNested(fieldKey, fieldArray, currentField, attribute, indexNested) {
 
         console.log("-----------------------------------" + indexNested)
-        // console.log("nestedArray", nestedArray)
+        // console.log("fieldArray", fieldArray)
         console.log("currentField", currentField)
         console.log("----------------------------------.")
 
-        if (!indexNested <= nestedArray.length) {
+        if (!indexNested <= fieldArray.length) {
             // validation in here
-            if (indexNested === nestedArray.length) {
-                console.log("validation-> ",)
+            if (indexNested === fieldArray.length) {
+                console.log("validation: ",)
                 console.log("data-> ", currentField)
-                console.log("attribute-> ", attribute.slice(1))
+                console.log("attribute-> ",)
+                await this.#checking(fieldKey, currentField, attribute.slice(1))
             }
             else {
-                if (nestedArray[indexNested] === "*") {
+                if (fieldArray[indexNested] === "*") {
                     if (!Array.isArray(currentField)) {
                         console.log("current field not an array")
                         return
                     }
                     for (let i = 0; i < currentField.length; i++) {
 
-                        await this.#recursizeNested(nestedArray, currentField[i], attribute + "." + i, indexNested + 1)
+                        await this.#recursizeNested(fieldKey, fieldArray, currentField[i], attribute + "." + i, indexNested + 1)
                     }
                 }
                 else {
-                    return await this.#recursizeNested(nestedArray, currentField[nestedArray[indexNested]], attribute + "." + nestedArray[indexNested], indexNested + 1)
+                    return await this.#recursizeNested(fieldKey, fieldArray, currentField[fieldArray[indexNested]], attribute + "." + fieldArray[indexNested], indexNested + 1)
                 }
             }
             return

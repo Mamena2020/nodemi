@@ -11,10 +11,21 @@ class TestRequest extends RequestValidation {
     rules() {
         return {
 
+            "name": {
+                "rules": ["required"]
+            },
+            "gpa": {
+                "rules": ["required", "float", "min:3", "max:4"]
+            },
+            "birthdate": {
+                "rules": ["required", "date","date_before:now"]
+            },
             "item.*.name": {
                 "rules": ["required"]
             },
-
+            "item.*.description": {
+                "rules": ["required"]
+            },
 
         }
     }
