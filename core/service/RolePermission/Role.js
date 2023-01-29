@@ -122,7 +122,7 @@ const hasRole = async (model = Model) => {
                     where: {
                         id: _hasRole.role_id
                     }
-                }) 
+                })
                 _model.role = role
             }
         }
@@ -167,13 +167,14 @@ const setRole = async (model, role_id) => {
 
 
 
-const loadRole = async () => {
+const loadRole = async (alter = false) => {
 
+
+    await alterTableRoleHandling(alter)
 
     await Role.sync({
-        alter: true
+        alter: alter
     })
-
 
     Role.prototype.syncPermissions = async function (permissions) {
         syncPermissions(this, permissions)
@@ -181,7 +182,7 @@ const loadRole = async () => {
 
 
     await UserHasRole.sync({
-        alter: true
+        alter: alter
     })
 
 
@@ -199,12 +200,18 @@ const loadRole = async () => {
         constraints: false,
     });
 
+}
 
-
-
-
-
-
+const alterTableRoleHandling = async (alter = false) => {
+    // handling for multiple index of url
+    try {
+        if (alter) {
+            await db.query(`ALTER TABLE Roles DROP INDEX name`).then(() => {
+            })
+        }
+    } catch (error) {
+        console.log("error")
+    }
 }
 
 

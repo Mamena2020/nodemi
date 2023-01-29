@@ -13,16 +13,12 @@ const loadModels = async () => {
         alter: true,
         // force: true
     })
-
-
     await hasMedia(User)
-
     await hasRole(User)
 
 
     await UserDetail.sync({
         alter: true,
-        // force: true
     })
 
     User.hasOne(UserDetail, {

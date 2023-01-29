@@ -1,18 +1,13 @@
-import Permission from "./Permission.js";
+import Permission, { loadPermission } from "./Permission.js";
 import Role, { loadRole } from "./Role.js";
 import RoleHasPermission from "./RoleHasPermission.js";
 
 const loadRolePermission = async () => {
 
 
-    await loadRole()
-
-
-
-    await Permission.sync({
-        alter: true
-    })
-
+    await loadRole(true)
+    
+    await loadPermission(true)
 
     await RoleHasPermission.sync({
         alter: true

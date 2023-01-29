@@ -69,8 +69,10 @@ Media.addHook("afterDestroy", async (media) => {
 Media.loadSync = async function ({ alter = false }) {
     // handling for multiple index of url
     try {
-        await db.query(`ALTER TABLE Medias DROP INDEX url`).then(() => {
-        })
+        if (alter) {
+            await db.query(`ALTER TABLE Medias DROP INDEX url`).then(() => {
+            })
+        }
     } catch (error) {
         console.log("error")
     }

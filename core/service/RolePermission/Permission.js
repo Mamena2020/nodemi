@@ -32,7 +32,30 @@ Permission.init({
     }
 )
 
+const loadPermission = async (alter = false) => {
+    await alterTablePermissionHandling(alter)
+    await Permission.sync({
+        alter: alter
+    })
+
+}
+
+
+const alterTablePermissionHandling = async (alter = false) => {
+    // handling for multiple index of url
+    try {
+        if (alter) {
+            await db.query(`ALTER TABLE Permissions DROP INDEX name`).then(() => {
+            })
+        }
+    } catch (error) {
+        console.log("error")
+    }
+}
+
+
 export default Permission
 export {
-    permissionType
+    permissionType,
+    loadPermission
 }
