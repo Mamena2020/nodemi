@@ -572,12 +572,10 @@ class RequestValidation {
             return validator.isBoolean(field.toString())
 
         if (ruleName === ValidationType.float)
-            {
-                console.log("fi",field)
-                return validator.isFloat(field.toString())
-            }
+            return validator.isFloat((field ?? '').toString())
+
         if (ruleName === ValidationType.integer)
-            return validator.isInt(field.toString())
+            return validator.isInt((field ?? "").toString())
 
         if (ruleName === ValidationType.date) {
             let newDate = this.#formatDate(field)

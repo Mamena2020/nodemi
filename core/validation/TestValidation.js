@@ -26,6 +26,9 @@ class TestRequest extends RequestValidation {
             "item.*.description": {
                 "rules": ["required"]
             },
+            "price.*": {
+                "rules": ["required","float"]
+            },
 
         }
     }
