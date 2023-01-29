@@ -15,7 +15,7 @@ const load = async (app) => {
         console.log("load core....")
         //------------------------------------------------------- Database
         // process.env.PRODUCTION
-        await db.authenticate()
+        // await db.authenticate()
         // db.drop({cascade: true})
         // await db.sync({alter: true})
         //------------------------------------------------------- 
@@ -29,11 +29,11 @@ const load = async (app) => {
 
 
         //------------------------------------------------------- Models
-        await loadRolePermission()
-        await loadMediaModel() // media model
-        await loadModels() // all model
-        //------------------------------------------------------- Seeder
-        await seeder()
+        // await loadRolePermission()
+        // await loadMediaModel() // media model
+        // await loadModels() // all model
+        // //------------------------------------------------------- Seeder
+        // await seeder()
 
         //------------------------------------------------------- 
 

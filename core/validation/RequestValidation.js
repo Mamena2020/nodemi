@@ -80,6 +80,12 @@ class RequestValidation {
         console.log(this.rules)
         console.log("=================================================== Checking")
         for (let fieldKey in this.rules) {
+
+            if (this.#isNested(fieldKey)) {
+                this.#nestedProcess(fieldKey)
+
+            }
+
             if (this.#hasData(fieldKey)) {
                 await this.#checking(fieldKey)
             }
@@ -97,6 +103,11 @@ class RequestValidation {
                 return true
             }
         }
+        return false
+    }
+
+    #isNested(fieldKey) {
+        if (fieldKey.indexOf(".*") !== -1) return true
         return false
     }
 
@@ -652,6 +663,58 @@ class RequestValidation {
 
         return sizeInByte
     }
+
+
+    // -------------------------------------------------------------------------------------------------------- nested process
+
+
+    #nestedProcess(fieldKey) {
+        console.log("start nested validation")
+        let nestedArray = fieldKey.split(".")
+        this.#recursizeNested(nestedArray, this.body, "", 0)
+    }
+
+    /**
+     * 
+     * @param {*} nestedArray [item, * , name]
+     * @param {*} currentField this.body[item] |  this.body[item][0] | this.body[item][0][name]
+     * @param {*} indexNested 
+     * @returns 
+     */
+    async #recursizeNested(nestedArray, currentField, attribute, indexNested) {
+
+        console.log("-----------------------------------" + indexNested)
+        // console.log("nestedArray", nestedArray)
+        console.log("currentField", currentField)
+        console.log("----------------------------------.")
+
+        if (!indexNested <= nestedArray.length) {
+            // validation in here
+            if (indexNested === nestedArray.length) {
+                console.log("validation-> ",)
+                console.log("data-> ", currentField)
+                console.log("attribute-> ", attribute.slice(1))
+            }
+            else {
+                if (nestedArray[indexNested] === "*") {
+                    if (!Array.isArray(currentField)) {
+                        console.log("current field not an array")
+                        return
+                    }
+                    for (let i = 0; i < currentField.length; i++) {
+
+                        await this.#recursizeNested(nestedArray, currentField[i], attribute + "." + i, indexNested + 1)
+                    }
+                }
+                else {
+                    return await this.#recursizeNested(nestedArray, currentField[nestedArray[indexNested]], attribute + "." + nestedArray[indexNested], indexNested + 1)
+                }
+            }
+            return
+        }
+    }
+
+
 
 }
 
