@@ -1,30 +1,15 @@
 #!/usr/bin/env node
 
-const program = require('commander') 
-const fse = require("fs-extra")
+import { program } from "commander";
+import makeModel from "./model.js";
+
 
 program
-    .command('makeme:model')
-    .option('-n, --name <name>', 'Name of the model')
-    .action((options) => {
-
-
-
-        const file = `models/${options.name}.js`;
-
-        if (!fse.existsSync(file)) {
-            fse.writeFile(file, '', (err) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                console.log(`File created: ${file}`);
-            });
-        }
-        else {
-            console.log(`File already exists: ${file}`);
-        }
-
+    .command('make:model <name>')
+    // .option('-n, --media <media>', 'pair with media')
+    // // .option('-n, --media <media>', 'pair with media')
+    .action((name) => {
+        makeModel(name)
     });
 
 program.parse(process.argv);

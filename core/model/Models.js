@@ -1,3 +1,4 @@
+
 import User from "../../models/User.js";
 import UserDetail from "../../models/UserDetail.js";
 import { hasMedia } from '../service/MediaService.js'
@@ -31,11 +32,8 @@ const loadModels = async () => {
         as: 'user'
     })
 
-
-
 }
 
 export default loadModels
-
 
 

@@ -71,6 +71,10 @@ class RequestValidation {
         return !(JSON.stringify(this.errors) === JSON.stringify({}))
     }
 
+    responseError(res) {
+        return res.status(422).json(this.errors)
+    }
+
 
     async check() {
         this.errors = {}
@@ -691,6 +695,10 @@ class RequestValidation {
         // console.log("fieldArray", fieldArray)
         console.log("currentField", currentField)
         console.log("----------------------------------.")
+        if (!currentField) {
+            console.log("field not found", currentField)
+            return
+        }
 
         if (!indexNested <= fieldArray.length) {
             // validation in here
@@ -711,7 +719,7 @@ class RequestValidation {
                         await this.#recursizeNested(fieldKey, fieldArray, currentField[i], attribute + "." + i, indexNested + 1)
                     }
                 }
-                else {
+                else {                                
                     return await this.#recursizeNested(fieldKey, fieldArray, currentField[fieldArray[indexNested]], attribute + "." + fieldArray[indexNested], indexNested + 1)
                 }
             }
