@@ -11,9 +11,6 @@
   },
   "author": "andre aipassa",
   "license": "ISC",
-  "bin": {
-    "nodemi2": "/cli/cli.js"
-  },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "busboy": "^1.6.0",
@@ -30,7 +27,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "nodemi-cli": "^1.0.34",
+    "nodemi-cli": "^1.0.38",
     "sequelize-cli": "^6.5.2"
   }
 }
