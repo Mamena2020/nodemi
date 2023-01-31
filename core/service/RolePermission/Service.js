@@ -6,7 +6,7 @@ const loadRolePermission = async () => {
 
 
     await loadRole(true)
-    
+
     await loadPermission(true)
 
     await RoleHasPermission.sync({
@@ -31,4 +31,34 @@ const loadRolePermission = async () => {
 
 }
 
+/**
+ * 
+ * @param {*} user user model
+ * @param {*} permissions ["product-access","product-stored"]
+ * @returns 
+ */
+const GateAccess = (user, permissions = []) => {
+
+    if (!Array.isArray(permissions))
+        throw "permissions must be an array"
+
+    if (!user || !user.role || !user.role.permissions)
+        return false
+    let countValid = 0
+    for (let permission of user.role.permissions) {
+        if (permissions.includes(permission.name)) {
+            countValid++
+        }
+    }
+
+    if(countValid!== permissions.length)
+        return false
+
+    return true
+}
+
+
 export default loadRolePermission
+export {
+    GateAccess
+}

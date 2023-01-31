@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "nodemi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "prod": "node index.js",
+    "dev": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "andre aipassa",
@@ -14,10 +15,8 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "busboy": "^1.6.0",
-    "commander": "^10.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fs-extra": "^11.1.0",
     "jsonwebtoken": "^9.0.0",
@@ -27,6 +26,8 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
+    "commander": "^10.0.0",
     "nodemi-cli": "^1.0.38",
     "sequelize-cli": "^6.5.2"
   }

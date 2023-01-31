@@ -1,4 +1,4 @@
-import RequestValidation from "./RequestValidation.js";
+import RequestValidation from "../RequestValidation.js";
 
 class UserRequest extends RequestValidation {
     constructor(req) {

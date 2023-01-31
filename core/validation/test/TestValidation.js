@@ -1,4 +1,4 @@
-import RequestValidation from "./RequestValidation.js";
+import RequestValidation from "../RequestValidation.js";
 
 
 class TestRequest extends RequestValidation {

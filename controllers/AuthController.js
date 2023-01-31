@@ -62,7 +62,7 @@ const register = async (req, res) => {
             password: hashPassword
         })
 
-        user.setRole(13)
+        user.setRole(2)
         console.log("user.name", user.name)
 
         res.json({ message: "register success" }).status(200)

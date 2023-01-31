@@ -5,7 +5,7 @@ import UserController from "../controllers/UserController.js";
 import authJwt from "../core/middleware/AuthJwt.js";
 import Requests from "../middleware/Requests.js";
 
-import testValidation from "../core/validation/TestValidation.js";
+import testValidation from "../core/validation/test/TestValidation.js";
 
 const routerApi = express.Router()
 const routerAuth = express.Router()

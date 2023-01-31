@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import UserDetail from "../models/UserDetail.js";
 import { authUser } from "../core/middleware/AuthJwt.js";
 import RequestValidation from "../core/validation/RequestValidation.js";
+import { GateAccess } from "../core/service/RolePermission/Service.js";
 
 
 const getUser = async (req, res) => {
@@ -26,6 +27,11 @@ const getUser = async (req, res) => {
 
         if (!user) return res.sendStatus(404)
 
+        if (!GateAccess(user, ["user-create","user-stored","user-access"])) {
+            return res.sendStatus(403)
+        }
+
+
         let newUser = {
             id: user.id,
             name: user.name,
@@ -34,8 +40,9 @@ const getUser = async (req, res) => {
             url: user.firstMediaUrl,
         }
 
+        console.log("user", user)
         console.log("user.role", user.role)
-        console.log("user.permissions", user.role.permissions)
+        // console.log("user.permissions", user.role)
 
         res.json({ message: "get success", "user": newUser })
 
