@@ -7,7 +7,7 @@ class Requests {
 
         const valid = new LoginRequest(req)
         await valid.check()
-        if (valid.isError())
+        if (valid.isError)
             return res.json(valid.errors).status(402)
 
         next()

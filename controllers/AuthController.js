@@ -50,7 +50,7 @@ const register = async (req, res) => {
 
         let valid = new RegisterRequest(req)
         await valid.check()
-        if (valid.isError())
+        if (valid.isError)
             return res.json(valid.errors).status(402)
 
         const { name, email, password } = req.body;

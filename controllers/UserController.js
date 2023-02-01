@@ -27,7 +27,9 @@ const getUser = async (req, res) => {
 
         if (!user) return res.sendStatus(404)
 
-        if (!GateAccess(user, ["user-create","user-stored","user-access"])) {
+        console.log(user)
+
+        if (!GateAccess(user, ["user-create","user-stored"])) {
             return res.sendStatus(403)
         }
 
@@ -96,7 +98,7 @@ const upload = async (req, res) => {
 
     let valid = new UploadRequest(req)
     await valid.check()
-    if (valid.isError())
+    if (valid.isError)
         return res.json(valid.errors).status(402)
 
 

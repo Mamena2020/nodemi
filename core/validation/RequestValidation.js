@@ -58,6 +58,7 @@ const MessageType = Object.freeze({
 class RequestValidation {
 
     errors = {}
+    isError = false
     constructor(req) {
         this.body = req?.body ?? {}
     }
@@ -67,8 +68,11 @@ class RequestValidation {
         // await this.check()
     }
 
-    isError() {
-        return !(JSON.stringify(this.errors) === JSON.stringify({}))
+    async #checkError() {
+        this.isError = true
+        if (JSON.stringify(this.errors) === JSON.stringify({})) {
+            this.isError = false
+        }
     }
 
     responseError(res) {
@@ -78,11 +82,11 @@ class RequestValidation {
 
     async check() {
         this.errors = {}
-        console.log("--------------------------------------------------- field")
-        console.log(this.body)
-        console.log("--------------------------------------------------- rules")
-        console.log(this.rules)
-        console.log("=================================================== Checking")
+        // console.log("--------------------------------------------------- field")
+        // console.log(this.body)
+        // console.log("--------------------------------------------------- rules")
+        // console.log(this.rules)
+        // console.log("=================================================== Checking")
         for (let fieldKey in this.rules) {
 
             if (this.#isNested(fieldKey)) {
@@ -99,7 +103,9 @@ class RequestValidation {
             }
 
         }
-        return this.isError()
+        await this.#checkError()
+        // console.log("this.isError", this.isError)
+        return this.isError
     }
     #hasRuleRequired(fieldKey) {
         let rules = this.rules[fieldKey].rules
@@ -274,8 +280,8 @@ class RequestValidation {
     async  #checking(fieldKey, field, attribute) {
         // var field = this.body[fieldKey]
         let rules = this.rules[fieldKey].rules // ["required","match:password","min:1","max:2"]
-        console.log(">>>>--------------------------------------->>>>")
-        console.log(rules)
+        // console.log(">>>>--------------------------------------->>>>")
+        // console.log(rules)
         if (!Array.isArray(rules)) {
             console.log("\x1b[31m", "validations not an array", fieldKey, "\x1b[0m");
             return null;
@@ -283,36 +289,36 @@ class RequestValidation {
 
         for (let rule of rules) {
             // val, ex: float, required, date etc...
-            console.log("--------------")
-            console.log(rule, field)
+            // console.log("--------------")
+            // console.log(rule, field)
             let options
             let ruleName
             let hasParams = this.#isValidationHasParam(rule)
             let ruleParams
             // ex: max:3, min:5    
             if (hasParams) {
-                console.log("CREATE PARAMS")
+                // console.log("CREATE PARAMS")
                 options = this.#createOptionsParams(fieldKey, rule)
                 ruleName = this.#getValidateNameFromValidationWithParams(rule)
             }
             else {
                 ruleName = rule
-                console.log("not sCREATE PARAMS")
+                // console.log("not sCREATE PARAMS")
             }
             let isValid = await this.ValidationCheck(ruleName, field, { options: options })
 
             if (!isValid) {
-                console.log("ERROR")
-                console.log(ruleName)
+                // console.log("ERROR")
+                // console.log(ruleName)
                 if (hasParams) {
                     ruleParams = this.#getValidateParams(rule)
-                    console.log("validationParams", ruleParams)
+                    // console.log("validationParams", ruleParams)
                 }
                 this.#setError(fieldKey, ruleName, attribute, ruleParams)
             }
 
         }
-        console.log("<<<<---------------------------------------<<<<")
+        // console.log("<<<<---------------------------------------<<<<")
     }
 
 
@@ -345,8 +351,8 @@ class RequestValidation {
     #getValidateParams(rule) {
         let arr = rule.split(":")
         arr = arr.splice(1, 1);
-        console.log("arr", arr)
-        console.log("rule", rule)
+        // console.log("arr", arr)
+        // console.log("rule", rule)
         if (arr[0].indexOf(",") !== -1) {
             return arr[0].split(",")
         }
@@ -386,6 +392,9 @@ class RequestValidation {
 
                     options["fieldTableName"] = params[0]
                     options["fieldColumnName"] = params[1]
+
+                    if (params[2])
+                        options["fieldException"] = params[2]
                 }
                 if (arr[0] === ValidationType.unique) {
                     let params = arr[1].split(",")
@@ -461,13 +470,15 @@ class RequestValidation {
      */
     async ValidationCheck(ruleName, field, { options }) {
 
-        console.log("ruleName...", ruleName)
-        console.log("field...", field)
-        console.log("options...", options)
+        // console.log("ruleName...", ruleName)
+        // console.log("field...", field)
+        // console.log("options...", options)
 
         //------------------------------------------------------ database
         if (ruleName == ValidationType.exists) {
-            let d = await ValidationDB.exists(options.fieldTableName, options.fieldColumnName, field)
+            let d = await ValidationDB.exists(options.fieldTableName, options.fieldColumnName, field,
+                options.fieldException
+            )
             return d
         }
         if (ruleName == ValidationType.unique) {
@@ -491,8 +502,8 @@ class RequestValidation {
 
             let size = this.#convertByteToAnyUnit(field.size, options.fieldUnit)
 
-            console.log("size:", size)
-            console.log("options.fieldMaxSize:", options.fieldMaxSize)
+            // console.log("size:", size)
+            // console.log("options.fieldMaxSize:", options.fieldMaxSize)
             return parseFloat(size) <= parseFloat(options.fieldMaxSize)
         }
 
@@ -658,12 +669,12 @@ class RequestValidation {
 
     #convertByteToAnyUnit(sizeInByte, unit) {
 
-        console.log("convert...")
-        console.log("unit", unit)
-        console.log("sizeInByte", sizeInByte)
-        console.log("this.filebytes", this.fileUnits.KB)
+        // console.log("convert...")
+        // console.log("unit", unit)
+        // console.log("sizeInByte", sizeInByte)
+        // console.log("this.filebytes", this.fileUnits.KB)
         if (unit === this.fileUnits.KB) {
-            console.log("convert to KB FROM Bytes")
+            // console.log("convert to KB FROM Bytes")
             return (sizeInByte / 1024).toFixed(2)
         }
 
@@ -681,7 +692,7 @@ class RequestValidation {
 
 
     async #nestedProcess(fieldKey) {
-        console.log("start nested validation")
+        // console.log("start nested validation")
         let fieldArray = fieldKey.split(".")
         await this.#recursizeNested(fieldKey, fieldArray, this.body, "", 0)
     }
@@ -695,10 +706,10 @@ class RequestValidation {
      */
     async #recursizeNested(fieldKey, fieldArray, currentField, attribute, indexNested) {
 
-        console.log("-----------------------------------" + indexNested)
+        // console.log("-----------------------------------" + indexNested)
         // console.log("fieldArray", fieldArray)
-        console.log("currentField", currentField)
-        console.log("----------------------------------.")
+        // console.log("currentField", currentField)
+        // console.log("----------------------------------.")
         // if (!currentField) {
         //     console.log("field not found", currentField)
         //     return
@@ -707,15 +718,15 @@ class RequestValidation {
         if (!indexNested <= fieldArray.length) {
             // validation in here
             if (indexNested === fieldArray.length) {
-                console.log("validation: ",)
-                console.log("data-> ", currentField)
-                console.log("attribute-> ",)
+                // console.log("validation: ",)
+                // console.log("data-> ", currentField)
+                // console.log("attribute-> ",)
                 await this.#checking(fieldKey, currentField, attribute.slice(1))
             }
             else {
                 if (fieldArray[indexNested] === "*") {
                     if (!Array.isArray(currentField)) {
-                        console.log("current field not an array")
+                        // console.log("current field not an array")
                         return
                     }
                     for (let i = 0; i < currentField.length; i++) {

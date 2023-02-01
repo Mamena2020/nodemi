@@ -51,9 +51,10 @@ const testValidation = async (req, res) => {
 
     const valid = new TestRequest(req)
     await valid.check()
-    if (valid.isError)
-        return res.status(422).json(valid.errors)
-    // return valid.responseError(res)
+    if (valid.isError) 
+    {
+        return valid.responseError(res)
+    }
 
     return res.json("success")
 

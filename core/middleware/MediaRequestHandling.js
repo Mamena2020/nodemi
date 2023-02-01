@@ -43,9 +43,6 @@ const clearTempFiles = (res, files) => {
 }
 
 
-function isNumeric(value) {
-    return /^-?\d+$/.test(value);
-}
 
 const handleField = (req, fieldName, value) => {
 

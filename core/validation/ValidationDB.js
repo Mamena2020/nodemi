@@ -3,10 +3,11 @@ import db from "../../core/database/Database.js"
 class ValidationDB {
 
 
-    static async exists(tableName, column, field) {
-        let result = await db.query(`select ${column} from ${tableName} where ${column} = :email  limit 1`, {
+    static async exists(tableName, column, field, exception) {
+        let result = await db.query(`select ${column} from ${tableName} where ${column} = :field and id <> :exception  limit 1`, {
             replacements: {
-                email: field
+                field: field,
+                exception: exception ?? ''
             }
         }).then((e) => {
             if (e[0].length == 0) return false
@@ -17,9 +18,9 @@ class ValidationDB {
         return result
     }
     static async unique(tableName, column, field, exception) {
-        let result = await db.query(`select ${column} from ${tableName} where ${column} = :email and id <> :exception limit 1`, {
+        let result = await db.query(`select ${column} from ${tableName} where ${column} = :field and id <> :exception limit 1`, {
             replacements: {
-                email: field,
+                field: field,
                 exception: exception ?? ''
             }
         }).then((e) => {

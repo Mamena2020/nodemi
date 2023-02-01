@@ -132,7 +132,7 @@ Template backend for nodejs.
      
       const valid = new ProductRequest(req)
       await valid.check()
-      if (valid.isError)
+      if (valid.isError())
          return valid.responseError(res) // or  return res.status(422).json(valid.errors)
    
    ```
