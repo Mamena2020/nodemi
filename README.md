@@ -332,7 +332,7 @@ Template backend for nodejs.
    ```
   - Set users role
   
-  if the user already has a role, then the user role will be replaced with a new role
+  if the user already has a role, then the user role will be replaced with a new role.  params of setRole() can be name or id of role
    
    ```
       let user  = await User.create({
@@ -340,7 +340,7 @@ Template backend for nodejs.
             email: email,
             password: hashPassword
       })
-      user.setRole(2) // 2 is role id
+      user.setRole(2) // params can be name or id of role
    ```
   - Check user access
    ```

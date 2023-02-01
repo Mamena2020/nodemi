@@ -1,14 +1,14 @@
 import User from "../models/User.js";
 import UserDetail from "../models/UserDetail.js";
 import { authUser } from "../core/middleware/AuthJwt.js";
-import RequestValidation from "../core/validation/RequestValidation.js";
 import { GateAccess } from "../core/service/RolePermission/Service.js";
+import UploadRequest from "../requests/user/UploadRequest.js";
 
 
 const getUser = async (req, res) => {
 
     try {
-        console.log("get user")
+
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) return res.sendStatus(401)
         const user = await User.findOne(
@@ -27,12 +27,10 @@ const getUser = async (req, res) => {
 
         if (!user) return res.sendStatus(404)
 
-        console.log(user)
 
-        if (!GateAccess(user, ["user-create","user-stored"])) {
+        if (!GateAccess(user, ["user-create", "user-stored"])) {
             return res.sendStatus(403)
         }
-
 
         let newUser = {
             id: user.id,
@@ -41,11 +39,6 @@ const getUser = async (req, res) => {
             detail: user.user_details,
             url: user.firstMediaUrl,
         }
-
-        console.log("user", user)
-        console.log("user.role", user.role)
-        // console.log("user.permissions", user.role)
-
         res.json({ message: "get success", "user": newUser })
 
     } catch (error) {
@@ -53,70 +46,26 @@ const getUser = async (req, res) => {
     }
 }
 
-class UploadRequest extends RequestValidation {
 
-    constructor(req) {
-        super(req).load(this)
-    }
-
-    data = ["a", "b", "c"]
-
-    rules() {
-        return {
-            "file": {
-                "validation": [
-                    "required",
-                    "image",
-                    // "mimetypes:image/jpeg,image/png",
-                    // "mimes:png,jpg",
-                    "maxfile:1000,KB",
-                ]
-            },
-            "hari_ini": {
-                "validation": ["required", "date", "date_before_or_equal:now"]
-            },
-            "besok": {
-                "validation": ["required", "date", "date_after:hari_ini"]
-            },
-            "npm": {
-                "validation": ["required", "digit:12"],
-            },
-            "status": {
-                "validation": ["required", "bolean"]
-            },
-            "pilih": {
-                "validation": ["required", "not_in_array:" + this.data.join(",")]
-            }
-        };
-    }
-}
 
 
 const upload = async (req, res) => {
-    // console.log(req.body['files[]'])
-    // console.log(req.body['file'])
 
     let valid = new UploadRequest(req)
     await valid.check()
     if (valid.isError)
-        return res.json(valid.errors).status(402)
-
-
-    console.log(req.body)
-
-    if (!req.body['file'])
-        return res.status(400).json({ message: "file not found" })
+        return valid.responseError(res)
 
     const user = await authUser(req)
     if (!user)
         return res.status(403).json({ message: "need auth" })
 
     await user.saveMedia(
-        req.body['file'],
+        req.body.file,
         "avatar"
     )
 
-    res.status(200).json("upload successfuly")
+    res.json("upload successfuly")
 }
 
 

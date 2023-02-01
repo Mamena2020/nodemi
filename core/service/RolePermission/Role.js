@@ -1,4 +1,4 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, Sequelize } from "sequelize";
 import db from "../../database/database.js";
 import Permission from "./Permission.js";
 import RoleHasPermission from "./RoleHasPermission.js";
@@ -86,10 +86,10 @@ const hasRole = async (model = Model) => {
 
     UserHasRole.belongsTo(model, { foreignKey: 'table_id', constraints: false });
 
-    model.prototype.setRole = async function (role_id) {
+    model.prototype.setRole = async function (role) {
         await setRole(
             this,
-            role_id
+            role
         )
     }
 
@@ -129,14 +129,23 @@ const hasRole = async (model = Model) => {
     })
 }
 
-const setRole = async (model, role_id) => {
+const setRole = async (model, role) => {
 
     try {
         const table_id = model.id
         const table_type = model.constructor.options.name.singular
 
-        if (!role_id)
-            throw "role id not found"
+        const roleModel = await Role.findOne({
+            where: {
+                [Sequelize.Op.or]: [
+                    { id: role ?? '' },
+                    { name: role ?? '' }
+                ]
+            }
+        })
+
+        if (!roleModel)
+            throw "role not found"
 
         const userRole = await UserHasRole.findOne({
             where: {
@@ -147,12 +156,12 @@ const setRole = async (model, role_id) => {
 
         if (userRole) {
             await userRole.update({
-                role_id: role_id
+                role_id: roleModel.id
             })
         }
         else {
             await UserHasRole.create({
-                role_id: role_id,
+                role_id: roleModel.id,
                 table_id: table_id,
                 table_type: table_type
             })

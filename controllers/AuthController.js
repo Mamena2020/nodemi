@@ -1,18 +1,12 @@
 import User from "../models/User.js"
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
-import LoginRequest from "../requests/auth/LoginRequest.js";
 import RegisterRequest from "../requests/auth/RegisterRequest.js";
 
 const login = async (req, res) => {
 
 
     try {
-        console.log("login")
-        // const valid = await new LoginRequest(req)
-        // await valid.check()
-        // if (valid.isError())
-        //     return res.json(valid.errors).status(402)
 
         const { email, password } = req.body
 
@@ -62,9 +56,7 @@ const register = async (req, res) => {
             password: hashPassword
         })
 
-        user.setRole(2)
-        console.log("user.name", user.name)
-
+        await user.setRole("customer")
         res.json({ message: "register success" }).status(200)
     } catch (error) {
         console.log(error)
