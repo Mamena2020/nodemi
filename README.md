@@ -128,7 +128,7 @@ Template backend for nodejs.
 
        export default ProductRequest
    ```
-   - Example
+   - Basic usage
    ```
      
       const valid = new ProductRequest(req)
@@ -138,7 +138,7 @@ Template backend for nodejs.
    
    ```
    
-   - Example html input
+   - Example html form 
    ```
       <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
          <div class="row justify-content-center d-flex">
@@ -162,10 +162,11 @@ Template backend for nodejs.
                 <input class="form-control my-2" type="text" name="price[1]" placeholder="price" />
             </div>
             
-            <input type="text" name="comment[]" />
-            <input type="text" name="comment[]" " />
-            <input type="text" name="comment[]"  />
-            <input type="text" name="comment[]"  />
+                <input type="text" name="comments[]" />
+                <input type="text" name="comments[]" />
+                <input type="text" name="comments[]" />
+                <input type="text" name="comments[]" />
+
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>
             </div>
@@ -200,7 +201,7 @@ Template backend for nodejs.
             "price.*": {
                 "rules": ["required", "float"]
             },
-            "comment.*": {
+            "comments.*": {
                 "rules": ["required"]
             }
         }
@@ -249,17 +250,17 @@ Template backend for nodejs.
                "The Price.1 is required",
                "The Price.1 must be valid format of float"
              ],
-             "comment.0": [
-               "The Comment.0 is required"
+             "comments.0": [
+               "The Comments.0 is required"
              ],
-             "comment.1": [
-               "The Comment.1 is required"
+             "comments.1": [
+               "The Comments.1 is required"
              ],
-             "comment.2": [
-               "The Comment.2 is required"
+             "comments.2": [
+               "The Comments.2 is required"
              ],
-             "comment.3": [
-               "The Comment.3 is required"
+             "comments.3": [
+               "The Comments.3 is required"
              ]
          }
       }
@@ -309,6 +310,10 @@ Template backend for nodejs.
    ```
        rules() {
         return {
+             "name": {
+                "rules": ["required"],
+                "attribute": "Name of product"
+             },
              "discount": {
                 "rules": ["required", "float", "min:3", "max:4"],
                 "messages": {
@@ -316,6 +321,7 @@ Template backend for nodejs.
                     "float": "The data must be numeric"
                 },
                 "attribute": "DISCOUNT"
+               
             }
        }
    
