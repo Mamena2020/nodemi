@@ -10,15 +10,17 @@ class TestRequest extends RequestValidation {
 
     rules() {
         return {
-
             "name": {
                 "rules": ["required"]
             },
-            "gpa": {
+            "discount": {
                 "rules": ["required", "float", "min:3", "max:4"]
             },
-            "birthdate": {
-                "rules": ["required", "date","date_before:now"]
+            "expired_date": {
+                "rules": ["required", "date", "date_after:now"]
+            },
+            "product_image": {
+                "rules": ["required", "image", "maxfile:1,MB"]
             },
             "item.*.name": {
                 "rules": ["required"]
@@ -27,9 +29,11 @@ class TestRequest extends RequestValidation {
                 "rules": ["required"]
             },
             "price.*": {
-                "rules": ["required","float"]
+                "rules": ["required", "float"]
             },
-
+            "comment.*": {
+                "rules": ["required"]
+            }
         }
     }
 
@@ -37,6 +41,8 @@ class TestRequest extends RequestValidation {
 }
 
 const testValidation = async (req, res) => {
+
+    console.log("BODY REQ", req.body)
 
     const valid = new TestRequest(req)
     await valid.check()

@@ -12,32 +12,39 @@
 
 <body>
 
-    <form action="http://localhost:5000/api/validation" class="my-2" method="post">
-
+    <form action="http://localhost:5000/api/validation" class="my-2" method="post" enctype="multipart/form-data">
+        <!-- <form action="http://localhost:5000/api/validation" class="my-2" method="post" > -->
         <div class="row justify-content-center d-flex">
             <div class="col-md-10">
                 <label>Item</label>
                 <input class="form-control my-2" type="text" name="name" placeholder="name" />
-                <input class="form-control my-2" type="text" name="gpa" placeholder="gpa " />
-                <input class="form-control my-2" type="date" name="birthdate" placeholder="birthdate" />
+                <input class="form-control my-2" type="text" name="discount" placeholder="discount" />
+                <input class="form-control my-2" type="date" name="expired_date" placeholder="expired date" />
+                <input class="form-control my-2" type="file" name="product_image" placeholder="file" />
             </div>
             <div class="col-md-10">
                 <label>Item 1</label>
-                <input class="form-control my-2" type="text" name="item[0][name]" placeholder="name 0 " />
-                <input class="form-control my-2" type="text" name="item[0][description]" placeholder="description 0 " />
-                <input class="form-control my-2" type="text" name="price[0]" placeholder="price 0 " />
+                <input class="form-control my-2" type="text" name="item[0][name]" placeholder="name" />
+                <input class="form-control my-2" type="text" name="item[0][description]" placeholder="description" />
+                <input class="form-control my-2" type="text" name="price[0]" placeholder="price " />
             </div>
             <div class="col-md-10 mt-5">
                 <label>Item 2</label>
-                <input class="form-control my-2" type="text" name="item[1][name]" placeholder="name 0 " />
-                <input class="form-control my-2" type="text" name="item[1][description]" placeholder="description 0 " />
-                <input class="form-control my-2" type="text" name="price[1]" placeholder="price 0 " />
+                <input class="form-control my-2" type="text" name="item[1][name]" placeholder="name" />
+                <input class="form-control my-2" type="text" name="item[1][description]" placeholder="description" />
+                <input class="form-control my-2" type="text" name="price[1]" placeholder="price" />
             </div>
+            <!-- <input class="form-control my-2" type="text" name="list[]" placeholder="list" /> -->
+            <input class="form-control my-2" type="text" multiple name="list[]" placeholder="list" />
+
+            <input type="text" name="comment[]" value="comment1" />
+            <input type="text" name="comment[]" value="comment2" />
+            <input type="text" name="comment[]" value="comment3" />
+            <input type="text" name="comment[]" value="comment4" />
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>
             </div>
         </div>
-
     </form>
 
 </body>

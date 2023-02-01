@@ -12,8 +12,10 @@ import busboy from "busboy";
 const isArray = (name) => {
     const a = name.indexOf("[")
     const b = name.indexOf("]")
-    if (a !== -1 && b !== -1 && b - 1 == a) {
-        return true
+    if (a !== -1 && b !== -1) {
+        if (b - 1 === a || b - 2 === a) {
+            return true
+        }
     }
     return false
 }
@@ -41,6 +43,36 @@ const clearTempFiles = (res, files) => {
 }
 
 
+function isNumeric(value) {
+    return /^-?\d+$/.test(value);
+}
+
+const handleField = (req, fieldName, value) => {
+
+    if (fieldName.endsWith('[]'))  // comment[]
+    {
+        const key = fieldName.slice(0, -2);
+        req.body[key] = req.body[key] || [];
+        req.body[key].push(value);
+    } else if (/\[\d+\]\[\w+\]/.test(fieldName)) {
+        const match = fieldName.match(/(\w+)\[(\d+)\]\[(\w+)\]/); // "name" or  [0] or [name]
+        const key = match[1]; // name
+        const index = match[2]; // [0]
+        const subKey = match[3]; //[name]
+        req.body[key] = req.body[key] || [];
+        req.body[key][index] = req.body[key][index] || {};
+        req.body[key][index][subKey] = value;
+    } else if (fieldName.endsWith(']')) {
+        const match = fieldName.match(/(\w+)\[(\d+)\]/);
+        const key = match[1];
+        const index = match[2];
+        req.body[key] = req.body[key] || [];
+        req.body[key][index] = value;
+    } else {
+        req.body[fieldName] = value;
+    }
+}
+
 
 const mediaRequestHandling = async (req, res, next) => {
 
@@ -49,7 +81,7 @@ const mediaRequestHandling = async (req, res, next) => {
         req.method === 'POST'
         && req.headers['content-type'].startsWith('application/x-www-form-urlencoded')) {
 
-        var bb = busboy({ headers: req.headers });
+        var bb = busboy({ headers: req.headers })
         let tempFiles = {}
 
         bb.on('file', function (fieldName, file, info) {
@@ -61,9 +93,11 @@ const mediaRequestHandling = async (req, res, next) => {
                     tempFiles[fieldName] = []
                 }
             }
-            let tempDir = path.join(os.tmpdir(), info.filename);
 
-            let fileSize = 0;
+
+            let tempDir = path.join(os.tmpdir(), info.filename ?? 'temp.temp');
+
+            let fileSize = 0
             file.pipe(fse.createWriteStream(tempDir));
 
             file.on("data", (data) => {
@@ -77,32 +111,34 @@ const mediaRequestHandling = async (req, res, next) => {
                     type: info.mimeType,
                     size: fileSize,
                     sizeUnit: 'bytes',
-                    extension: path.extname(info.filename),
+                    extension: path.extname(info.filename ?? 'temp.temp'),
                     tempDir: tempDir
                 }
 
                 if (isArray(fieldName) && Array.isArray(req.body[fieldName])) {
-                    req.body[fieldName].push(newFile)
+                    if (info.filename) {
+                        req.body[fieldName].push(newFile)
+                    }
                     tempFiles[fieldName].push(newFile)
                 }
                 else {
-                    req.body[fieldName] = newFile
+                    if (info.filename) {
+                        req.body[fieldName] = newFile
+                    }
                     tempFiles[fieldName] = newFile
                 }
-            });
-        });
+            })
+        })
 
-        bb.on('field', (fieldName, val) => {
-            req.body[fieldName] = val
-        });
+        // let formData = {};
+        bb.on('field', (fieldName, value) => {
+            handleField(req, fieldName, value)
+        })
 
-        bb.on("close", () => {
+        bb.on("finish", () => {
             clearTempFiles(res, tempFiles)
             next()
-        });
-
-
-
+        })
         req.pipe(bb);
     }
     else {
@@ -111,3 +147,4 @@ const mediaRequestHandling = async (req, res, next) => {
 }
 
 export default mediaRequestHandling
+
