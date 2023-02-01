@@ -38,20 +38,20 @@ Template backend for nodejs.
          }
       );
 
-     export default Product
+      export default Product
    ```
     
    Directory core/model/models.js
    
-    ``` 
+   ``` 
       const loadModels = async () => {
          await Product.sync({
              alter: true, // not recomended on production mode
          })
           ....
-    ```
+   ```
     
-    Full <a target="_blank" href="https://sequelize.org/docs/v6/core-concepts/model-basics/"> documentation </a> of ORM
+   Full <a target="_blank" href="https://sequelize.org/docs/v6/core-concepts/model-basics/"> documentation </a> of ORM
  
  # Media
  
@@ -62,7 +62,7 @@ Template backend for nodejs.
              alter: true, // not recomended on production mode
          })
     
-      await hasMedia(Product)
+         await hasMedia(Product)
     
    ```
    
@@ -137,8 +137,8 @@ Template backend for nodejs.
    
    - Example html input
    ```
-     <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
-        <div class="row justify-content-center d-flex">
+      <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
+         <div class="row justify-content-center d-flex">
             <div class="col-md-10">
                 <label>Item</label>
                 <input class="form-control my-2" type="text" name="name" placeholder="name" />
@@ -166,8 +166,8 @@ Template backend for nodejs.
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>
             </div>
-        </div>
-    </form>
+         </div>
+      </form>
    
    ```
        
@@ -267,33 +267,33 @@ Template backend for nodejs.
    - List of rules
    
    ```
-    required
-    email
-    match                 // "match:password"
-    string
-    float
-    integer
-    max                   //   "max:4"
-    min                   //   "min:1" 
-    date 
-    array
-    exists                // "exists:users,email"  | "exists:users,email,"+super.body.id
-    unique                // "unique:users,email"  | "unique:users,email,"+super.body.id
-    mimetypes             // "mimetypes:image/webp,image/x-icon,video/mp4"
-    mimes                 // "mimes:jpg,png"
-    maxfile               // "maxfile:1,GB" "maxfile:1,MB"  |"maxfile:1,KB"  |"maxfile:1,Byte"
-    image                
-    date_after            // "date_after:now" | "date_after:birthdate"
-    date_after_or_equal   // "date_after_or_equal:now"
-    date_before           // "date_before:now"
-    date_before_or_equal  // "date_before_or_equal:now"
-    bolean       
-    in_array              // "in_array:1,3,4,1,4,5"
-    not_in_array          // "not_in_array:1,3,4,1,4,5"
-    ip
-    url
-    json
-    digit                 // "digit:4"
+       required
+       email
+       match                 // "match:password"
+       string
+       float
+       integer
+       max                   //   "max:4"
+       min                   //   "min:1" 
+       date 
+       array
+       exists                // "exists:users,email"  | "exists:users,email,"+super.body.id
+       unique                // "unique:users,email"  | "unique:users,email,"+super.body.id
+       mimetypes             // "mimetypes:image/webp,image/x-icon,video/mp4"
+       mimes                 // "mimes:jpg,png"
+       maxfile               // "maxfile:1,GB" "maxfile:1,MB"  |"maxfile:1,KB"  |"maxfile:1,Byte"
+       image                
+       date_after            // "date_after:now" | "date_after:birthdate"
+       date_after_or_equal   // "date_after_or_equal:now"
+       date_before           // "date_before:now"
+       date_before_or_equal  // "date_before_or_equal:now"
+       bolean       
+       in_array              // "in_array:1,3,4,1,4,5"
+       not_in_array          // "not_in_array:1,3,4,1,4,5"
+       ip
+       url
+       json
+       digit                 // "digit:4"
 
    ```
    - Custom 
@@ -311,12 +311,80 @@ Template backend for nodejs.
                 },
                 "attribute": "DISCOUNT"
             }
-        }
+       }
    
    ```
    
 
+# Role and Permissions
+   
+  A User model can has a role by binding using hasRole function inside loadModels on core/model/models.js
+  
+   ```
+      const loadModels = async () => {
+      
+         await User.sync()
+         
+         await hasRole(User)
+     
+   ```
+  - Set users role
+   
+   ```
+      let user  = await User.create({
+            name: name,
+            email: email,
+            password: hashPassword
+      })
+      user.setRole(2) // 2 is role id
+   ```
+  - Check user access
+   ```
+    
+       if (!GateAccess(user, ["user-create","user-stored","user-access"])) return res.sendStatus(403)
 
+   ```
+   
+  - Add permissions
+   
+   ```
+      const permissions = [
+          "user-create",
+          "user-stored",
+          "user-edit",
+          "user-update",
+          "user-delete",
+          "user-search"
+      ]
+      
+       for (let permission of permissions) {
+           await Permission.create({ name: permission })
+       }
+   ```
+   
+  - Add Role
+   
+   ```
+       const roles = [ "admin","customer" ]       
+      
+       for (let role of roles) {
+           await Role.create({ name: role })
+       }
+       
+   ```
+  - Assigning Permissions to Roles
+   
+   ```
+       const permissions = [
+          "user-create",
+          "user-stored"
+       ]
+       let admin = await Role.findOne({ where: { name: "admin" } })
+       if (admin) {
+           await admin.syncPermissions(permissions)
+       }
+       
+   ```
 
 
 #todo 
