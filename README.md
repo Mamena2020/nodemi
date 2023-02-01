@@ -66,7 +66,9 @@ Template backend for nodejs.
     
    ```
    
-   Save a file 
+   - Save a file 
+   
+   If the model already has a file with the same name, then the file will be replaced with a new file
    
    ```
       // save user avatar
@@ -329,6 +331,8 @@ Template backend for nodejs.
      
    ```
   - Set users role
+  
+  if the user already has a role, then the user role will be replaced with a new role
    
    ```
       let user  = await User.create({
@@ -374,6 +378,8 @@ Template backend for nodejs.
    ```
   - Assigning Permissions to Roles
    
+   Assign permissions to a role can be a list of name or id
+   
    ```
        const permissions = [
           "user-create",
@@ -389,12 +395,9 @@ Template backend for nodejs.
 
 #todo 
 
- 
-
 - request 
  - max_digit
  - min_digit
  - digit between
-- role permission
 
 
