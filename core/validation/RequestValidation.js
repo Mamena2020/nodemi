@@ -164,8 +164,8 @@ class RequestValidation {
      */
     #setErrorMessage(fieldKey, rule, attribute, options) {
         // ---------- set custom message
-        if (this.rules[fieldKey].message && this.rules[fieldKey].message[rule]) {
-            return this.rules[fieldKey].message[rule]
+        if (this.rules[fieldKey].messages && this.rules[fieldKey].messages[rule]) {
+            return this.rules[fieldKey].messages[rule]
         }
         // ---------- set default message
         attribute = this.rules[fieldKey].attribute ?? (attribute ?? fieldKey)

@@ -14,7 +14,12 @@ class TestRequest extends RequestValidation {
                 "rules": ["required"]
             },
             "discount": {
-                "rules": ["required", "float", "min:3", "max:4"]
+                "rules": ["required", "float", "min:3", "max:4"],
+                "messages": {
+                    "required": "Need discount",
+                    "float": "data must be numeric"
+                },
+                "attribute": "DISCOUNT"
             },
             "expired_date": {
                 "rules": ["required", "date", "date_after:now"]
@@ -47,7 +52,8 @@ const testValidation = async (req, res) => {
     const valid = new TestRequest(req)
     await valid.check()
     if (valid.isError)
-        return valid.responseError(res)
+        return res.status(422).json(valid.errors)
+    // return valid.responseError(res)
 
     return res.json("success")
 
