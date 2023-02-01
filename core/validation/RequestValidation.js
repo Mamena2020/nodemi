@@ -1,6 +1,16 @@
 import validator from 'validator'
 import ValidationDB from './ValidationDB.js'
 
+/**
+ * for add new rule
+ * [1]. add on ValidationType
+ * [2]. add MessageType
+ * [3]. add type on errorTypeCategories()
+ * [4]. add params if has params -> createOptionsParams()
+ * [5]. add check validation on -> ValidationCheck()
+ * [6]. add default message on defaultErrorMessage()
+ */
+
 const ValidationType = Object.freeze({
     required: "required",
     email: "email",
@@ -16,7 +26,7 @@ const ValidationType = Object.freeze({
     unique: "unique",
     mimetypes: "mimetypes",
     mimes: "mimes",
-    maxfile: "maxfile",
+    max_file: "max_file",
     image: "image",
     date_after: "date_after",
     date_after_or_equal: "date_after_or_equal",
@@ -28,8 +38,10 @@ const ValidationType = Object.freeze({
     ip: "ip",
     url: "url",
     json: "json",
-    digit: "digit"
-    // digits_between: "digits_between", //1 - 2
+    digits: "digits",
+    max_digits: "max_digits",
+    min_digits: "min_digits",
+    digits_between: "digits_between", //1 - 2
 })
 
 const MessageType = Object.freeze({
@@ -37,7 +49,7 @@ const MessageType = Object.freeze({
     matchWith: "must be match with",
     is: "is",
     between: "between",
-    digit: ["must be", "digit"],
+    digits: ["must be", "digits"],
     invalidFormat: "must be valid format of",
     max: "should be less or equal than",
     min: "should be more or equal than",
@@ -45,13 +57,13 @@ const MessageType = Object.freeze({
     unique: "already used",
     after: "date must be after the",
     before: "date must be before the ",
-    after_or_equal: "date must be after or equal the",
-    before_or_equal: "date must be before or equal the",
+    afterOrEqual: "date must be after or equal the",
+    beforeOrEqual: "date must be before or equal the",
     invalidSelected: "selected field is invalid",
-    // digit: [
-    //     "should be",
-    //     "digit"
-    // ]
+    digitsBetween: [
+        "should be between",
+        "and"
+    ]
 })
 
 
@@ -206,26 +218,26 @@ class RequestValidation {
             return MessageType.is
         if (rule === ValidationType.match)
             return MessageType.matchWith
-        if (rule === ValidationType.max || rule === ValidationType.maxfile)
+        if (rule === ValidationType.max || rule === ValidationType.max_file || rule === ValidationType.max_digits)
             return MessageType.max
-        if (rule === ValidationType.min)
+        if (rule === ValidationType.min || rule === ValidationType.min_digits)
             return MessageType.min
         if (rule === ValidationType.exists)
             return MessageType.exists
         if (rule === ValidationType.unique)
             return MessageType.unique
-
         if (rule === ValidationType.date_before)
             return MessageType.before
         if (rule === ValidationType.date_after)
             return MessageType.after
         if (rule === ValidationType.date_before_or_equal)
-            return MessageType.before_or_equal
+            return MessageType.beforeOrEqual
         if (rule === ValidationType.date_after_or_equal)
-            return MessageType.after_or_equal
-
-        if (rule === ValidationType.digit)
-            return MessageType.digit
+            return MessageType.afterOrEqual
+        if (rule === ValidationType.digits)
+            return MessageType.digits
+        if (rule === ValidationType.digits_between)
+            return MessageType.digitsBetween
 
         return MessageType.must
     }
@@ -248,9 +260,15 @@ class RequestValidation {
             rule = options
         }
 
-        if (ruleType === ValidationType.maxfile) {
+        if (ruleType === ValidationType.max_file) {
             rule = options.join(" ") // ["100","KB"] => "100 KB" 
         }
+
+        if (ruleType === ValidationType.max_digits || ruleType === ValidationType.min_digits) {
+            return ("The " + attribute + " " + messageType + " " + options + " digits").split("_").join(" ")
+        }
+
+
 
         if (ruleType === ValidationType.date_after || ruleType === ValidationType.date_before ||
             ruleType === ValidationType.date_after_or_equal || ruleType === ValidationType.date_before_or_equal) {
@@ -259,13 +277,16 @@ class RequestValidation {
 
         if (ruleType === ValidationType.exists || ruleType === ValidationType.unique ||
             ruleType === ValidationType.in_array || ruleType === ValidationType.not_in_array)
-            return "The " + attribute + " " + messageType
+            return ("The " + attribute + " " + messageType).split("_").join(" ")
 
         if (ruleType === ValidationType.ip)
-            return "The " + attribute + " " + messageType + " IP address"
+            return ("The " + attribute + " " + messageType + " IP address").split("_").join(" ")
 
-        if (ruleType === ValidationType.digit)
-            return "The " + attribute + " " + messageType[0] + " " + options + " " + messageType[1]
+        if (ruleType === ValidationType.digits)
+            return ("The " + attribute + " " + messageType[0] + " " + options + " " + messageType[1]).split("_").join(" ")
+
+        if (ruleType === ValidationType.digits_between)
+            return ("The " + attribute + " " + messageType[0] + " " + options[0] + " " + messageType[1] + " " + options[1]+" digits").split("_").join(" ")
 
         return ("The " + attribute + " " + messageType + " " + rule).split("_").join(" ")
 
@@ -303,7 +324,6 @@ class RequestValidation {
             }
             else {
                 ruleName = rule
-                // console.log("not sCREATE PARAMS")
             }
             let isValid = await this.ValidationCheck(ruleName, field, { options: options })
 
@@ -414,13 +434,13 @@ class RequestValidation {
                     options["fieldMimetypes"] = params
                 }
 
-                if (arr[0] === ValidationType.maxfile) {
+                if (arr[0] === ValidationType.max_file) {
                     let params = arr[1].split(",")
                     if (params.length < 1) throw "Not right format of validation: " + rule
 
 
                     if (!validator.isInt(params[0]) || !this.#isValidFileUnit(params[1]))
-                        throw "Not right format of validation: " + rule + ". Valid maxfile:1000,MB -> [GB,MB,KB,Byte]"
+                        throw "Not right format of validation: " + rule + ". Valid max_file:1000,MB -> [GB,MB,KB,Byte]"
 
                     options["fieldMaxSize"] = params[0]
                     options["fieldUnit"] = params[1]
@@ -442,11 +462,20 @@ class RequestValidation {
                     options["fieldArray"] = params
                 }
 
-                if (arr[0] === ValidationType.digit) {
+                if (arr[0] === ValidationType.digits || arr[0] === ValidationType.max_digits || arr[0] === ValidationType.min_digits) {
                     let params = arr[1]
                     if (!validator.isInt(params))
                         throw "Not right format of validation: " + rule
-                    options["fieldDigit"] = params
+                    options["fieldDigits"] = params
+                }
+
+                if (arr[0] === ValidationType.digits_between) {
+                    let params = arr[1].split(",")
+                    if (!params || params.length < 2 || !validator.isInt(params[0]) || !validator.isInt(params[1]))
+                        throw "Not right format of validation: " + rule
+
+                    options["fieldDigitsFirst"] = params[0]
+                    options["fieldDigitsLast"] = params[1]
                 }
 
             }
@@ -489,13 +518,28 @@ class RequestValidation {
 
         //------------------------------------------------------ has params
 
-        if (ruleName === ValidationType.digit) {
+        if (ruleName === ValidationType.digits) {
             if (!field)
                 return true
 
-            return (field.toString().length === parseInt(options.fieldDigit))
+            return (field.toString().length === parseInt(options.fieldDigits))
         }
-        if (ruleName === ValidationType.maxfile) {
+        if (ruleName === ValidationType.digits_between) {
+            if (!field)
+                return true
+
+            return (field.toString().length >= parseInt(options.fieldDigitsFirst) && field.toString().length <= parseInt(options.fieldDigitsLast))
+        }
+        if (ruleName === ValidationType.max_digits || ruleName === ValidationType.min_digits) {
+            if (!field)
+                return false
+            if (ruleName === ValidationType.max_digits)
+                return (field.toString().length <= parseInt(options.fieldDigits))
+
+            return (field.toString().length >= parseInt(options.fieldDigits))
+        }
+
+        if (ruleName === ValidationType.max_file) {
 
             if (!field)
                 return true

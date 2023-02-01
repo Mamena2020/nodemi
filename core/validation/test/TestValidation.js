@@ -25,16 +25,16 @@ class TestRequest extends RequestValidation {
                 "rules": ["required", "date", "date_after:now"]
             },
             "product_image": {
-                "rules": ["required", "image", "maxfile:1,MB"]
+                "rules": ["required", "image", "max_file:1,KB"]
             },
             "item.*.name": {
-                "rules": ["required"]
+                "rules": ["required","digits_between:5,10"]
             },
             "item.*.description": {
                 "rules": ["required"]
             },
             "price.*": {
-                "rules": ["required", "float"]
+                "rules": ["required", "float","digits:2"]
             },
             "comment.*": {
                 "rules": ["required"]

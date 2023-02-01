@@ -2,7 +2,7 @@
 
 Template backend for nodejs.
 
-- feature
+- Features
    - Jwt auth
    - Request validation
    - ORM
@@ -88,6 +88,7 @@ Template backend for nodejs.
       await product.saveMedia(req.body['file'],"product-image")
     
    ```
+
    
  # Request
    
@@ -132,7 +133,7 @@ Template backend for nodejs.
      
       const valid = new ProductRequest(req)
       await valid.check()
-      if (valid.isError())
+      if (valid.isError)
          return valid.responseError(res) // or  return res.status(422).json(valid.errors)
    
    ```
@@ -188,7 +189,7 @@ Template backend for nodejs.
                 "rules": ["required", "date", "date_after:now"]
             },
             "product_image": {
-                "rules": ["required", "image", "maxfile:1,MB"]
+                "rules": ["required", "image", "max_file:1,MB"]
             },
             "item.*.name": {
                 "rules": ["required"]
@@ -283,7 +284,7 @@ Template backend for nodejs.
        unique                // "unique:users,email"  | "unique:users,email,"+super.body.id
        mimetypes             // "mimetypes:image/webp,image/x-icon,video/mp4"
        mimes                 // "mimes:jpg,png"
-       maxfile               // "maxfile:1,GB" "maxfile:1,MB"  |"maxfile:1,KB"  |"maxfile:1,Byte"
+       max_file               // "max_file:1,GB" "max_file:1,MB"  |"max_file:1,KB"  |"max_file:1,Byte"
        image                
        date_after            // "date_after:now" | "date_after:birthdate"
        date_after_or_equal   // "date_after_or_equal:now"
@@ -295,7 +296,10 @@ Template backend for nodejs.
        ip
        url
        json
-       digit                 // "digit:4"
+       digits                // "digits:4"
+       max_digits            // "max_digits:20"
+       min_digits            // "min_digits:20"
+       digits_between        // "digits_between:5,10"
 
    ```
    - Custom 
@@ -332,7 +336,7 @@ Template backend for nodejs.
    ```
   - Set users role
   
-  if the user already has a role, then the user role will be replaced with a new role.  params of setRole() can be name or id of role
+  if the user already has a role, then the user role will be replaced with a new role. setRole() params can be id or name
    
    ```
       let user  = await User.create({
@@ -340,7 +344,7 @@ Template backend for nodejs.
             email: email,
             password: hashPassword
       })
-      user.setRole(2) // params can be name or id of role
+      user.setRole(2) // role id or name
    ```
   - Check user access
    ```
@@ -393,11 +397,5 @@ Template backend for nodejs.
    ```
 
 
-#todo 
-
-- request 
- - max_digit
- - min_digit
- - digit between
 
 

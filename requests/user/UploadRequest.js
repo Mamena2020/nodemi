@@ -13,7 +13,7 @@ class UploadRequest extends RequestValidation {
                 "validation": [
                     "required",
                     "image",
-                    "maxfile:1000,KB",
+                    "max_file:1000,KB",
                 ]
             },
         };
