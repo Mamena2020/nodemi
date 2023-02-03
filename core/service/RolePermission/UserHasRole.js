@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import db from "../../database/database.js";
+import Role from "./Role.js";
 
 class UserHasRole extends Model {
 
@@ -11,16 +12,16 @@ UserHasRole.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "roles",
+            model: "Roles",
             key: 'id'
         },
         onDelete: "CASCADE"
     },
-    table_id: {
+    roleable_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    table_type: {
+    roleable_type: {
         type: DataTypes.STRING,
         allowNull: false
     }

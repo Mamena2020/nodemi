@@ -75,16 +75,53 @@ const syncPermissions = async (role, permissions) => {
 
 const hasRole = async (model = Model) => {
 
-    model.hasMany(UserHasRole, {
-        as: 'role',
-        foreignKey: 'table_id',
+    model.belongsToMany(Role, {
+        through: UserHasRole,
         constraints: false,
-        scope: {
-            table_type: model
-        }
+        foreignKey: 'roleable_id'
     })
 
-    UserHasRole.belongsTo(model, { foreignKey: 'table_id', constraints: false });
+    Role.belongsToMany(model, {
+        through: UserHasRole,
+        constraints: false,
+        foreignKey: "role_id"
+    })
+
+    let includeRolePermissions = {
+        model: Role,
+        include: {
+            model: Permission
+        }
+    }
+
+    model.addScope('withRole', {
+        include: [includeRolePermissions]
+    })
+
+    model.options.defaultScope = model.options.defaultScope || {}
+    model.options.defaultScope.method = model.options.defaultScope.method || []
+    model.options.defaultScope.include = model.options.defaultScope.include || []
+
+    model.options.defaultScope.include.push(includeRolePermissions)
+
+    model.prototype.getRole = function () {
+        return this.Roles && this.Roles[0] || null
+    }
+
+    model.prototype.getPermissions = function () {
+        return this.Roles && this.Roles[0] && this.Roles[0].Permissions || null
+    }
+    model.prototype.getPermissionsName = function () {
+        if (!this.Roles || !this.Roles[0])
+            return
+
+        let names = []
+        for (let p of this.Roles[0].Permissions) {
+            names.push(p.name)
+        }
+        return names
+    }
+
 
     model.prototype.setRole = async function (role) {
         await setRole(
@@ -95,36 +132,13 @@ const hasRole = async (model = Model) => {
 
 
     model.addHook("afterDestroy", (_model) => {
-        UserHasRole.destroy({
-            where: {
-                table_id: _model.where.id,
-                table_type: _model.constructor.name
-            }
-        })
-    })
-
-    model.addHook("afterFind", async function (_model) {
-        // console.log("_model.constructor.name", _model.constructor.name)
-        if (_model) {
-
-            const _hasRole = await UserHasRole.findOne({
+        if (_model && _model.id) {
+            UserHasRole.destroy({
                 where: {
-                    table_id: _model.id,
+                    table_id: _model.where.id,
                     table_type: _model.constructor.name
                 }
-            });
-            if (_hasRole) {
-                let role = await Role.findOne({
-                    include: {
-                        model: Permission,
-                        as: "permissions"
-                    },
-                    where: {
-                        id: _hasRole.role_id
-                    }
-                })
-                _model.role = role
-            }
+            })
         }
     })
 }
@@ -132,8 +146,12 @@ const hasRole = async (model = Model) => {
 const setRole = async (model, role) => {
 
     try {
-        const table_id = model.id
-        const table_type = model.constructor.options.name.singular
+
+        console.log("set role")
+        console.log("model.id", model.id)
+        const roleable_id = model.id
+        const roleable_type = model.constructor.options.name.singular
+
 
         const roleModel = await Role.findOne({
             where: {
@@ -144,26 +162,34 @@ const setRole = async (model, role) => {
             }
         })
 
-        if (!roleModel)
+        if (!roleModel || !roleable_id || !roleable_type)
             throw "role not found"
+
+        console.log("roleModel.id", roleModel.id)
+        console.log("roleable_id", roleable_id)
+        console.log("roleable_type", roleable_type)
 
         const userRole = await UserHasRole.findOne({
             where: {
-                table_id: table_id,
-                table_type: table_type
-            }
+                roleable_id: roleable_id,
+                roleable_type: roleable_type
+            },
+            attributes: ["id"]
         })
 
+
         if (userRole) {
+            console.log("update role model")
             await userRole.update({
                 role_id: roleModel.id
             })
         }
         else {
+            console.log("create new role for user")
             await UserHasRole.create({
                 role_id: roleModel.id,
-                table_id: table_id,
-                table_type: table_type
+                roleable_id: roleable_id,
+                roleable_type: roleable_type
             })
         }
     } catch (error) {
@@ -195,19 +221,19 @@ const loadRole = async (alter = false) => {
     })
 
 
-    UserHasRole.belongsToMany(Role, {
-        foreignKey: 'role_id',
-        as: 'role',
-        through: "userhasroles",
-        constraints: false,
-    })
+    // UserHasRole.belongsToMany(Role, {
+    //     foreignKey: 'role_id',
+    //     as: 'role',
+    //     through: "userhasroles",
+    //     constraints: false,
+    // })
 
-    Role.belongsToMany(UserHasRole, {
-        through: 'userhasroles',
-        as: 'user_has_role',
-        foreignKey: 'role_id',
-        constraints: false,
-    });
+    // Role.belongsToMany(UserHasRole, {
+    //     through: 'userhasroles',
+    //     as: 'user_has_role',
+    //     foreignKey: 'role_id',
+    //     constraints: false,
+    // });
 
 }
 

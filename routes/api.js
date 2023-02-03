@@ -21,6 +21,7 @@ export default function (app) {
 
     routerAuth.use(authJwt)
     routerAuth.get("/user", UserController.getUser)
+    routerAuth.get("/users", UserController.getUsers)
     routerAuth.post("/upload", UserController.upload)
 
     routerApi.use(routerAuth)

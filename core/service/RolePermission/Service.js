@@ -15,7 +15,8 @@ const loadRolePermission = async () => {
 
 
     Role.belongsToMany(Permission, {
-        through: 'rolehaspermissions', as: "permissions",
+        // through: 'rolehaspermissions', as: "permissions",
+        through: RoleHasPermission,
         foreignKey: "role_id",
         otherKey: "permission_id",
         constraints: false
@@ -23,7 +24,7 @@ const loadRolePermission = async () => {
 
 
     Permission.belongsToMany(Role, {
-        through: 'rolehaspermissions', as: "role",
+        through: RoleHasPermission,
         foreignKey: "permission_id",
         otherKey: "role_id",
         constraints: false
@@ -51,7 +52,7 @@ const GateAccess = (user, permissions = []) => {
         }
     }
 
-    if(countValid!== permissions.length)
+    if (countValid !== permissions.length)
         return false
 
     return true

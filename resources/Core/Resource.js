@@ -1,24 +1,23 @@
 class Resource {
 
-    constructor(data) {
-        this.data = data
+    constructor() {
     }
-
-    getData(format = []) {
-
-        if(format.length==0) return this.data
-
-        if (Array.isArray(data)) {
-
+    load(child) {
+        this.child = child
+    }
+    async collection(list = []) {
+        let newList = []
+        for (let data of list) {
+            let newData = await this.make(data)
+            newList.push(newData)
         }
-        else
-            if (typeof this.data === "object" && this.data !== null) {
-
-
-            }
-            else {
-                return []
-            }
-
+        return newList
     }
+
+    async make(data) {
+        return this.child.toArray(data)
+    }
+ 
 }
+
+export default Resource

@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
     "name": "Andre",
-    "email": "andre787922d@gmail.com",
+    "email": "andreddds@gmail.com",
     "password": "7879",
     "confirmPassword": "7879"
 }
@@ -16,7 +16,7 @@ POST  http://localhost:5000/api/login
 Content-Type: application/json
 
 {
-    "email": "andre7879@gmail.com",
+    "email": "andreddds@gmail.com",
     "password": "7879"
 }
 
@@ -29,6 +29,11 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZTc4NzlAZ21haWwuY29tIiwiaWF0IjoxNjc1MjQ2OTQyLCJleHAiOjE2NzUyNDc5NDJ9.0l8mBIh0Wrm0IWfAL75enkgaUXs4PoJarAv2arAu-kk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZWRkZHNAZ21haWwuY29tIiwiaWF0IjoxNjc1NDAzNzgxLCJleHAiOjE2NzU0MDQ3ODF9.V0p75jS-yGwdctNFjjEgsAIaL05eMxvZGAvWPywpWwg
+
+### get users
+GET   http://localhost:5000/api/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZWRkZHNAZ21haWwuY29tIiwiaWF0IjoxNjc1NDAzNzgxLCJleHAiOjE2NzU0MDQ3ODF9.V0p75jS-yGwdctNFjjEgsAIaL05eMxvZGAvWPywpWwg
+
 ### get list routes
 GET   http://localhost:5000/apis

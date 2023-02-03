@@ -8,6 +8,7 @@ import routers from "../routes/web.js"
 import api from "../routes/api.js"
 import loadRolePermission from "./service/RolePermission/Service.js";
 import seeder from "./seeder/Seeder.js";
+import { routeStoragePublic } from "./config/media.js";
 
 const load = async (app) => {
 
@@ -47,7 +48,7 @@ const load = async (app) => {
 
         //------------------------------------------------------- Routers
         app.use(express.static("public"));
-        app.use(express.static("storage"));
+        routeStoragePublic(app)
 
         api(app)
         // routers(app)

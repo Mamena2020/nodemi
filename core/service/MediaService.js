@@ -4,6 +4,7 @@ import path from 'path'
 import fse from 'fs-extra'
 import db from "../../core/database/database.js"
 import mediaConfig from "../config/media.js";
+import { unwatchFile } from "fs";
 // Helper function
 // const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
 
@@ -85,20 +86,84 @@ Media.loadSync = async function ({ alter = false }) {
 const hasMedia = async (model = Model) => {
 
     model.hasMany(Media, {
-        as: 'media',
+        // as: Media.name,
         foreignKey: 'mediatable_id',
         constraints: false,
-        scope: {
-            mediatable_type: model
-        }
+        // scope: {
+        //     mediatable_type: model
+        // }
     })
-    Media.belongsTo(model, { foreignKey: 'mediatable_id', constraints: false });
+    Media.belongsTo(model, { foreignKey: 'mediatable_id', constraints: false })
+
+    let includeMedia = {
+        model: Media,
+
+    }
+
+    model.addScope('withMedia', {
+        include: [includeMedia]
+    })
+
+    model.options.defaultScope = model.options.defaultScope || {};
+    model.options.defaultScope.method = model.options.defaultScope.method || [];
+    model.options.defaultScope.include = model.options.defaultScope.include || []
+
+    model.options.defaultScope.include.push(includeMedia)
+
+
+    model.prototype.getMedia = function () {
+        if (!this.Media)
+            return
+        if (this.dataValues.media)
+            return this.dataValues.media
+
+        let newMedia = []
+        for (let m of this.Media) {
+            if (m.local_storage) {
+                m.url = normalizeLocalStorageToUrl(m.url)
+            }
+            newMedia.push(m)
+        }
+        this.dataValues.media = newMedia;
+        this.dataValues.firstMedia = newMedia[0] || null
+        return newMedia
+    }
+    model.prototype.getFirstMedia = function () {
+        if (!this.Media)
+            return
+        if (this.dataValues.firstMedia)
+            return this.dataValues.firstMedia
+
+        let newMedia = []
+        for (let m of this.Media) {
+            if (m.local_storage) {
+                m.url = normalizeLocalStorageToUrl(m.url)
+            }
+            newMedia.push(m)
+        }
+        this.dataValues.media = newMedia;
+        this.dataValues.firstMedia = newMedia[0] || null
+        return this.dataValues.firstMedia
+    }
 
     model.prototype.saveMedia = async function (file, name) {
         await saveMedia({
             model: this,
             file: file,
             name: name
+        })
+    }
+
+    model.prototype.destroyMedia = async function (name) {
+        if (!name)
+            throw "need media name"
+
+        await Media.destroy({
+            where: {
+                name: name,
+                mediatable_id: this.id,
+                mediatable_type: this.constructor.name
+            }
         })
     }
 
@@ -110,31 +175,6 @@ const hasMedia = async (model = Model) => {
                 mediatable_type: _model.constructor.name
             }
         })
-    })
-
-    model.addHook("afterFind", async function (_model) {
-        // console.log("_model.constructor.name", _model.constructor.name)
-        if (_model) {
-            const media = await Media.findAll({
-                where: {
-                    mediatable_id: _model.id,
-                    mediatable_type: _model.constructor.name
-                }
-            });
-
-            let newMedia = []
-            for (let m of media) {
-                if (m.local_storage) {
-                    m.url = normalizeLocalStorageToUrl(m.url)
-                }
-                newMedia.push(m)
-            }
-            _model.media = newMedia;
-            _model.dataValues.media = newMedia;
-
-            _model.firstMedia = newMedia.length > 0 ? newMedia[0] : null
-            _model.firstMediaUrl = newMedia.length > 0 ? newMedia[0].url : null
-        }
     })
 }
 
@@ -226,10 +266,10 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
  */
 
 const normalizeLocalStorageToUrl = (filePath) => {
-    let directories = filePath.split(path.sep);
-    directories = directories.slice(1);
-    let newPath = directories.join(path.sep);
-    return mediaConfig.root_media_url + newPath
+    let directories = filePath.split(path.sep)
+    directories = directories.slice(1) // remove first path ->  /storage/
+    let newPath = directories.join(path.sep)
+    return mediaConfig.root_media_url + newPath.replace(/\\/g, "/")
 }
 // ------------------------------------------------------------------------------------------- 
 const loadMediaModel = async () => {

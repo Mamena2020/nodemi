@@ -12,7 +12,7 @@ Template backend for nodejs.
 
 # Model
    
-  Create new model via cli
+  Create new model via cli.
    
    ```
       npx nodemi make:model Product
@@ -55,7 +55,8 @@ Template backend for nodejs.
  
  # Media
  
-   Any model can own media by binding the model to the media inside the loadModels function using hasMedia
+   Any model can own media by binding the model to the media inside the loadModels function using hasMedia.
+
    ```
       const loadModels = async () => {
          await Product.sync({
@@ -68,7 +69,7 @@ Template backend for nodejs.
    
    - Save a file 
    
-   If the model already has a file with the same name, then the file will be replaced with a new file
+   If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in storage directory by default.
    
    ```
       // save user avatar
@@ -88,7 +89,23 @@ Template backend for nodejs.
       await product.saveMedia(req.body['file'],"product-image")
     
    ```
+   
+   - Get media
+   
+    The model will have medias, firstMedia and firstMediaUrl
+   
+   ```
+      const product = await Product.findOne({
+          where: {
+                id: 1
+          }
+      })
 
+      console.log(product.medias) // list of media object 
+      console.log(product.firstMedia) // first media object 
+      console.log(product.firstMediaUrl) // first media url 
+
+   ```
    
  # Request
    
@@ -128,7 +145,9 @@ Template backend for nodejs.
 
        export default ProductRequest
    ```
+
    - Basic usage
+
    ```
      
       const valid = new ProductRequest(req)
@@ -139,6 +158,7 @@ Template backend for nodejs.
    ```
    
    - Example html form 
+
    ```
       <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
          <div class="row justify-content-center d-flex">
@@ -277,15 +297,15 @@ Template backend for nodejs.
        string
        float
        integer
-       max                   //   "max:4"
-       min                   //   "min:1" 
+       max                   // "max:4"
+       min                   // "min:1" 
        date 
        array
        exists                // "exists:users,email"  | "exists:users,email,"+super.body.id
        unique                // "unique:users,email"  | "unique:users,email,"+super.body.id
        mimetypes             // "mimetypes:image/webp,image/x-icon,video/mp4"
        mimes                 // "mimes:jpg,png"
-       max_file               // "max_file:1,GB" "max_file:1,MB"  |"max_file:1,KB"  |"max_file:1,Byte"
+       max_file               // "max_file:1,GB" | "max_file:1,MB"  | "max_file:1,KB"  | "max_file:1,Byte"
        image                
        date_after            // "date_after:now" | "date_after:birthdate"
        date_after_or_equal   // "date_after_or_equal:now"
@@ -340,6 +360,7 @@ Template backend for nodejs.
          await hasRole(User)
      
    ```
+
   - Set users role
   
   if the user already has a role, then the user role will be replaced with a new role. setRole() params can be id or name
@@ -352,7 +373,9 @@ Template backend for nodejs.
       })
       user.setRole(2) // role id or name
    ```
+   
   - Check user access
+
    ```
     
        if (!GateAccess(user, ["user-create","user-stored","user-access"])) return res.sendStatus(403)
@@ -386,6 +409,7 @@ Template backend for nodejs.
        }
        
    ```
+   
   - Assigning Permissions to Roles
    
    Assign permissions to a role can be a list of name or id
@@ -402,6 +426,10 @@ Template backend for nodejs.
        
    ```
 
+
+#todo
+- rule
+  - password check
 
 
 

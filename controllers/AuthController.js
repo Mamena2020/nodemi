@@ -2,6 +2,7 @@ import User from "../models/User.js"
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
 import RegisterRequest from "../requests/auth/RegisterRequest.js";
+import JwtHelper from "../core/helper/JwtHelper.js";
 
 const login = async (req, res) => {
 
@@ -13,27 +14,24 @@ const login = async (req, res) => {
         const user = await User.findOne({ where: { email: email } })
 
         const match = await bcrypt.compare(password, user.password)
+
         if (!match) return res.json({ message: "wrong password" }).status(400)
-        const newData = {
+        
+        const payload = {
             id: user.id,
             name: user.name,
             email: user.email
         }
-        const accessToken = jwt.sign(newData, process.env.JWT_ACCESS_TOKEN_SECRET, {
-            expiresIn: '20s'
-        })
-        const refreshToken = jwt.sign(newData, process.env.JWT_REFRESH_TOKEN_SECRET, {
-            expiresIn: '1d'
-        })
+        const token = JwtHelper.createToken(payload)
         await user.update({
-            refresh_token: refreshToken
+            refresh_token: token.refreshToken
         })
-        res.cookie('refreshToken', refreshToken, {
+        res.cookie('refreshToken', token.refreshToken, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
             // secure: true
         })
-        res.json({ message: "login success", "accessToken": accessToken })
+        res.json({ message: "login success", "accessToken": token.accessToken })
     } catch (error) {
         console.log(error)
     }
@@ -50,12 +48,13 @@ const register = async (req, res) => {
         const { name, email, password } = req.body;
         const salt = await bcrypt.genSalt()
         const hashPassword = await bcrypt.hash(password, salt)
-        let user  = await User.create({
+        let user = await User.create({
             name: name,
             email: email,
             password: hashPassword
         })
-
+        console.log("user.id",user.id)
+        console.log("user.email",user.email)
         await user.setRole("customer")
         res.json({ message: "register success" }).status(200)
     } catch (error) {
