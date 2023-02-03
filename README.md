@@ -40,6 +40,7 @@ Template backend for nodejs.
       );
 
       export default Product
+
    ```
     
    Directory core/model/models.js
@@ -60,6 +61,7 @@ Template backend for nodejs.
 
    ```
       const loadModels = async () => {
+
          await Product.sync({
              alter: true, // not recomended on production mode
          })
@@ -75,6 +77,7 @@ Template backend for nodejs.
    ```
       // save user avatar
       const user = await authUser(req)
+
       await user.saveMedia(
           req.body['file'],
           "avatar"
@@ -119,6 +122,7 @@ Template backend for nodejs.
                 id: 1
           }
       })
+
       product.destroyMedia("product-image")
       
    ```
@@ -160,6 +164,7 @@ Template backend for nodejs.
        }
 
        export default ProductRequest
+
    ```
 
    - Basic usage
@@ -167,7 +172,9 @@ Template backend for nodejs.
    ```
      
       const valid = new ProductRequest(req)
+
       await valid.check()
+
       if (valid.isError)
          return valid.responseError(res) // or  return res.status(422).json(valid.errors)
    
@@ -242,6 +249,7 @@ Template backend for nodejs.
             }
         }
       }
+
    ```
    
    - Example error response
@@ -348,7 +356,7 @@ Template backend for nodejs.
         return {
              "name": {
                 "rules": ["required"],
-                "attribute": "Name of product"
+                "attribute": "Product name"
              },
              "discount": {
                 "rules": ["required", "float", "min:3", "max:4"],
@@ -382,11 +390,12 @@ Template backend for nodejs.
   If the user already has a role, then the user role will be replaced with a new role. setRole() params can be id or name
    
    ```
-      let user  = await User.create({
+      let user = await User.create({
             name: name,
             email: email,
             password: hashPassword
       })
+
       user.setRole("customer") // role id or name
       
    ```
@@ -436,6 +445,7 @@ Template backend for nodejs.
        for (let permission of permissions) {
            await Permission.create({ name: permission })
        }
+       
    ```
    
   - Add Role
@@ -451,7 +461,7 @@ Template backend for nodejs.
    
   - Assigning Permissions to Roles
    
-   Assign permissions to a role can be a list of name or id
+   Assign permissions to a role can be a list of permissions name or id
    
    ```
        const permissions = [
@@ -473,7 +483,7 @@ Template backend for nodejs.
       npx nodemi make:resource UserResource
    ```
 
-   The Resource will be created in the resources directory
+   The Resource will be created in resources directory
 
    ```
       import Resource from "../core/resource/Resource.js"
@@ -493,7 +503,7 @@ Template backend for nodejs.
 
    - Basic usage
 
-   To make resource of single object use "make" and "collection" for array of object 
+   To make resource of single object use "make" or "collection" for array of object 
 
    ```
         let userResource = new UserResource().make(user) // for single object
@@ -522,8 +532,8 @@ Template backend for nodejs.
           }
        }
 
-       // permissions resource
-       class PermissionResource extends Resource {
+      // permissions resource
+      class PermissionResource extends Resource {
           constructor() {
                 super().load(this)
             }
@@ -534,7 +544,7 @@ Template backend for nodejs.
                     "name": data.name
                 }
           }
-       }
+      }
 
    ```
  
@@ -557,7 +567,7 @@ Template backend for nodejs.
 
    ```
       {
-          "id": 5,
+          "id": 1,
           "name": "Andre",
           "email": "andre@gmail.com",
           "image": "http://localhost:5000/User-5/287d735a-2880-4d4f-9851-5055d1ba1aae.jpg",
