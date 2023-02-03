@@ -5,10 +5,11 @@ Template backend for nodejs.
 - Features
    - Jwt auth
    - Request validation
-   - ORM
+   - Model - ORM
    - File request handling
    - Media binding to any Model
    - Role and Permissions
+   - Resources
 
 # Model
    
@@ -92,7 +93,7 @@ Template backend for nodejs.
    
    - Get media
    
-    The model will have medias, firstMedia and firstMediaUrl
+   Get all media using getMedia() or getFirstMedia() for first media 
    
    ```
       const product = await Product.findOne({
@@ -100,11 +101,26 @@ Template backend for nodejs.
                 id: 1
           }
       })
+      
+      product.getMedia() // return list of object
+      product.getFirstMedia() // return single object
+      product.getFirstMedia().url // return first media url
+      
 
-      console.log(product.medias) // list of media object 
-      console.log(product.firstMedia) // first media object 
-      console.log(product.firstMediaUrl) // first media url 
-
+   ```
+   
+   - Destroy media
+   
+   Call destroyMedia() for destroy a media
+   
+   ```
+      const product = await Product.findOne({
+          where: {
+                id: 1
+          }
+      })
+      product.destroyMedia("product-image")
+      
    ```
    
  # Request
@@ -363,7 +379,7 @@ Template backend for nodejs.
 
   - Set users role
   
-  if the user already has a role, then the user role will be replaced with a new role. setRole() params can be id or name
+  If the user already has a role, then the user role will be replaced with a new role. setRole() params can be id or name
    
    ```
       let user  = await User.create({
@@ -371,7 +387,30 @@ Template backend for nodejs.
             email: email,
             password: hashPassword
       })
-      user.setRole(2) // role id or name
+      user.setRole("customer") // role id or name
+      
+   ```
+   
+   
+  - Get role 
+  
+  Get role object by calling YourModel.getRole(), or YourModel.getRole().name 
+   
+   ```
+      user.getRole() // role object
+      user.getRole().name // role name
+   
+   ```
+   
+  - Get permissions 
+  
+  Get permission by calling YourModel.getPermissions() will get array of object, or YourModel.getPermissionsName() will get array of permissions name
+   
+   ```
+      
+      user.getPermissions()     //  array of permissions object
+      user.getPermissionsName() //  array of permissions name [ "user-create","user-stored"]
+   
    ```
    
   - Check user access
