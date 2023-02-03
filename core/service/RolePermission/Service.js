@@ -42,12 +42,14 @@ const GateAccess = (user, permissions = []) => {
 
     if (!Array.isArray(permissions))
         throw "permissions must be an array"
-
-    if (!user || !user.role || !user.role.permissions)
+    let permissionsName = user.getPermissionsName()    
+    
+    if(!permissionsName)
         return false
+
     let countValid = 0
-    for (let permission of user.role.permissions) {
-        if (permissions.includes(permission.name)) {
+    for (let permission of permissionsName) {
+        if (permissions.includes(permission)) {
             countValid++
         }
     }

@@ -5,19 +5,19 @@ class Resource {
     load(child) {
         this.child = child
     }
-    async collection(list = []) {
+    collection(list = []) {
         let newList = []
         for (let data of list) {
-            let newData = await this.make(data)
+            let newData = this.make(data)
             newList.push(newData)
         }
         return newList
     }
 
-    async make(data) {
+    make(data) {
         return this.child.toArray(data)
     }
- 
+
 }
 
 export default Resource

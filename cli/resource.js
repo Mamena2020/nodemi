@@ -5,12 +5,12 @@ const fse = require("fs-extra")
 const scripts = () => {
     return `
 
-class ClassName extends RequestValidation {
-    constructor(req) {
-        super(req).load(this)
+class ClassName extends Resource {
+    constructor() {
+        super().load(this)
     }
 
-    rules() {
+    toArray(data) {
         return {
            
         }
@@ -23,14 +23,14 @@ export default ClassName
     `
 }
 
-const makeRequest = (name) => {
+const makeResource = (name) => {
 
     // console.log("Model name: ", name)
     if (!name) {
         console.log("name is undefined")
         return
     }
-    const file = `requests/${name}.js`;
+    const file = `resources/${name}.js`;
 
     if (!fse.existsSync(file)) {
 
@@ -40,13 +40,13 @@ const makeRequest = (name) => {
                 return;
             }
             // add path tree
-            let importRequestValidaion = `core/validation/RequestValidation.js"`
+            let importResource = `core/resource/Resource.js"`
             let count = file.split("").filter(c => c === "/").length
 
             for (let i = 0; i < count; i++) {
-                importRequestValidaion = `../` + importRequestValidaion
+                importResource = `../` + importResource
             }
-            importRequestValidaion = `import RequestValidation from "` + importRequestValidaion + `\n`
+            importResource = `import Resource from "` + importResource + `\n`
 
             // get model name from path
             let names = name.split("/") // Catalog/ProductRequest  
@@ -57,7 +57,7 @@ const makeRequest = (name) => {
 
             // adding import packages on top of line
             let lines = content.split("\n")
-            lines[0] = importRequestValidaion + lines[0]
+            lines[0] = importResource + lines[0]
             let updatedContent = lines.join("\n")
 
             fse.writeFile(file, updatedContent, (errWrite) => {
@@ -65,13 +65,13 @@ const makeRequest = (name) => {
                     console.log("\x1b[31m", "errWrite", errWrite, "\x1b[0m")
                     return;
                 }
-                console.log("\x1b[32m", `Request created: ${file}`, "\x1b[0m")
+                console.log("\x1b[32m", `Resource created: ${file}`, "\x1b[0m")
             });
         })
 
     }
     else {
-        console.log("\x1b[31m", `Request already exists: ${file}`, "\x1b[0m")
+        console.log("\x1b[31m", `Resource already exists: ${file}`, "\x1b[0m")
     }
 }
 
@@ -79,5 +79,5 @@ const makeRequest = (name) => {
 
 
 
-// export default makeRequest
-module.exports = makeRequest
+// export default makeResource
+module.exports = makeResource

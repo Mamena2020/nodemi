@@ -1,4 +1,5 @@
-import Resource from "./Core/Resource.js"
+import Resource from "../core/resource/Resource.js"
+import PermissionResource from "./PermissionResource.js"
 
 class UserResource extends Resource {
 
@@ -13,7 +14,7 @@ class UserResource extends Resource {
             "email": data.email,
             "image": data.getFirstMedia()?.url || '',
             "role": data.getRole()?.name || '',
-            "permissions" : data.getPermissionsName() || []
+            "permissions": new PermissionResource().collection(data.getPermissions() || []),
         }
     }
 

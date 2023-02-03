@@ -465,6 +465,117 @@ Template backend for nodejs.
        
    ```
 
+# Resource
+   
+  Create new resource via cli.
+   
+   ```
+      npx nodemi make:resource UserResource
+   ```
+
+   The Resource will be created in the resources directory
+
+   ```
+      import Resource from "../core/resource/Resource.js"
+      class UserResource extends Resource {
+          constructor(req) {
+              super(req).load(this)
+          }
+
+          toArray(data) {
+               return {}
+          }
+       }
+
+       export default UserResource
+
+   ```
+
+   - Basic usage
+
+   To make resource of single object use "make" and "collection" for array of object 
+
+   ```
+        let userResource = new UserResource().make(user) // for single object
+        let userResources = new UserResource().collection(users) // for array of object
+
+   ```
+
+   - Example Resource
+
+   ``` 
+      // user resource
+      class UserResource extends Resource {
+          constructor(req) {
+              super(req).load(this)
+          }
+
+          toArray(data) {
+              return {
+                        "id": data.id,
+                        "name": data.name,
+                        "email": data.email,
+                        "image": data.getFirstMedia()?.url || '',
+                        "role": data.getRole()?.name || '',
+                        "permissions": new PermissionResource().collection(data.getPermissions() || []),
+                    }
+          }
+       }
+
+       // permissions resource
+       class PermissionResource extends Resource {
+          constructor() {
+                super().load(this)
+            }
+
+            toArray(data) {
+                return {
+                    "id": data.id,
+                    "name": data.name
+                }
+          }
+       }
+
+   ```
+ 
+   - Example usage
+   
+   ```
+      const user = await User.findOne({
+          where: {
+                id: 1
+          }
+      }) 
+
+      let userResource =  new UserResource().make(user)
+
+      res.json(userResource)
+
+   ```
+
+   - Example result
+
+   ```
+      {
+          "id": 5,
+          "name": "Andre",
+          "email": "andre@gmail.com",
+          "image": "http://localhost:5000/User-5/287d735a-2880-4d4f-9851-5055d1ba1aae.jpg",
+          "role": "customer",
+          "permissions": [
+              {
+                  "id": 1,
+                  "name": "user-create"
+              },
+              {
+                  "id": 2,
+                  "name": "user-stored"
+              }
+          ]
+      }
+      
+   ```
+
 
 #todo
 - rule

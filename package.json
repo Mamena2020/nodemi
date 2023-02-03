@@ -28,7 +28,7 @@
   "devDependencies": {
     "dotenv": "^16.0.3",
     "commander": "^10.0.0",
-    "nodemi-cli": "^1.0.38",
+    "nodemi-cli": "^1.0.39",
     "sequelize-cli": "^6.5.2"
   }
 }

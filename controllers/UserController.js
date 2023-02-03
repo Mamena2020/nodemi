@@ -33,14 +33,12 @@ const getUser = async (req, res) => {
 
         if (!user) return res.sendStatus(404)
 
+        if (!GateAccess(user, ["user-create", "user-stored"])) {
+            return res.sendStatus(403)
+        }
 
-        // if (!GateAccess(user, ["user-create", "user-stored"])) {
-        //     return res.sendStatus(403)
-        // }
 
-        console.log(user)
-
-        let newUser = await new UserResource().make(user)
+        let newUser = new UserResource().make(user)
 
         res.json({ message: "get success", "user": newUser })
 
@@ -52,11 +50,7 @@ const getUser = async (req, res) => {
 const getUsers = async (req, res) => {
 
     let users = await User.findAll()
-    // res.json(users)
-
-    // let users = await User.findAll()
-    console.log(users)
-    let resources = await new UserResource().collection(users)
+    let resources = new UserResource().collection(users)
     res.json(resources)
 
 }
