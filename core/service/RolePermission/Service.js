@@ -2,6 +2,10 @@ import Permission, { loadPermission } from "./Permission.js";
 import Role, { loadRole } from "./Role.js";
 import RoleHasPermission from "./RoleHasPermission.js";
 
+
+/**
+ * load role & permissions model
+ */
 const loadRolePermission = async () => {
 
 
@@ -15,11 +19,11 @@ const loadRolePermission = async () => {
 
 
     Role.belongsToMany(Permission, {
-        // through: 'rolehaspermissions', as: "permissions",
         through: RoleHasPermission,
         foreignKey: "role_id",
         otherKey: "permission_id",
         constraints: false
+        // through: 'rolehaspermissions', as: "permissions",
     })
 
 
@@ -33,7 +37,7 @@ const loadRolePermission = async () => {
 }
 
 /**
- * 
+ * Checking user that has particular permissions
  * @param {*} user user model
  * @param {*} permissions ["product-access","product-stored"]
  * @returns 
@@ -42,9 +46,9 @@ const GateAccess = (user, permissions = []) => {
 
     if (!Array.isArray(permissions))
         throw "permissions must be an array"
-    let permissionsName = user.getPermissionsName()    
-    
-    if(!permissionsName)
+    let permissionsName = user.getPermissionsName()
+
+    if (!permissionsName)
         return false
 
     let countValid = 0

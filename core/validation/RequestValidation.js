@@ -286,7 +286,7 @@ class RequestValidation {
             return ("The " + attribute + " " + messageType[0] + " " + options + " " + messageType[1]).split("_").join(" ")
 
         if (ruleType === ValidationType.digits_between)
-            return ("The " + attribute + " " + messageType[0] + " " + options[0] + " " + messageType[1] + " " + options[1]+" digits").split("_").join(" ")
+            return ("The " + attribute + " " + messageType[0] + " " + options[0] + " " + messageType[1] + " " + options[1] + " digits").split("_").join(" ")
 
         return ("The " + attribute + " " + messageType + " " + rule).split("_").join(" ")
 
@@ -294,12 +294,14 @@ class RequestValidation {
 
 
     /**
-     * 
-     * @param {*} fieldKey  ex: password, id, name, 
+     * checking proccess by create params from rule, get rule name, and check validation of value
+     * @param {*} fieldKey  ex: name, birthdate, id, 
+     * @param {*} value  value of field
+     * @param {*} attribute  attribute 
      * @returns void
      */
-    async  #checking(fieldKey, field, attribute) {
-        // var field = this.body[fieldKey]
+    async  #checking(fieldKey, value, attribute) {
+
         let rules = this.rules[fieldKey].rules // ["required","match:password","min:1","max:2"]
         // console.log(">>>>--------------------------------------->>>>")
         // console.log(rules)
@@ -311,7 +313,7 @@ class RequestValidation {
         for (let rule of rules) {
             // val, ex: float, required, date etc...
             // console.log("--------------")
-            // console.log(rule, field)
+            // console.log(rule, value)
             let options
             let ruleName
             let hasParams = this.#isValidationHasParam(rule)
@@ -325,7 +327,7 @@ class RequestValidation {
             else {
                 ruleName = rule
             }
-            let isValid = await this.ValidationCheck(ruleName, field, { options: options })
+            let isValid = await this.ValidationCheck(ruleName, value, { options: options })
 
             if (!isValid) {
                 // console.log("ERROR")
@@ -343,7 +345,7 @@ class RequestValidation {
 
 
     /**
-    * 
+    * check if a rule has params
     * @param {*} rule ex: match:oldPassword
     * @returns 
     */
@@ -354,7 +356,7 @@ class RequestValidation {
 
 
     /**
-     * 
+     * get rule name if rule has params
      * @param {*} rule ex: match:oldPassword
      * @returns match
      */
@@ -364,7 +366,7 @@ class RequestValidation {
     }
 
     /**
-     * 
+     * get rule params
      * @param {*} rule ex: digit_between:1,2
      * @returns [1,2]
      */
@@ -380,7 +382,7 @@ class RequestValidation {
     }
 
     /**
-     * 
+     * create options from rule params
      * @param {*} rule ex: match:password, max:2, min:3
      * @param {*} fieldKey 
      */
@@ -492,12 +494,13 @@ class RequestValidation {
 
 
     /**
-     * 
-     * @param {*} validation ex: required, float
-     * @param {*} field 
+     * Validation check value and rule
+     * @param {*} ruleName ex: required, float
+     * @param {*} value value 
+     * @param {*} options  ex: {fieldMax: 3 }
      * @returns bolean
      */
-    async ValidationCheck(ruleName, field, { options }) {
+    async ValidationCheck(ruleName, value, { options }) {
 
         // console.log("ruleName...", ruleName)
         // console.log("field...", field)
@@ -505,13 +508,13 @@ class RequestValidation {
 
         //------------------------------------------------------ database
         if (ruleName == ValidationType.exists) {
-            let d = await ValidationDB.exists(options.fieldTableName, options.fieldColumnName, field,
+            let d = await ValidationDB.exists(options.fieldTableName, options.fieldColumnName, value,
                 options.fieldException
             )
             return d
         }
         if (ruleName == ValidationType.unique) {
-            return await ValidationDB.unique(options.fieldTableName, options.fieldColumnName, field,
+            return await ValidationDB.unique(options.fieldTableName, options.fieldColumnName, value,
                 options.fieldException
             )
         }
@@ -519,32 +522,32 @@ class RequestValidation {
         //------------------------------------------------------ has params
 
         if (ruleName === ValidationType.digits) {
-            if (!field)
+            if (!value)
                 return true
 
-            return (field.toString().length === parseInt(options.fieldDigits))
+            return (value.toString().length === parseInt(options.fieldDigits))
         }
         if (ruleName === ValidationType.digits_between) {
-            if (!field)
+            if (!value)
                 return true
 
-            return (field.toString().length >= parseInt(options.fieldDigitsFirst) && field.toString().length <= parseInt(options.fieldDigitsLast))
+            return (value.toString().length >= parseInt(options.fieldDigitsFirst) && value.toString().length <= parseInt(options.fieldDigitsLast))
         }
         if (ruleName === ValidationType.max_digits || ruleName === ValidationType.min_digits) {
-            if (!field)
+            if (!value)
                 return false
             if (ruleName === ValidationType.max_digits)
-                return (field.toString().length <= parseInt(options.fieldDigits))
+                return (value.toString().length <= parseInt(options.fieldDigits))
 
-            return (field.toString().length >= parseInt(options.fieldDigits))
+            return (value.toString().length >= parseInt(options.fieldDigits))
         }
 
         if (ruleName === ValidationType.max_file) {
 
-            if (!field)
+            if (!value)
                 return true
 
-            let size = this.#convertByteToAnyUnit(field.size, options.fieldUnit)
+            let size = this.#convertByteToAnyUnit(value.size, options.fieldUnit)
 
             // console.log("size:", size)
             // console.log("options.fieldMaxSize:", options.fieldMaxSize)
@@ -552,46 +555,46 @@ class RequestValidation {
         }
 
         if (ruleName === ValidationType.match)
-            return validator.matches(field ?? " .", options?.fieldMatch ?? " ")
+            return validator.matches(value ?? " .", options?.fieldMatch ?? " ")
 
         if (ruleName === ValidationType.max) {
-            if (Array.isArray(field)) {
-                return field.length <= options.fieldMax
+            if (Array.isArray(value)) {
+                return value.length <= options.fieldMax
             }
-            return validator.isFloat(field.toString() ?? "0", { max: options.fieldMax ?? " " })
+            return validator.isFloat(value.toString() ?? "0", { max: options.fieldMax ?? " " })
         }
 
         if (ruleName === ValidationType.min) {
-            if (Array.isArray(field)) {
-                return field.length >= options.fieldMin
+            if (Array.isArray(value)) {
+                return value.length >= options.fieldMin
             }
-            return validator.isFloat(field.toString() ?? "0", { min: options.fieldMin ?? " " })
+            return validator.isFloat(value.toString() ?? "0", { min: options.fieldMin ?? " " })
         }
 
         if (ruleName === ValidationType.mimetypes) {
-            if (!Array.isArray(options.fieldMimetypes) || !field.type) {
+            if (!Array.isArray(options.fieldMimetypes) || !value.type) {
                 return false
             }
-            return validator.isIn(field.type, options.fieldMimetypes)
+            return validator.isIn(value.type, options.fieldMimetypes)
         }
 
         if (ruleName === ValidationType.mimes) {
-            if (!Array.isArray(options.fieldMimetypes) || !field.extension) return false
+            if (!Array.isArray(options.fieldMimetypes) || !value.extension) return false
 
-            return validator.isIn(field.extension.split('.').join(""), options.fieldMimetypes)
+            return validator.isIn(value.extension.split('.').join(""), options.fieldMimetypes)
         }
         if (ruleName === ValidationType.date_after || ruleName === ValidationType.date_before) {
-            if (!options.fieldDate || !field) return false
-            let _date = this.#formatDate(field)
+            if (!options.fieldDate || !value) return false
+            let _date = this.#formatDate(value)
             let _dateCompare = this.#formatDate(options.fieldDate)
             if (ruleName == ValidationType.date_before)
                 return validator.isBefore(_date, _dateCompare)
             return validator.isAfter(_date, _dateCompare)
         }
         if (ruleName === ValidationType.date_after_or_equal || ruleName === ValidationType.date_before_or_equal) {
-            if (!options.fieldDate || !field) return false
+            if (!options.fieldDate || !value) return false
 
-            let _date = this.#formatDate(field)
+            let _date = this.#formatDate(value)
             let _dateCompare = this.#formatDate(options.fieldDate)
 
             if (ruleName == ValidationType.date_before_or_equal) {
@@ -607,62 +610,67 @@ class RequestValidation {
         }
 
         if (ruleName === ValidationType.in_array) {
-            return validator.isIn(field, options.fieldArray)
+            return validator.isIn(value, options.fieldArray)
         }
         if (ruleName === ValidationType.not_in_array) {
-            return !validator.isIn(field, options.fieldArray)
+            return !validator.isIn(value, options.fieldArray)
         }
 
 
         //------------------------------------------------------ has no params
 
         if (ruleName === ValidationType.image) {
-            if (!field || !field.extension)
+            if (!value || !value.extension)
                 return false
-            return validator.isIn(field.extension.split('.').join(""), Object.values(this.imageFormats))
+            return validator.isIn(value.extension.split('.').join(""), Object.values(this.imageFormats))
         }
 
         if (ruleName === ValidationType.required) {
-            if (field === undefined || field === null || field === "")
+            if (value === undefined || value === null || value === "")
                 return false
         }
 
         if (ruleName === ValidationType.email)
-            return validator.isEmail(field.toString())
+            return validator.isEmail(value.toString())
 
         if (ruleName === ValidationType.bolean)
-            return validator.isBoolean(field.toString())
+            return validator.isBoolean(value.toString())
 
         if (ruleName === ValidationType.float)
-            return validator.isFloat((field ?? '').toString())
+            return validator.isFloat((value ?? '').toString())
 
         if (ruleName === ValidationType.integer)
-            return validator.isInt((field ?? "").toString())
+            return validator.isInt((value ?? "").toString())
 
         if (ruleName === ValidationType.date) {
-            let newDate = this.#formatDate(field)
+            let newDate = this.#formatDate(value)
             return validator.isDate(newDate.toString())
         }
 
         if (ruleName === ValidationType.string)
-            return (typeof field === "string")
+            return (typeof value === "string")
 
         if (ruleName === ValidationType.array)
-            return (Array.isArray(field))
+            return (Array.isArray(value))
 
         if (ruleName === ValidationType.ip)
-            return validator.isIP(field)
+            return validator.isIP(value)
 
         if (ruleName === ValidationType.url)
-            return validator.isURL(field)
+            return validator.isURL(value)
 
         if (ruleName === ValidationType.json)
-            return validator.isJSON(field)
+            return validator.isJSON(value)
 
 
         return true
     }
 
+    /**
+     * change date format so can be using for validation check
+     * @param {*} date 
+     * @returns 
+     */
     #formatDate(date) {
         try {
             var d = new Date(date),
@@ -681,10 +689,16 @@ class RequestValidation {
         return date
     }
 
+    /**
+     * file size units
+     */
     fileUnits = {
         GB: "GB", MB: "MB", KB: "KB", Byte: "Byte"
     }
 
+    /**
+     * image formats
+     */
     imageFormats = {
         jpg: "jpg",
         jpeg: "jpeg",
@@ -711,14 +725,15 @@ class RequestValidation {
         return false
     }
 
+    /**
+     * convert size in byte to any unit
+     * @param {*} sizeInByte 
+     * @param {*} unit 
+     * @returns 
+     */
     #convertByteToAnyUnit(sizeInByte, unit) {
 
-        // console.log("convert...")
-        // console.log("unit", unit)
-        // console.log("sizeInByte", sizeInByte)
-        // console.log("this.filebytes", this.fileUnits.KB)
         if (unit === this.fileUnits.KB) {
-            // console.log("convert to KB FROM Bytes")
             return (sizeInByte / 1024).toFixed(2)
         }
 
@@ -734,7 +749,10 @@ class RequestValidation {
 
     // -------------------------------------------------------------------------------------------------------- nested process
 
-
+    /**
+     * If rule is nested, then proccess to get value begins here
+     * @param {*} fieldKey 
+     */
     async #nestedProcess(fieldKey) {
         // console.log("start nested validation")
         let fieldArray = fieldKey.split(".")
@@ -742,10 +760,13 @@ class RequestValidation {
     }
 
     /**
-     * 
+     * recursive function to check into deep nested value. 
+     * the purpose is found the value from field body
+     * @param {*} fieldKey item.*.name
      * @param {*} fieldArray [item, * , name]
+     * @param {*} attribute  default is ""
      * @param {*} currentField this.body[item] |  this.body[item][0] | this.body[item][0][name]
-     * @param {*} indexNested 
+     * @param {*} indexNested default is 0
      * @returns 
      */
     async #recursizeNested(fieldKey, fieldArray, currentField, attribute, indexNested) {
@@ -765,6 +786,10 @@ class RequestValidation {
                 // console.log("validation: ",)
                 // console.log("data-> ", currentField)
                 // console.log("attribute-> ",)
+
+                // fieldKey -> item.*.name -> used for get validation rule
+                // currentField -> value of name from this.body object
+                // attribute slice 1 means-> .item.0.name -> item.0.name
                 await this.#checking(fieldKey, currentField, attribute.slice(1))
             }
             else {

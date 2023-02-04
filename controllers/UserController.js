@@ -1,12 +1,9 @@
 import User from "../models/User.js";
 import UserDetail from "../models/UserDetail.js";
-import { authUser } from "../core/middleware/AuthJwt.js";
 import { GateAccess } from "../core/service/RolePermission/Service.js";
 import UploadRequest from "../requests/user/UploadRequest.js";
 import UserResource from "../resources/UserResource.js";
-import UserHasRole from "../core/service/RolePermission/UserHasRole.js";
-import Role from "../core/service/RolePermission/Role.js";
-import Permission from "../core/service/RolePermission/Permission.js";
+import JwtAuth from "../core/auth/JwtAuth.js";
 
 
 const getUser = async (req, res) => {
@@ -65,7 +62,7 @@ const upload = async (req, res) => {
     if (valid.isError)
         return valid.responseError(res)
 
-    const user = await authUser(req)
+    const user = await JwtAuth.getUser(req)
     if (!user)
         return res.status(403).json({ message: "need auth" })
 
@@ -86,25 +83,3 @@ export default {
 
 
 
-// const { User, Task } = require('./models');
-
-// User.defaultScope(function(options) {
-//   const { withTasks } = options;
-//   const scopes = {};
-
-//   if (withTasks) {
-//     scopes.include = [{
-//       model: Task
-//     }];
-//   }
-
-//   return scopes;
-// });
-
-// User.findAll({ withTasks: true })
-// .then(users => {
-//   console.log(users.map(user => user.toJSON()));
-// })
-// .catch(error => {
-//   console.error(error);
-// });

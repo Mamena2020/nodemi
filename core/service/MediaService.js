@@ -67,6 +67,10 @@ Media.addHook("afterDestroy", async (media) => {
     }
 })
 
+/**
+ * Load media model
+ * @param {*} param0 
+ */
 Media.loadSync = async function ({ alter = false }) {
     // handling for multiple index of url
     try {
@@ -83,6 +87,10 @@ Media.loadSync = async function ({ alter = false }) {
 }
 
 // ------------------------------------------------------------------------------------------- binding with any model
+/**
+ * binding any model to media, so any model can have media 
+ * @param {*} model 
+ */
 const hasMedia = async (model = Model) => {
 
     model.hasMany(Media, {
@@ -179,6 +187,13 @@ const hasMedia = async (model = Model) => {
 }
 
 // ------------------------------------------------------------------------------------------- store file functions
+/**
+ * store media to local storage
+ * @param {*} file 
+ * @param {*} mediatable_type 
+ * @param {*} mediatable_id 
+ * @returns 
+ */
 const saveToLocal = async (file, mediatable_type, mediatable_id) => {
     return await new Promise(async (resolve, reject) => {
         const folderName = mediaConfig.localStorageDirectory + "/" + mediatable_type + "-" + mediatable_id
@@ -203,8 +218,8 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
 
 
 /**
- * 
- * @param {*} param0 
+ * save a media 
+ * @param { model = Model, file = Object, name = String } 
  * @returns 
  */
 const saveMedia = async ({ model = Model, file = Object, name = String }) => {
@@ -272,6 +287,9 @@ const normalizeLocalStorageToUrl = (filePath) => {
     return mediaConfig.root_media_url + newPath.replace(/\\/g, "/")
 }
 // ------------------------------------------------------------------------------------------- 
+/**
+ * load media model
+ */
 const loadMediaModel = async () => {
     await Media.loadSync({
         alter: true

@@ -27,52 +27,10 @@ Role.init({
 
 
 
-const syncPermissions = async (role, permissions) => {
-    try {
-        await RoleHasPermission.destroy({
-            where: {
-                role_id: role.id
-            }
-        })
-
-        if (Array.isArray(permissions)) {
-            if (permissions.every(element => typeof element === "number")) {
-                for (let id of permissions) {
-                    try {
-                        await RoleHasPermission.create({
-                            role_id: role.id,
-                            permission_id: id
-                        })
-                    } catch (error) {
-                        console.error(error)
-                    }
-                }
-            }
-            if (permissions.every(element => typeof element === "string")) {
-                for (let name of permissions) {
-                    try {
-                        let permission = await Permission.findOne({ where: { name: name } })
-                        if (permission) {
-                            await RoleHasPermission.create({
-                                role_id: role.id,
-                                permission_id: permission.id
-                            })
-                        }
-                    } catch (error) {
-                        console.error(error)
-                    }
-                }
-            }
-        }
-        else {
-
-        }
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-
+/**
+ * Binding any model to role, so any model that binding with this function will have role
+ * @param {*} model 
+ */
 const hasRole = async (model = Model) => {
 
     model.belongsToMany(Role, {
@@ -143,6 +101,11 @@ const hasRole = async (model = Model) => {
     })
 }
 
+/**
+ * Binding role model to any model, so that model can have a role
+ * @param {*} model 
+ * @param {*} role 
+ */
 const setRole = async (model, role) => {
 
     try {
@@ -201,7 +164,10 @@ const setRole = async (model, role) => {
 }
 
 
-
+/**
+ * Load role Model & UserHasModel
+ * @param {*} alter 
+ */
 const loadRole = async (alter = false) => {
 
 
@@ -237,6 +203,10 @@ const loadRole = async (alter = false) => {
 
 }
 
+/**
+  * Used for handling multiple index before alter role table 
+ * @param {*} alter 
+ */
 const alterTableRoleHandling = async (alter = false) => {
     // handling for multiple index of url
     try {
@@ -250,6 +220,84 @@ const alterTableRoleHandling = async (alter = false) => {
 }
 
 
+/**
+ * Assigning permission to a role
+ * @param {*} role 
+ * @param {*} permissions 
+ */
+const syncPermissions = async (role, permissions) => {
+    try {
+        await RoleHasPermission.destroy({
+            where: {
+                role_id: role.id
+            }
+        })
+
+        if (Array.isArray(permissions)) {
+            if (permissions.every(element => typeof element === "number")) {
+                for (let id of permissions) {
+                    try {
+                        await RoleHasPermission.create({
+                            role_id: role.id,
+                            permission_id: id
+                        })
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }
+            }
+            if (permissions.every(element => typeof element === "string")) {
+                for (let name of permissions) {
+                    try {
+                        let permission = await Permission.findOne({ where: { name: name } })
+                        if (permission) {
+                            await RoleHasPermission.create({
+                                role_id: role.id,
+                                permission_id: permission.id
+                            })
+                        }
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }
+            }
+        }
+        else {
+
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+
+
 
 export default Role
 export { loadRole, hasRole }
+
+
+
+
+// const { User, Task } = require('./models');
+
+// User.defaultScope(function(options) {
+//   const { withTasks } = options;
+//   const scopes = {};
+
+//   if (withTasks) {
+//     scopes.include = [{
+//       model: Task
+//     }];
+//   }
+
+//   return scopes;
+// });
+
+// User.findAll({ withTasks: true })
+// .then(users => {
+//   console.log(users.map(user => user.toJSON()));
+// })
+// .catch(error => {
+//   console.error(error);
+// });

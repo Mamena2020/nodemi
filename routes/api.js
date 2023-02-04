@@ -2,7 +2,7 @@
 import express from "express";
 import AuthController from "../controllers/AuthController.js";
 import UserController from "../controllers/UserController.js";
-import authJwt from "../core/middleware/AuthJwt.js";
+import JwtAuthPass from "../core/middleware/JwtAuthPass.js";
 import Requests from "../middleware/Requests.js";
 
 import testValidation from "../core/validation/test/TestValidation.js";
@@ -19,7 +19,7 @@ export default function (app) {
     
     routerApi.post("/validation", testValidation)
 
-    routerAuth.use(authJwt)
+    routerAuth.use(JwtAuthPass)
     routerAuth.get("/user", UserController.getUser)
     routerAuth.get("/users", UserController.getUsers)
     routerAuth.post("/upload", UserController.upload)

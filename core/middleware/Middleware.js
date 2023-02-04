@@ -3,6 +3,10 @@ import CorsHandling from './CorsHandling.js'
 import express from "express";
 import cookieParser from "cookie-parser";
 
+
+/**
+ * Default middleware
+ */
 export default (app) => {
 
     CorsHandling(app)
@@ -14,7 +18,7 @@ export default (app) => {
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
 
-    //------------------------------------------------------- Media upload handling
+    //------------------------------------------------------- files upload handling & nested field 
     app.use(mediaRequestHandling)
     //------------------------------------------------------- 
 

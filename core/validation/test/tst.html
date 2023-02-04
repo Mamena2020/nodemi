@@ -1,0 +1,54 @@
+can using recursive for handling input like this, the function will call inside busboy on field
+
+<input type="text" name="name" />
+<input type="text" name="discount" />
+<input type="date" name="expired_date" />
+
+<input type="text" name="item[0][name]" />
+<input type="text" name="item[0][description]" />
+<input type="text" name="price[0]" />
+
+<input type="text" name="item[1][name]" />
+<input type="text" name="item[1][description]" />
+<input type="text" name="price[1]" />
+
+<input type="text" multiple name="list[]" />
+
+<input type="text" name="comment[]" />
+<input type="text" name="comment[]" />
+<input type="text" name="comment[]" />
+<input type="text" name="comment[]" />
+
+<input type="text" name="seo[title]" />
+<input type="text" name="seo[description]" />
+<input type="text" name="seo[image][url]" />
+<input type="text" name="seo[image][name]" />
+
+
+before output like this. and remember. that input is only an example, so maybe html input will be dynamic
+
+
+    {
+        name: '',
+        discount: '',
+        expired_date: '',
+        item: [ { name: '' , description: '' } , { name: '' , description: '' }],
+        price: { '' , '' },
+        list: [ '' ],
+        comment: [ '' , '' , '' , '' ],
+        seo: { title: '' , description: '' , image: {url : '' , name: '' } }
+    }
+
+    {
+        name: '',
+        discount: '',
+        expired_date: '',
+        item: {
+          '0': { name: '', description: '' },
+          '1': { name: '', description: '' }
+        },
+        price: { '0': '', '1': '' },
+        list: '',
+        comment: '',
+        seo: { title: '', description: '', image: { url: '', name: '' } }
+      }

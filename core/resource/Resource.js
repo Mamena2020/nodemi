@@ -1,3 +1,7 @@
+
+/**
+ * Resource for handling mapping data from collections of single object
+ */
 class Resource {
 
     constructor() {

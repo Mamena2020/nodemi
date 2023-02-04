@@ -79,7 +79,7 @@ Template backend for nodejs.
       const user = await authUser(req)
 
       await user.saveMedia(
-          req.body['file'],
+          req.body.file,
           "avatar"
       )
 
@@ -90,13 +90,13 @@ Template backend for nodejs.
           }
       }) 
 
-      await product.saveMedia(req.body['file'],"product-image")
+      await product.saveMedia(req.body.file,"product-image")
     
    ```
    
    - Get media
    
-   Get all media using getMedia() or getFirstMedia() for first media 
+   Get all media by calling getMedia() or getFirstMedia() for first media 
    
    ```
       const product = await Product.findOne({
@@ -114,7 +114,7 @@ Template backend for nodejs.
    
    - Destroy media
    
-   Call destroyMedia() for destroy a media
+   Destroy media by calling destroyMedia(mediaName) 
    
    ```
       const product = await Product.findOne({
@@ -311,7 +311,6 @@ Template backend for nodejs.
    
    ```
    
-   
    - List of rules
    
    ```
@@ -347,6 +346,7 @@ Template backend for nodejs.
        digits_between        // "digits_between:5,10"
 
    ```
+
    - Custom 
      
      Custom validation messages and attribute
@@ -374,7 +374,7 @@ Template backend for nodejs.
 
 # Role and Permissions
    
-  A User model can has a role by binding using hasRole function inside loadModels on core/model/models.js
+  A User model can have a role by binding using hasRole(YourModel) function inside loadModels on core/model/models.js
   
    ```
       const loadModels = async () => {
@@ -387,7 +387,7 @@ Template backend for nodejs.
 
   - Set users role
   
-  If the user already has a role, then the user role will be replaced with a new role. setRole() params can be id or name
+  If the user already has a role, then the user role will be replaced with a new role. setRole() params can be role id or name
    
    ```
       let user = await User.create({
@@ -468,7 +468,9 @@ Template backend for nodejs.
           "user-create",
           "user-stored"
        ]
+       
        let admin = await Role.findOne({ where: { name: "admin" } })
+
        if (admin) {
            await admin.syncPermissions(permissions)
        }
@@ -507,6 +509,7 @@ Template backend for nodejs.
 
    ```
         let userResource = new UserResource().make(user) // for single object
+
         let userResources = new UserResource().collection(users) // for array of object
 
    ```
@@ -548,7 +551,7 @@ Template backend for nodejs.
 
    ```
  
-   - Example usage
+   - Example calling
    
    ```
       const user = await User.findOne({
@@ -570,7 +573,7 @@ Template backend for nodejs.
           "id": 1,
           "name": "Andre",
           "email": "andre@gmail.com",
-          "image": "http://localhost:5000/User-5/287d735a-2880-4d4f-9851-5055d1ba1aae.jpg",
+          "image": "http://localhost:5000/User-1/287d735a-2880-4d4f-9851-5055d1ba1aae.jpg",
           "role": "customer",
           "permissions": [
               {

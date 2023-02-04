@@ -4,7 +4,9 @@ import { hasMedia } from '../service/MediaService.js'
 import { hasRole } from "../service/RolePermission/Role.js";
 
 
-
+/**
+ * All model will load here
+ */
 const loadModels = async () => {
 
 

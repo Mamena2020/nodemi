@@ -15,6 +15,10 @@ const mediaConfig = {
     root_media_url: host + ":" + port + "/"
 }
 
+/**
+ * Setup dir as public where media is stored 
+ * @param {*} app express js app 
+ */
 const routeStoragePublic = (app) => {
     app.use(express.static(process.env.MEDIA_LOCAL_STORAGE_DIR_NAME ?? "storage"));
 }

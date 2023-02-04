@@ -32,6 +32,11 @@ Permission.init({
     }
 )
 
+
+/**
+ * Load permisssions model 
+ * @param {*} alter 
+ */
 const loadPermission = async (alter = false) => {
     await alterTablePermissionHandling(alter)
     await Permission.sync({
@@ -40,7 +45,10 @@ const loadPermission = async (alter = false) => {
 
 }
 
-
+/**
+ * Used for handling multiple index before alter permissions table 
+ * @param {*} alter 
+ */
 const alterTablePermissionHandling = async (alter = false) => {
     // handling for multiple index of url
     try {
