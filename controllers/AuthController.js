@@ -27,7 +27,7 @@ const login = async (req, res) => {
         await user.update({
             refresh_token: token.refreshToken
         })
-        
+
         res.cookie('refreshToken', token.refreshToken, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
@@ -45,7 +45,7 @@ const register = async (req, res) => {
         let valid = new RegisterRequest(req)
         await valid.check()
         if (valid.isError)
-            return res.json(valid.errors).status(402)
+            return valid.responseError(res)
 
         const { name, email, password } = req.body;
         const salt = await bcrypt.genSalt()
@@ -55,10 +55,11 @@ const register = async (req, res) => {
             email: email,
             password: hashPassword
         })
-        console.log("user.id", user.id)
-        console.log("user.email", user.email)
+
         await user.setRole("customer")
+
         res.json({ message: "register success" }).status(200)
+
     } catch (error) {
         console.log(error)
     }
@@ -69,7 +70,7 @@ const refreshToken = async (req, res) => {
 
     try {
         const refreshToken = req.cookies.refreshToken;
-        
+
         if (!refreshToken) return res.sendStatus(401)
 
         const user = await User.findOne(

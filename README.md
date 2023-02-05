@@ -589,10 +589,56 @@ Template backend for nodejs.
       
    ```
 
+# Auth Jwt
+  
+   - Create token 
+   
+   Create token by calling JwtAuth.createToken(), that will return refresh token and access token
 
-#todo
-- rule
-  - password check
+   ```
+      const payload = {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
+     
+      const token = JwtAuth.createToken(payload)
+     
+      console.log(token.refreshToken)
+      console.log(token.accessToken)
 
 
+   ```
 
+   - Regenerate access token
+
+   Regenerate access token by calling JwtAuth.regenerateAccessToken(), that will return new access token
+
+   ```
+
+      let accessToken = JwtAuth.regenerateAccessToken(refreshToken)
+
+   ```
+
+   - Get Auth user
+
+   Get authenticated user by calling JwtAuth.getUser(), that will get user by refresh token on request cookies
+
+   ```
+      const user = await JwtAuth.getUser(req)
+
+
+   ```
+
+   - Middleware auth
+
+   For secure access to controller by adding JwtAuthPass to router.
+
+   
+   ```
+      routerAuth.use(JwtAuthPass)
+      routerAuth.get("/upload", UserController.upload)
+       
+      app.use("/api",routerAuth) 
+      
+   ```

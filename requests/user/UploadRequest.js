@@ -10,7 +10,7 @@ class UploadRequest extends RequestValidation {
     rules() {
         return {
             "file": {
-                "validation": [
+                "rules": [
                     "required",
                     "image",
                     "max_file:1000,KB",

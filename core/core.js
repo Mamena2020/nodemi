@@ -3,8 +3,8 @@ import express from "express";
 import db from "./database/database.js"
 import loadModels from "./model/Models.js"
 import middleware from "./middleware/Middleware.js"
-import { loadMediaModel } from "./service/MediaService.js"
-import routers from "../routes/web.js"
+import { loadMedia } from "./service/MediaService.js"
+import web from "../routes/web.js"
 import api from "../routes/api.js"
 import loadRolePermission from "./service/RolePermission/Service.js";
 import seeder from "./seeder/Seeder.js";
@@ -15,25 +15,31 @@ const load = async (app) => {
     try {
         console.log("load core....")
         //------------------------------------------------------- Database
-        // process.env.PRODUCTION
-        // await db.authenticate()
+        
+        await db.authenticate()
+
         // db.drop({cascade: true})
+        
         // await db.sync({alter: true})
+        
         //------------------------------------------------------- 
 
 
         //------------------------------------------------------- Services
 
+        await loadMedia()
+        await loadRolePermission()
 
         //------------------------------------------------------- 
 
 
 
         //------------------------------------------------------- Models
-        // await loadRolePermission()
-        // await loadMediaModel() // media model
-        // await loadModels() // all model
-        // //------------------------------------------------------- Seeder
+
+        await loadModels() // all model
+
+        //------------------------------------------------------- Seeder
+
         // await seeder()
 
         //------------------------------------------------------- 
@@ -41,17 +47,21 @@ const load = async (app) => {
 
 
         //------------------------------------------------------- Middleware
+        
         middleware(app)
+
         //------------------------------------------------------- 
 
 
 
         //------------------------------------------------------- Routers
+
         app.use(express.static("public"));
+        
         routeStoragePublic(app)
 
         api(app)
-        // routers(app)
+        web(app)
 
         //------------------------------------------------------- 
 

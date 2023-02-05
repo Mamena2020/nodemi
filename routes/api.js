@@ -10,7 +10,7 @@ import testValidation from "../core/validation/test/TestValidation.js";
 const routerApi = express.Router()
 const routerAuth = express.Router()
 
-export default function (app) {
+export default function api(app) {
 
     routerApi.post("/login", Requests.login, AuthController.login)
     routerApi.post("/register", AuthController.register)

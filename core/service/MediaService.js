@@ -290,7 +290,7 @@ const normalizeLocalStorageToUrl = (filePath) => {
 /**
  * load media model
  */
-const loadMediaModel = async () => {
+const loadMedia = async () => {
     await Media.loadSync({
         alter: true
     })
@@ -299,4 +299,4 @@ const loadMediaModel = async () => {
 // ------------------------------------------------------------------------------------------- 
 
 export default Media
-export { hasMedia, loadMediaModel }
+export { hasMedia, loadMedia }
