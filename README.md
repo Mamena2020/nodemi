@@ -642,3 +642,9 @@ Template backend for nodejs.
       app.use("/api",routerAuth) 
       
    ```
+
+
+
+   #todo
+
+   - remove role testing

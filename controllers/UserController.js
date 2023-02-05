@@ -4,6 +4,7 @@ import { GateAccess } from "../core/service/RolePermission/Service.js";
 import UploadRequest from "../requests/user/UploadRequest.js";
 import UserResource from "../resources/UserResource.js";
 import JwtAuth from "../core/auth/JwtAuth.js";
+import { getPathLocalStorage } from "../core/service/MediaService.js";
 
 
 const getUser = async (req, res) => {
@@ -33,7 +34,6 @@ const getUser = async (req, res) => {
         if (!GateAccess(user, ["user-create", "user-stored"])) {
             return res.sendStatus(403)
         }
-
 
         let newUser = new UserResource().make(user)
 
@@ -75,10 +75,37 @@ const upload = async (req, res) => {
 }
 
 
+const deleteUser = async (req, res) => {
+    const id = req.params.id
+    await User.destroy({
+        where: {
+            id: id
+        }
+    })
+    res.json("user deleted")
+}
+
+const deleteMedia = async (req, res) => {
+    let id = req.params.id
+    let user = await User.findOne({
+        where: {
+            id: id
+        }
+    })
+
+    user.destroyMedia("avatar")
+    
+    res.json("media deleted")
+
+}
+
+
 export default {
     getUser,
     getUsers,
     upload,
+    deleteUser,
+    deleteMedia
 }
 
 

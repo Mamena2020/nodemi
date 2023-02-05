@@ -58,14 +58,6 @@ Media.init({
     }
 )
 
-Media.addHook("afterDestroy", async (media) => {
-    try {
-        if (media.local_storage) {
-            await fse.remove(media.url)
-        }
-    } catch (error) {
-    }
-})
 
 /**
  * Load media model
@@ -104,8 +96,7 @@ const hasMedia = async (model = Model) => {
     Media.belongsTo(model, { foreignKey: 'mediatable_id', constraints: false })
 
     let includeMedia = {
-        model: Media,
-
+        model: Media
     }
 
     model.addScope('withMedia', {
@@ -120,38 +111,14 @@ const hasMedia = async (model = Model) => {
 
 
     model.prototype.getMedia = function () {
-        if (!this.Media)
-            return
-        if (this.dataValues.media)
-            return this.dataValues.media
-
-        let newMedia = []
-        for (let m of this.Media) {
-            if (m.local_storage) {
-                m.url = normalizeLocalStorageToUrl(m.url)
-            }
-            newMedia.push(m)
-        }
-        this.dataValues.media = newMedia;
-        this.dataValues.firstMedia = newMedia[0] || null
-        return newMedia
+        return getMedia(this)
     }
     model.prototype.getFirstMedia = function () {
-        if (!this.Media)
+        let _media = getMedia(this)
+        if (!_media)
             return
-        if (this.dataValues.firstMedia)
-            return this.dataValues.firstMedia
 
-        let newMedia = []
-        for (let m of this.Media) {
-            if (m.local_storage) {
-                m.url = normalizeLocalStorageToUrl(m.url)
-            }
-            newMedia.push(m)
-        }
-        this.dataValues.media = newMedia;
-        this.dataValues.firstMedia = newMedia[0] || null
-        return this.dataValues.firstMedia
+        return _media[0] || null
     }
 
     model.prototype.saveMedia = async function (file, name) {
@@ -166,25 +133,89 @@ const hasMedia = async (model = Model) => {
         if (!name)
             throw "need media name"
 
-        await Media.destroy({
-            where: {
-                name: name,
-                mediatable_id: this.id,
-                mediatable_type: this.constructor.name
+        if (!this.Media)
+            return
+
+        let _medias = await this.getMedia()
+
+        for (let i = 0; i < _medias.length; i++) {
+            if (_medias[i].name === name) {
+                await Media.destroy({
+                    where: {
+                        name: name,
+                        mediatable_id: this.id,
+                        mediatable_type: this.constructor.name
+                    }
+                })
+                try {
+                    if (_medias[i].local_storage) {
+                        await fse.remove(_medias[i].path)
+                    }
+                } catch (error) {
+                    console.log("error", error)
+                }
+                this.Media.splice(i, 1)
+                break
             }
-        })
+        }
     }
 
 
-    model.addHook("afterDestroy", (_model) => {
-        Media.destroy({
-            where: {
-                mediatable_id: _model.where.id,
-                mediatable_type: _model.constructor.name
-            }
+    model.beforeBulkDestroy(async (instance) => {
+
+        let _models = await model.findAll({
+            where: instance.where
         })
+        if (_models && _models.length > 0) {
+            for (let _model of _models) {
+                Media.destroy({
+                    where: {
+                        mediatable_id: _model.id,
+                        mediatable_type: instance.model.options.name.singular
+                    }
+                })
+                let _pathlocalStorage = getPathLocalStorage(_model.getMedia()) // result storage/user-1
+                if (_pathlocalStorage) {
+                    try {
+                        fse.remove(_pathlocalStorage)
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+        }
+
     })
+
+
 }
+
+
+/**
+ * return list of dataValues of models
+ * @param {*} _model any model that has binded with media model
+ * @returns 
+ */
+const getMedia = (_model) => {
+    if (!_model.Media) // from include default scope
+        return
+
+    let _medias = []
+    let _media = {}
+    for (let m of _model.Media) {
+        _media = {}
+        for (let key in m.dataValues) {
+            _media[key] = m.dataValues[key]
+        }
+        if (_media.local_storage) {
+            _media["path"] = _media["url"]
+            _media["url"] = normalizeLocalStorageToUrl(_media["url"])
+        }
+        _medias.push(_media)
+    }
+    return _medias
+}
+
 
 // ------------------------------------------------------------------------------------------- store file functions
 /**
@@ -204,6 +235,7 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
             await fse.mkdirSync(folderName, { recursive: true });
         }
 
+        // moving from temporary dir
         await fse.move(file.tempDir, targetDir, (err) => {
             if (err) {
                 console.log("error when rename file to permanent storage")
@@ -257,10 +289,14 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             })
         }
         else {
+            // remove old media file
             try {
-                await fse.remove(media.url)
+                if (media.local_storage) {
+                    await fse.remove(media.url)
+                }
             } catch (error) {
             }
+
             await media.update({
                 url: targetDir,
                 info: JSON.stringify(file),
@@ -296,7 +332,30 @@ const loadMedia = async () => {
     })
 }
 
+
+/**
+ * get path local storage if on there is a media stored on local storage
+ * @param {*} medias 
+ * @returns 
+ */
+const getPathLocalStorage = (medias) => {
+    if (!medias || !Array.isArray(medias))
+        return
+    try {
+        for (let m of medias) {
+            if (m.local_storage) {
+                // console.log("m.path:", m.path)
+                const parts = m.path.split(path.sep)
+                return parts.slice(0, 2).join('/');
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    return
+}
+
 // ------------------------------------------------------------------------------------------- 
 
 export default Media
-export { hasMedia, loadMedia }
+export { hasMedia, loadMedia, getPathLocalStorage }

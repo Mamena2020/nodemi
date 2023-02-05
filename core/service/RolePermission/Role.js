@@ -88,15 +88,30 @@ const hasRole = async (model = Model) => {
         )
     }
 
+    // model.prototype.removeRole = async function () {
+    //     UserHasRole.destroy({
+    //         where: {
+    //             roleable_id: this.id,
+    //             roleable_type: model.constructor.options.name.singular
+    //         }
+    //     })
+    // }
 
-    model.addHook("afterDestroy", (_model) => {
-        if (_model && _model.id) {
-            UserHasRole.destroy({
-                where: {
-                    table_id: _model.where.id,
-                    table_type: _model.constructor.name
-                }
-            })
+
+    model.beforeBulkDestroy(async (instance) => {
+        let _models = await model.findAll({
+            where: instance.where
+        })
+        if (_models && _models.length > 0) {
+            // console.log("_models: ", _models)
+            for (let _model of _models) {
+                UserHasRole.destroy({
+                    where: {
+                        roleable_id: _model.id,
+                        roleable_type: instance.model.options.name.singular
+                    }
+                })
+            }
         }
     })
 }
