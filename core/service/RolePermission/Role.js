@@ -88,14 +88,14 @@ const hasRole = async (model = Model) => {
         )
     }
 
-    // model.prototype.removeRole = async function () {
-    //     UserHasRole.destroy({
-    //         where: {
-    //             roleable_id: this.id,
-    //             roleable_type: model.constructor.options.name.singular
-    //         }
-    //     })
-    // }
+    model.prototype.removeRole = async function () {
+        await UserHasRole.destroy({
+            where: {
+                roleable_id: this.id,
+                roleable_type: this.constructor.options.name.singular
+            }
+        })
+    }
 
 
     model.beforeBulkDestroy(async (instance) => {

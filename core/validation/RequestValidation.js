@@ -94,11 +94,11 @@ class RequestValidation {
 
     async check() {
         this.errors = {}
-        // console.log("--------------------------------------------------- field")
-        // console.log(this.body)
-        // console.log("--------------------------------------------------- rules")
-        // console.log(this.rules)
-        // console.log("=================================================== Checking")
+        console.log("--------------------------------------------------- field")
+        console.log(this.body)
+        console.log("--------------------------------------------------- rules")
+        console.log(this.rules)
+        console.log("=================================================== Checking")
         for (let fieldKey in this.rules) {
 
             if (this.#isNested(fieldKey)) {
@@ -130,7 +130,7 @@ class RequestValidation {
     }
 
     #isNested(fieldKey) {
-        if (fieldKey.indexOf(".*") !== -1) return true
+        if (fieldKey.indexOf(".") !== -1) return true
         return false
     }
 
@@ -558,17 +558,22 @@ class RequestValidation {
             return validator.matches(value ?? " .", options?.fieldMatch ?? " ")
 
         if (ruleName === ValidationType.max) {
-            if (Array.isArray(value)) {
+            if (Array.isArray(value))
                 return value.length <= options.fieldMax
-            }
-            return validator.isFloat(value.toString() ?? "0", { max: options.fieldMax ?? " " })
+            if (validator.isNumeric(value))
+                return validator.isFloat(value.toString() ?? "0", { max: options.fieldMax ?? " " })
+
+            return value.toString().length <= options.fieldMax
+
         }
 
         if (ruleName === ValidationType.min) {
-            if (Array.isArray(value)) {
+            if (Array.isArray(value))
                 return value.length >= options.fieldMin
-            }
-            return validator.isFloat(value.toString() ?? "0", { min: options.fieldMin ?? " " })
+            if (validator.isNumeric(value))
+                return validator.isFloat(value.toString() ?? "0", { min: options.fieldMin ?? " " })
+
+            return value.toString().length >= options.fieldMax
         }
 
         if (ruleName === ValidationType.mimetypes) {
@@ -754,7 +759,7 @@ class RequestValidation {
      * @param {*} fieldKey 
      */
     async #nestedProcess(fieldKey) {
-        // console.log("start nested validation")
+        console.log("start nested validation for " + fieldKey)
         let fieldArray = fieldKey.split(".")
         await this.#recursizeNested(fieldKey, fieldArray, this.body, "", 0)
     }
@@ -804,7 +809,8 @@ class RequestValidation {
                     }
                 }
                 else {
-                    return await this.#recursizeNested(fieldKey, fieldArray, currentField[fieldArray[indexNested]], attribute + "." + fieldArray[indexNested], indexNested + 1)
+                    if (currentField)
+                        return await this.#recursizeNested(fieldKey, fieldArray, currentField[fieldArray[indexNested]], attribute + "." + fieldArray[indexNested], indexNested + 1)
                 }
             }
             return

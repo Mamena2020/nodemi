@@ -19,8 +19,7 @@ Template backend for nodejs.
       npx nodemi make:model Product
    ```
    
-  The model product will be created in the models directory. and automatically registered in loadModels(), in the core/model/models directory.
-   
+  The model product will be created in the models directory. 
    
    ```
       import { Model, DataTypes } from "sequelize";
@@ -43,7 +42,7 @@ Template backend for nodejs.
 
    ```
     
-   Directory core/model/models.js
+   Automatically registered in loadModels(), in the core/model/models.js directory.
    
    ``` 
       const loadModels = async () => {
@@ -57,7 +56,7 @@ Template backend for nodejs.
  
  # Media
  
-   Any model can own media by binding the model to the media inside the loadModels function using hasMedia.
+   Any model can own media by binding the model to the media inside the loadModels function using hasMedia(YourModel).
 
    ```
       const loadModels = async () => {
@@ -96,7 +95,7 @@ Template backend for nodejs.
    
    - Get media
    
-   Get all media by calling getMedia() or getFirstMedia() for first media 
+   Get all media by calling getMedia() or getFirstMedia() for first media. 
    
    ```
       const product = await Product.findOne({
@@ -114,7 +113,7 @@ Template backend for nodejs.
    
    - Destroy media
    
-   Destroy media by calling destroyMedia(mediaName) 
+   Destroy media by calling destroyMedia(mediaName). 
    
    ```
       const product = await Product.findOne({
@@ -135,17 +134,17 @@ Template backend for nodejs.
       - application/form-data 
       - application/x-www-form-urlencoded
    
-   Handling all upload files and nested field
+   Handling all upload files and nested field.
 
  # Validation 
  
-   Create Request validation via cli
+   Create Request validation via cli.
    
    ```
       npx nodemi make:request ProductRequest
    ```
    
-   The Request will be created in the requests directory
+   The Request will be created in the requests directory.
    
    ```
       import RequestValidation from "../core/validation/RequestValidation.js"
@@ -167,7 +166,7 @@ Template backend for nodejs.
 
    ```
 
-   - Basic usage
+   - Basic usage.
 
    ```
      
@@ -180,7 +179,7 @@ Template backend for nodejs.
    
    ```
    
-   - Example html form 
+   - Example html form.
 
    ```
       <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
@@ -208,7 +207,10 @@ Template backend for nodejs.
                 <input type="text" name="comments[]" />
                 <input type="text" name="comments[]" />
                 <input type="text" name="comments[]" />
-                <input type="text" name="comments[]" />
+
+                <input type="text" name="seo[title]" value="" placeholder="seo title" />
+                <input type="text" name="seo[description][long]" value="" placeholder="seo long desc" />
+                <input type="text" name="seo[description][short]" value="" placeholder="seo short desc" />
 
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>
@@ -218,7 +220,7 @@ Template backend for nodejs.
    
    ```
        
-   - Example rules
+   - Example rules.
    
    ```
       rules() {
@@ -245,6 +247,15 @@ Template backend for nodejs.
                 "rules": ["required", "float"]
             },
             "comments.*": {
+                "rules": ["required"]
+            },
+            "seo.title": {
+                "rules": ["required"]
+            },
+            "seo.description.long": {
+                "rules": ["required"]
+            },
+            "seo.description.short": {
                 "rules": ["required"]
             }
         }
@@ -302,9 +313,15 @@ Template backend for nodejs.
              ],
              "comments.2": [
                "The Comments.2 is required"
+             ]
+             "seo.title": [
+               "The Seo.title is required"
              ],
-             "comments.3": [
-               "The Comments.3 is required"
+             "seo.description.long": [
+               "The Seo.description.long is required"
+             ],
+             "seo.description.short": [
+               "The Seo.description.short is required"
              ]
          }
       }
@@ -320,8 +337,8 @@ Template backend for nodejs.
        string
        float
        integer
-       max                   // "max:4"
-       min                   // "min:1" 
+       max                   // "max:4" -> if string/array its count the length.
+       min                   // "min:1" -> if string/array its count the length.
        date 
        array
        exists                // "exists:users,email"  | "exists:users,email,"+super.body.id
@@ -374,7 +391,7 @@ Template backend for nodejs.
 
 # Role and Permissions
    
-  A User model can have a role by binding using hasRole(YourModel) function inside loadModels on core/model/models.js
+  A User model can have a role by binding using hasRole(YourModel) function inside loadModels on core/model/models.js.
   
    ```
       const loadModels = async () => {
@@ -387,7 +404,7 @@ Template backend for nodejs.
 
   - Set users role
   
-  If the user already has a role, then the user role will be replaced with a new role. setRole() params can be role id or name
+  If the user already has a role, then the user role will be replaced with a new role. setRole() params can be role id or name.
    
    ```
       let user = await User.create({
@@ -403,7 +420,7 @@ Template backend for nodejs.
    
   - Get role 
   
-  Get role object by calling YourModel.getRole(), or YourModel.getRole().name 
+  Get role object by calling YourModel.getRole(), or YourModel.getRole().name.
    
    ```
       user.getRole() // role object
@@ -413,7 +430,7 @@ Template backend for nodejs.
    
   - Get permissions 
   
-  Get permission by calling YourModel.getPermissions() will get array of object, or YourModel.getPermissionsName() will get array of permissions name
+  Get permission by calling YourModel.getPermissions() will get array of object, or YourModel.getPermissionsName() will get array of permissions name.
    
    ```
       
@@ -421,6 +438,13 @@ Template backend for nodejs.
       user.getPermissionsName() //  array of permissions name [ "user-create","user-stored"]
    
    ```
+
+  - Remove role
+   
+   ``` 
+      user.removeRole() 
+   
+   ``` 
    
   - Check user access
 
@@ -461,7 +485,7 @@ Template backend for nodejs.
    
   - Assigning Permissions to Roles
    
-   Assign permissions to a role can be a list of permissions name or id
+   Assign permissions to a role can be a list of permissions name or id.
    
    ```
        const permissions = [
@@ -485,7 +509,7 @@ Template backend for nodejs.
       npx nodemi make:resource UserResource
    ```
 
-   The Resource will be created in resources directory
+   The Resource will be created in resources directory.
 
    ```
       import Resource from "../core/resource/Resource.js"
@@ -593,7 +617,7 @@ Template backend for nodejs.
   
    - Create token 
    
-   Create token by calling JwtAuth.createToken(), that will return refresh token and access token
+   Create token by calling JwtAuth.createToken(), that will return refresh token and access token.
 
    ```
       const payload = {
@@ -612,7 +636,7 @@ Template backend for nodejs.
 
    - Regenerate access token
 
-   Regenerate access token by calling JwtAuth.regenerateAccessToken(), that will return new access token
+   Regenerate access token by calling JwtAuth.regenerateAccessToken(), that will return new access token.
 
    ```
 
@@ -622,7 +646,7 @@ Template backend for nodejs.
 
    - Get Auth user
 
-   Get authenticated user by calling JwtAuth.getUser(), that will get user by refresh token on request cookies
+   Get authenticated user by calling JwtAuth.getUser(), that will get user by refresh token on request cookies.
 
    ```
       const user = await JwtAuth.getUser(req)
@@ -643,8 +667,3 @@ Template backend for nodejs.
       
    ```
 
-
-
-   #todo
-
-   - remove role testing

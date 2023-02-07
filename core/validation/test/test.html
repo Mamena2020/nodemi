@@ -15,18 +15,17 @@
     <form action="http://localhost:5000/api/validation" class="my-2" method="post" enctype="multipart/form-data">
         <!-- <form action="http://localhost:5000/api/validation" class="my-2" method="post" > -->
         <div class="row justify-content-center d-flex">
-            <div class="col-md-10">
+            <!-- <div class="col-md-10">
                 <label>Item</label>
                 <input class="form-control my-2" type="text" name="name" placeholder="name" />
                 <input class="form-control my-2" type="text" name="discount" placeholder="discount" />
                 <input class="form-control my-2" type="date" name="expired_date" placeholder="expired date" />
                 <input class="form-control my-2" type="file" name="product_image" placeholder="file" />
-            </div>
+            </div> -->
             <div class="col-md-10">
                 <label>Item 1</label>
                 <input class="form-control my-2" type="text" name="item[0][name]" placeholder="name" />
                 <input class="form-control my-2" type="text" name="item[0][description]" placeholder="description" />
-                <input class="form-control my-2" type="text" name="item[0][description2]" placeholder="description" />
                 <input class="form-control my-2" type="text" name="price[0]" placeholder="price " />
             </div>
             <div class="col-md-10 mt-5">
@@ -35,24 +34,15 @@
                 <input class="form-control my-2" type="text" name="item[1][description]" placeholder="description" />
                 <input class="form-control my-2" type="text" name="price[1]" placeholder="price" />
             </div>
-            <!-- <input class="form-control my-2" type="text" name="list[]" placeholder="list" /> -->
             <input class="form-control my-2" type="text" multiple name="list[]" placeholder="list" />
 
-            <input type="text" name="comment[]" value="" />
-            <input type="text" name="comment[]" value="" />
-            <input type="text" name="comment[]" value="" />
-            <input type="text" name="comment[]" value="" />
-            <input type="text" name="comment[]" value="" />
+            <input type="text" name="comment[]" value="" placeholder="comment 1" />
+            <input type="text" name="comment[]" value="" placeholder="comment 2"/>
+            <input type="text" name="comment[]" value="" placeholder="comment 3"/>
 
-            <input type="text" name="comment2[name]" value="" />
-            <input type="text" name="comment2[tag]" value="" />
-            <input type="text" name="comment2[description]" value="" />
-
-            <input type="text" name="seo[title]" value="" />
-            <input type="text" name="seo[description]" value="" />
-            <input type="text" name="seo[image][url]" value="" />
-            <input type="text" name="seo[image][name][private]" value="" />
-            <input type="text" name="seo[image][name][public]" value="" />
+            <input type="text" name="seo[title]" value="" placeholder="seo title" />
+            <input type="text" name="seo[description][long]" value="" placeholder="seo desc" />
+            <input type="text" name="seo[description][short]" value="" placeholder="seo desc" />
 
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>
