@@ -1,6 +1,6 @@
 # Nodemi
 
-Template backend for nodejs.
+Boilerplate backend for nodejs.
 
 - Features
 
