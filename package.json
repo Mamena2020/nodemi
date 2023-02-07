@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "prod": "node index.js",
+    "start": "node index",
     "dev": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
