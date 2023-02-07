@@ -3,13 +3,14 @@
 Template backend for nodejs.
 
 - Features
-   - Jwt auth
-   - Request validation
+
    - Model - ORM
-   - File request handling
    - Media binding to any Model
+   - File request handling   
+   - Request validation
    - Role and Permissions
    - Resources
+   - Jwt auth
 
 # Model
    
@@ -74,15 +75,7 @@ Template backend for nodejs.
    If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in storage directory by default.
    
    ```
-      // save user avatar
-      const user = await authUser(req)
-
-      await user.saveMedia(
-          req.body.file,
-          "avatar"
-      )
-
-      // save product image
+     
       const product = await Product.findOne({
           where: {
                 id: 1
