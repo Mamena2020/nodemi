@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 /**
  * Default middleware
  */
-export default (app) => {
+export default function defaultMiddleware(app)  {
 
     CorsHandling(app)
 

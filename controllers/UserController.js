@@ -75,21 +75,11 @@ const upload = async (req, res) => {
 }
 
 
-const deleteUser = async (req, res) => {
-    const id = req.params.id
-    await User.destroy({
-        where: {
-            id: id
-        }
-    })
-    res.json("user deleted")
-}
-
 const deleteMedia = async (req, res) => {
-    let id = req.params.id
+    let userId = req.params.userId
     let user = await User.findOne({
         where: {
-            id: id
+            id: userId
         }
     })
 
@@ -104,7 +94,6 @@ export default {
     getUser,
     getUsers,
     upload,
-    deleteUser,
     deleteMedia
 }
 

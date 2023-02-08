@@ -5,7 +5,6 @@ import UserController from "../controllers/UserController.js";
 import JwtAuthPass from "../core/middleware/JwtAuthPass.js";
 import Requests from "../middleware/Requests.js";
 
-import testValidation from "../core/validation/test/TestValidation.js";
 
 const routerApi = express.Router()
 const routerAuth = express.Router()
@@ -16,15 +15,12 @@ export default function api(app) {
     routerApi.post("/register", AuthController.register)
     routerApi.get("/token", AuthController.refreshToken)
     routerApi.delete("/logout", AuthController.logout)
-    
-    routerApi.post("/validation", testValidation)
 
     routerAuth.use(JwtAuthPass)
     routerAuth.get("/user", UserController.getUser)
     routerAuth.get("/users", UserController.getUsers)
     routerAuth.post("/upload", UserController.upload)
-    routerAuth.delete("/delete/:id", UserController.deleteUser)
-    routerAuth.delete("/deletemedia/:id", UserController.deleteMedia)
+    routerAuth.delete("/deletemedia/:userId", UserController.deleteMedia)
 
     routerApi.use(routerAuth)
 

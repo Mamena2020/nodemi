@@ -18,17 +18,22 @@ const permissions = [
     "user-search"
 ]
 
-const admins = [
+const roles = [
     { name: "admin", },
     { name: "customer" }
-
 ]
 
-
+/**
+ * running seeder code in here
+ * 
+ * Cli command: npx nodemi seed:run
+ * @returns 
+ */
 const seeder = async () => {
 
     let alreadySeed = await Permission.findAll()
-    if (alreadySeed.length>0) {
+
+    if (alreadySeed.length > 0) {
         console.log("already Seeding")
         return
     }
@@ -37,7 +42,8 @@ const seeder = async () => {
         console.log(permission)
         await Permission.create({ name: permission })
     }
-    await Role.bulkCreate(admins)
+
+    await Role.bulkCreate(roles)
 
 
     let admin = await Role.findOne({ where: { name: "admin" } })
@@ -45,6 +51,7 @@ const seeder = async () => {
         console.log(admin.name)
         await admin.syncPermissions(permissions)
     }
+
     let customer = await Role.findOne({ where: { name: "customer" } })
     if (customer) {
         await customer.syncPermissions([

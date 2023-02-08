@@ -94,11 +94,11 @@ class RequestValidation {
 
     async check() {
         this.errors = {}
-        console.log("--------------------------------------------------- field")
-        console.log(this.body)
-        console.log("--------------------------------------------------- rules")
-        console.log(this.rules)
-        console.log("=================================================== Checking")
+        // console.log("--------------------------------------------------- field")
+        // console.log(this.body)
+        // console.log("--------------------------------------------------- rules")
+        // console.log(this.rules)
+        // console.log("=================================================== Checking")
         for (let fieldKey in this.rules) {
 
             if (this.#isNested(fieldKey)) {
@@ -759,7 +759,7 @@ class RequestValidation {
      * @param {*} fieldKey 
      */
     async #nestedProcess(fieldKey) {
-        console.log("start nested validation for " + fieldKey)
+        // console.log("start nested validation for " + fieldKey)
         let fieldArray = fieldKey.split(".")
         await this.#recursizeNested(fieldKey, fieldArray, this.body, "", 0)
     }

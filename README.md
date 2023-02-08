@@ -5,12 +5,35 @@ Boilerplate backend for nodejs.
 - Features
 
    - Model - ORM
-   - Media binding to any Model
+   - Media Libary - binding to any Model
    - File request handling   
    - Request validation
    - Role and Permissions
    - Resources
-   - Jwt auth
+   - Auth - JWT
+
+# Getting Started
+
+   - Clone this repo `https` or `SSH`
+    
+   Clone and move to directory project
+   
+   ```   
+      git clone git@github.com:Mamena2020/nodemi.git
+   
+   ```
+   
+   - Setup env 
+   
+   ```   
+      cp .env.example .env
+   
+   ```   
+   
+   - Create database `mysql` or `pgsql`
+
+   After creating your database, you can fill in the .env file and start your code.
+
 
 # Model
    
@@ -20,9 +43,10 @@ Boilerplate backend for nodejs.
       npx nodemi make:model Product
    ```
    
-  The model product will be created in the models directory. 
+  The model product will be created in the `models` directory. 
    
    ```
+
       import { Model, DataTypes } from "sequelize";
       import db from "../core/database/database.js"
       
@@ -43,23 +67,33 @@ Boilerplate backend for nodejs.
 
    ```
     
-   Automatically registered in loadModels(), in the core/model/models.js directory.
+   Automatically registered in the `loadModels()` function in the `core/model/models.js` file.
    
    ``` 
+
       const loadModels = async () => {
          await Product.sync({
              alter: true, // not recomended on production mode
          })
           ....
+
    ```
     
    Full <a target="_blank" href="https://sequelize.org/docs/v6/core-concepts/model-basics/"> documentation </a> of ORM
  
+
+   - Noted
+
+   All relationships between models should be defined in the `loadModels` function. When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels()` function.
+
+
+
  # Media
  
-   Any model can own media by binding the model to the media inside the loadModels function using hasMedia(YourModel).
+   Any model can own media by binding the model to the media inside the `loadModels()` function using `hasMedia(YourModel)`.
 
    ```
+
       const loadModels = async () => {
 
          await Product.sync({
@@ -72,7 +106,7 @@ Boilerplate backend for nodejs.
    
    - Save a file 
    
-   If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in storage directory by default.
+   If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in `storage` directory by default.
    
    ```
      
@@ -88,9 +122,10 @@ Boilerplate backend for nodejs.
    
    - Get media
    
-   Get all media by calling getMedia() or getFirstMedia() for first media. 
+   Get all media by calling `YourModel.getMedia()` or `YourModel.getFirstMedia()`. 
    
    ```
+
       const product = await Product.findOne({
           where: {
                 id: 1
@@ -106,9 +141,10 @@ Boilerplate backend for nodejs.
    
    - Destroy media
    
-   Destroy media by calling destroyMedia(mediaName). 
+   Destroy media by calling `YourModel.destroyMedia(mediaName)`. 
    
    ```
+
       const product = await Product.findOne({
           where: {
                 id: 1
@@ -118,6 +154,10 @@ Boilerplate backend for nodejs.
       product.destroyMedia("product-image")
       
    ```
+
+   - Noted
+
+   All media files will be automatically deleted whenever YourModel is deleted.
    
  # Request
    
@@ -137,9 +177,10 @@ Boilerplate backend for nodejs.
       npx nodemi make:request ProductRequest
    ```
    
-   The Request will be created in the requests directory.
+   The Request will be created in the `requests` directory.
    
    ```
+
       import RequestValidation from "../core/validation/RequestValidation.js"
      
       class ProductRequest extends RequestValidation {
@@ -175,6 +216,7 @@ Boilerplate backend for nodejs.
    - Example html form.
 
    ```
+
       <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
          <div class="row justify-content-center d-flex">
             <div class="col-md-10">
@@ -216,6 +258,7 @@ Boilerplate backend for nodejs.
    - Example rules.
    
    ```
+
       rules() {
         return {
             "name": {
@@ -259,6 +302,7 @@ Boilerplate backend for nodejs.
    - Example error response
    
    ```
+
       {
         "errors": {
              "name": [
@@ -324,6 +368,7 @@ Boilerplate backend for nodejs.
    - List of rules
    
    ```
+
        required
        email
        match                 // "match:password"
@@ -362,6 +407,7 @@ Boilerplate backend for nodejs.
      Custom validation messages and attribute
     
    ```
+
        rules() {
         return {
              "name": {
@@ -384,9 +430,10 @@ Boilerplate backend for nodejs.
 
 # Role and Permissions
    
-  A User model can have a role by binding using hasRole(YourModel) function inside loadModels on core/model/models.js.
+  A User model can have a role by binding using `hasRole(YourModel)` function inside `loadModels()` on `core/model/models.js` file.
   
    ```
+
       const loadModels = async () => {
       
          await User.sync()
@@ -397,9 +444,10 @@ Boilerplate backend for nodejs.
 
   - Set users role
   
-  If the user already has a role, then the user role will be replaced with a new role. setRole() params can be role id or name.
+  If the user already has a role, then the user role will be replaced with a new role. `YourModel.setRole(params)` params can be role id or name.
    
    ```
+
       let user = await User.create({
             name: name,
             email: email,
@@ -413,17 +461,19 @@ Boilerplate backend for nodejs.
    
   - Get role 
   
-  Get role object by calling YourModel.getRole(), or YourModel.getRole().name.
+  Get role object by calling `YourModel.getRole()`, or direcly access role name `YourModel.getRole().name`.
    
    ```
+
       user.getRole() // role object
       user.getRole().name // role name
+
    
    ```
    
   - Get permissions 
   
-  Get permission by calling YourModel.getPermissions() will get array of object, or YourModel.getPermissionsName() will get array of permissions name.
+  Get permission by calling `YourModel.getPermissions()` will get array of object, or `YourModel.getPermissionsName()` will get array of permissions name.
    
    ```
       
@@ -435,7 +485,9 @@ Boilerplate backend for nodejs.
   - Remove role
    
    ``` 
+
       user.removeRole() 
+
    
    ``` 
    
@@ -445,11 +497,13 @@ Boilerplate backend for nodejs.
     
        if (!GateAccess(user, ["user-create","user-stored","user-access"])) return res.sendStatus(403)
 
+
    ```
    
   - Add permissions
    
    ```
+
       const permissions = [
           "user-create",
           "user-stored",
@@ -462,12 +516,14 @@ Boilerplate backend for nodejs.
        for (let permission of permissions) {
            await Permission.create({ name: permission })
        }
+
        
    ```
    
   - Add Role
    
    ```
+
        const roles = [ "admin","customer" ]       
       
        for (let role of roles) {
@@ -481,6 +537,7 @@ Boilerplate backend for nodejs.
    Assign permissions to a role can be a list of permissions name or id.
    
    ```
+
        const permissions = [
           "user-create",
           "user-stored"
@@ -502,9 +559,10 @@ Boilerplate backend for nodejs.
       npx nodemi make:resource UserResource
    ```
 
-   The Resource will be created in resources directory.
+   The Resource will be created in `resources` directory.
 
    ```
+
       import Resource from "../core/resource/Resource.js"
       class UserResource extends Resource {
           constructor(req) {
@@ -522,9 +580,10 @@ Boilerplate backend for nodejs.
 
    - Basic usage
 
-   To make resource of single object use "make" or "collection" for array of object 
+   To make resource of single object use `make` or `collection` for array of object 
 
    ```
+
         let userResource = new UserResource().make(user) // for single object
 
         let userResources = new UserResource().collection(users) // for array of object
@@ -534,6 +593,7 @@ Boilerplate backend for nodejs.
    - Example Resource
 
    ``` 
+
       // user resource
       class UserResource extends Resource {
           constructor(req) {
@@ -571,6 +631,7 @@ Boilerplate backend for nodejs.
    - Example calling
    
    ```
+
       const user = await User.findOne({
           where: {
                 id: 1
@@ -586,6 +647,7 @@ Boilerplate backend for nodejs.
    - Example result
 
    ```
+
       {
           "id": 1,
           "name": "Andre",
@@ -610,7 +672,7 @@ Boilerplate backend for nodejs.
   
    - Create token 
    
-   Create token by calling JwtAuth.createToken(), that will return refresh token and access token.
+   Create token by calling `JwtAuth.createToken()`, that will return `refreshToken` and `accessToken`.
 
    ```
       const payload = {
@@ -629,7 +691,7 @@ Boilerplate backend for nodejs.
 
    - Regenerate access token
 
-   Regenerate access token by calling JwtAuth.regenerateAccessToken(), that will return new access token.
+   Regenerate access token by calling `JwtAuth.regenerateAccessToken()`, that will return new access token.
 
    ```
 
@@ -639,20 +701,25 @@ Boilerplate backend for nodejs.
 
    - Get Auth user
 
-   Get authenticated user by calling JwtAuth.getUser(), that will get user by refresh token on request cookies.
+   Get authenticated user by `calling JwtAuth.getUser(req)`, that will get user by refresh token on request cookies.
 
    ```
+
       const user = await JwtAuth.getUser(req)
 
-
    ```
+
+   Or you just setup the env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated by access 
+   `req.user`
+
 
    - Middleware auth
 
-   For secure access to controller by adding JwtAuthPass to router.
+   For secure access to controller by adding `JwtAuthPass` to router.
 
    
    ```
+
       routerAuth.use(JwtAuthPass)
       routerAuth.get("/upload", UserController.upload)
        
@@ -660,3 +727,25 @@ Boilerplate backend for nodejs.
       
    ```
 
+# Seeder
+  
+   - Running seeder
+
+  Running seeder via cli
+
+
+   ```
+       npx nodemi seed:run
+   ```
+
+   You can put your seeder code inside `seeder` function in the `core/seeder/Seeder.js` file
+
+   ```
+
+      const seeder = async () => {
+
+            // put code here..
+
+      }
+
+   ```

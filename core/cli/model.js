@@ -1,5 +1,5 @@
-const fse = require("fs-extra")
-// import fse from "fs-extra"
+// const fse = require("fs-extra")
+import fse from "fs-extra"
 
 
 const modelScript = () => {
@@ -113,5 +113,5 @@ const addToCoreModels = (name, pathModel) => {
 
 
 
-// export default makeModel
-module.exports = makeModel
+export default makeModel
+// module.exports = makeModel

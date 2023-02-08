@@ -56,8 +56,8 @@ class TestRequest extends RequestValidation {
 
 const testValidation = async (req, res) => {
 
-    console.log("BODY REQ:")
-    console.dir(req.body, { depth: null });
+    // console.log("BODY REQ:")
+    // console.dir(req.body, { depth: null });
 
     const valid = new TestRequest(req)
     await valid.check()

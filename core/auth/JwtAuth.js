@@ -13,11 +13,11 @@ class JwtAuth {
      */
 
     static createToken(payload) {
-        let accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
-            expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRED
+        let accessToken = jwt.sign(payload, process.env.AUTH_JWT_ACCESS_TOKEN_SECRET, {
+            expiresIn: process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED
         })
-        let refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET, {
-            expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRED
+        let refreshToken = jwt.sign(payload, process.env.AUTH_JWT_REFRESH_TOKEN_SECRET, {
+            expiresIn: process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRED
         })
         return {
             accessToken,
@@ -32,13 +32,13 @@ class JwtAuth {
      */
 
     static regenerateAccessToken(refreshToken) {
-        return jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET, (err, decoded) => {
+        return jwt.verify(refreshToken, process.env.AUTH_JWT_REFRESH_TOKEN_SECRET, (err, decoded) => {
             if (err) return
 
             delete decoded.exp
 
-            let accessToken = jwt.sign(decoded, process.env.JWT_ACCESS_TOKEN_SECRET, {
-                expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRED
+            let accessToken = jwt.sign(decoded, process.env.AUTH_JWT_ACCESS_TOKEN_SECRET, {
+                expiresIn: process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED
             })
             return accessToken
         })
