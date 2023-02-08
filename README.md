@@ -430,7 +430,7 @@ Boilerplate backend for nodejs.
 
 # Role and Permissions
    
-  A User model can have a role by binding using `hasRole(YourModel)` function inside `loadModels()` on `core/model/models.js` file.
+  A User model can have a role by binding using `hasRole(YourModel)` function inside `loadModels()` in `core/model/models.js` file.
   
    ```
 
@@ -444,7 +444,7 @@ Boilerplate backend for nodejs.
 
   - Set users role
   
-  If the user already has a role, then the user role will be replaced with a new role. `YourModel.setRole(params)` params can be role id or name.
+  If the user already has a role, then the user role will be replaced with a new role. `YourModel.setRole(params)` params can be role `id` or `name`.
    
    ```
 
@@ -487,7 +487,6 @@ Boilerplate backend for nodejs.
    ``` 
 
       user.removeRole() 
-
    
    ``` 
    
@@ -496,7 +495,6 @@ Boilerplate backend for nodejs.
    ```
     
        if (!GateAccess(user, ["user-create","user-stored","user-access"])) return res.sendStatus(403)
-
 
    ```
    
@@ -517,7 +515,6 @@ Boilerplate backend for nodejs.
            await Permission.create({ name: permission })
        }
 
-       
    ```
    
   - Add Role
@@ -534,7 +531,7 @@ Boilerplate backend for nodejs.
    
   - Assigning Permissions to Roles
    
-   Assign permissions to a role can be a list of permissions name or id.
+   Assign permissions to a role can be a list of permissions `name` or `id`.
    
    ```
 
@@ -691,7 +688,7 @@ Boilerplate backend for nodejs.
 
    - Regenerate access token
 
-   Regenerate access token by calling `JwtAuth.regenerateAccessToken()`, that will return new access token.
+   Regenerate access token by calling `JwtAuth.regenerateAccessToken(refreshToken)`, that will return new access token.
 
    ```
 
@@ -709,7 +706,7 @@ Boilerplate backend for nodejs.
 
    ```
 
-   Or you just setup the env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated by access 
+   Or you just setup the env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated user by access 
    `req.user`
 
 
