@@ -16,10 +16,8 @@ export default function api(app) {
     routerGuest.get("/token", AuthController.refreshToken)
     routerGuest.delete("/logout", AuthController.logout)
 
-
     // routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
     app.use("/api", routerGuest)
-
 
 
     const routerAuth = express.Router()
