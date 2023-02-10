@@ -12,16 +12,16 @@
 
 <body>
 
-    <form action="http://localhost:5000/api/validation" class="my-2" method="post" enctype="multipart/form-data">
+    <form action="http://localhost:5000/api/ids/test" class="my-2" method="post" enctype="multipart/form-data">
         <!-- <form action="http://localhost:5000/api/validation" class="my-2" method="post" > -->
         <div class="row justify-content-center d-flex">
-            <!-- <div class="col-md-10">
+            <div class="col-md-10">
                 <label>Item</label>
                 <input class="form-control my-2" type="text" name="name" placeholder="name" />
                 <input class="form-control my-2" type="text" name="discount" placeholder="discount" />
                 <input class="form-control my-2" type="date" name="expired_date" placeholder="expired date" />
                 <input class="form-control my-2" type="file" name="product_image" placeholder="file" />
-            </div> -->
+            </div>
             <div class="col-md-10">
                 <label>Item 1</label>
                 <input class="form-control my-2" type="text" name="item[0][name]" placeholder="name" />
@@ -36,13 +36,13 @@
             </div>
             <input class="form-control my-2" type="text" multiple name="list[]" placeholder="list" />
 
-            <input type="text" name="comment[]" value="" placeholder="comment 1" />
-            <input type="text" name="comment[]" value="" placeholder="comment 2"/>
-            <input type="text" name="comment[]" value="" placeholder="comment 3"/>
+            <input class="form-control my-2" type="text" name="comment[]" value="" placeholder="comment 1" />
+            <input class="form-control my-2" type="text" name="comment[]" value="" placeholder="comment 2"/>
+            <input class="form-control my-2" type="text" name="comment[]" value="" placeholder="comment 3"/>
 
-            <input type="text" name="seo[title]" value="" placeholder="seo title" />
-            <input type="text" name="seo[description][long]" value="" placeholder="seo desc" />
-            <input type="text" name="seo[description][short]" value="" placeholder="seo desc" />
+            <input class="form-control my-2" type="text" name="seo[title]" value="" placeholder="seo title" />
+            <input class="form-control my-2" type="text" name="seo[description][long]" value="" placeholder="seo desc" />
+            <input class="form-control my-2" type="text" name="seo[description][short]" value="" placeholder="seo desc" />
 
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>

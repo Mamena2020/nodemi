@@ -2,17 +2,21 @@ import mediaRequestHandling from './MediaRequestHandling.js'
 import CorsHandling from './CorsHandling.js'
 import express from "express";
 import cookieParser from "cookie-parser";
+import LocalePass from './localePass.js';
+import localeConfig from '../config/locale.js';
 
 
 /**
  * Default middleware
  */
-export default function defaultMiddleware(app)  {
+export default function defaultMiddleware(app) {
 
     CorsHandling(app)
 
+    //-------------------------------------------------------
     // read cookie from client 
     app.use(cookieParser())
+    //-------------------------------------------------------
 
     // read reques body json & formData
     app.use(express.json())
@@ -20,6 +24,10 @@ export default function defaultMiddleware(app)  {
 
     //------------------------------------------------------- files upload handling & nested field 
     app.use(mediaRequestHandling)
-    //------------------------------------------------------- 
+    //------------------------------------------------------- locale 
+    if (localeConfig.useLocale) {
+        app.use(LocalePass)
+    }
+    //-------------------------------------------------------
 
 }

@@ -24,7 +24,7 @@ Boilerplate backend for nodejs.
    
    ```
    
-   - Setup env 
+   - Setup .env 
    
    ```   
       cp .env.example .env
@@ -108,7 +108,7 @@ Boilerplate backend for nodejs.
    
    - Save a file 
    
-   You can save a file using `instance.saveMedia(file,FileName)`. If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in `storage` directory by default. 
+   You can save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
    
    ```
      
@@ -122,6 +122,8 @@ Boilerplate backend for nodejs.
     
    ```
    
+   All media stored in `storage` directory by default, you can change directory name in .env file `MEDIA_LOCAL_STORAGE_DIR_NAME=storage`. 
+
    - Get media
    
    Get all media by calling `instance.getMedia()` or `instance.getFirstMedia()` or you can get media by name `instance.getMediaByName(mediaName)`. 
@@ -435,6 +437,9 @@ Boilerplate backend for nodejs.
    
    ```
    
+   - Noted 
+
+   Default error messages output depend on locale, if you not setup locale as middleware, then locale will setup to default `en`.
 
 # Role and Permissions
    
@@ -724,7 +729,7 @@ Boilerplate backend for nodejs.
 
    ```
 
-   Or you just setup the env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated user by access 
+   Or you just setup the .env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated user by access 
    `req.user`
 
 
@@ -741,6 +746,70 @@ Boilerplate backend for nodejs.
       app.use("/api",routerAuth) 
       
    ```
+
+# Locale
+  
+   - Config
+   
+   Setup locale in `core/config/locale.js`. by default locale setup to english `en`
+
+   ```
+       defaultLocale: "en",
+       useLocale: useLocale,
+       locales: ["en", "id"]
+
+   ```
+
+   You can add more locale Code to `locales`. by default `locales` are only available for English `en`, and for Indonesia `id`.
+   
+   - Default validation Messages
+
+   After you add more locale, its important to add the validation messages in `core/locale/LangValidation.js` file, so validation messages will generate base on locale.
+
+   ```
+      const langValidation = Object.freeze({
+          required: {
+              en: "The _attribute_ is required",
+              id: "_attribute_ wajib di isi",
+            //ja: "_attribute_ ........."  -> adding new validation messages for code ja
+          },
+          email: {
+              en: "The _attribute_ must in E-mail format",
+              id: "_attribute_ harus dalam format E-mail",
+          },
+          match: {
+              en: "The _attribute_ must be match with _param1_",
+              id: "_attribute_ harus sama dengan _param1_"
+          },
+          ......
+
+   ```
+
+   - Use Locale
+   
+   Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect to `all` your router that have to has a params for locale, for the API router it should be `/api/:locale` and for the web router it should be `/:locale`.
+
+   ```
+      routerAuth.get("/user", UserController.getUser)
+      routerAuth.post("/upload", UserController.upload)
+      app.use("/api/:locale", routerAuth) // url-> http://localhost:5000/api/en/endpoint or  http://localhost:5000/api/id/endpoint
+    
+   ```
+   If you don't want to set the locale for all routes, only for a particular route, then simply set up the .env as `LOCALE_USE=false`. Then you can use the `LocalePass` middleware directly.
+   
+   ```
+      app.get("/:locale",LocalePass, (req, res) => {
+      // http://localhost:5000/en | http://localhost:5000/id
+
+      app.get("/api/:locale/login",LocalePass, (req, res) => {
+
+      // http://localhost:5000/api/en/login | http://localhost:5000/api/id/login
+
+   ```
+
+   - Noted
+
+   All routers that have the locale middleware will have the locale Code on req, accessible via req.locale.
 
 # Seeder
   

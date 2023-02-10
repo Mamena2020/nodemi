@@ -16,7 +16,7 @@ const JwtAuthPass = async (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     if (!token) {
-        return res.status(403).json({ message: "unauthorized" })
+        return res.status(403).json({ message: "unauthorized2" })
     }
     await jwt.verify(token, process.env.AUTH_JWT_ACCESS_TOKEN_SECRET, async (err, decoded) => {
 

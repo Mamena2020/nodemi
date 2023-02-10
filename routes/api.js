@@ -3,26 +3,31 @@ import express from "express";
 import AuthController from "../controllers/AuthController.js";
 import UserController from "../controllers/UserController.js";
 import JwtAuthPass from "../core/middleware/JwtAuthPass.js";
+import LocalePass from "../core/middleware/localePass.js";
+import testValidation from "../core/validation/test/TestValidation.js";
 import Requests from "../middleware/Requests.js";
 
 
-const routerApi = express.Router()
-const routerAuth = express.Router()
 
 export default function api(app) {
 
-    routerApi.post("/login", Requests.login, AuthController.login)
-    routerApi.post("/register", AuthController.register)
-    routerApi.get("/token", AuthController.refreshToken)
-    routerApi.delete("/logout", AuthController.logout)
+    const routerGuest = express.Router()
+    routerGuest.post("/login", Requests.login, AuthController.login)
+    routerGuest.post("/register", AuthController.register)
+    routerGuest.get("/token", AuthController.refreshToken)
+    routerGuest.delete("/logout", AuthController.logout)
 
+
+    routerGuest.post("/:locale/validation", LocalePass, testValidation)
+    routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
+    app.use("/api", routerGuest)
+
+    const routerAuth = express.Router()
     routerAuth.use(JwtAuthPass)
     routerAuth.get("/user", UserController.getUser)
-    routerAuth.get("/users", UserController.getUsers)
+    // routerAuth.get("/:locale/users", LocalePass, UserController.getUsers)
     routerAuth.post("/upload", UserController.upload)
     routerAuth.delete("/deletemedia/:userId", UserController.deleteMedia)
+    app.use("/api", routerAuth)
 
-    routerApi.use(routerAuth)
-
-    app.use("/api", routerApi)
 }

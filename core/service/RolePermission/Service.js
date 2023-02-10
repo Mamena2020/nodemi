@@ -38,7 +38,7 @@ const loadRolePermission = async () => {
 
 /**
  * Checking user that has particular permissions
- * @param {*} user user model
+ * @param {*} user user instance
  * @param {*} permissions ["product-access","product-stored"]
  * @returns 
  */

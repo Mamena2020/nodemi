@@ -1,14 +1,15 @@
 import validator from 'validator'
+import localeConfig from '../config/locale.js'
+import Translate from '../locale/dictionary.js'
+import langValidation from '../locale/LangValidation.js'
 import ValidationDB from './ValidationDB.js'
 
 /**
- * for add new rule
+ * For add new rule
  * [1]. add on ValidationType
- * [2]. add MessageType
- * [3]. add type on errorTypeCategories()
- * [4]. add params if has params -> createOptionsParams()
- * [5]. add check validation on -> ValidationCheck()
- * [6]. add default message on defaultErrorMessage()
+ * [2]. add message LangValidation in `core/locale/LangValidation`
+ * [3]. add params if has params -> createOptionsParams()
+ * [4]. add check validation on -> ValidationCheck()
  */
 
 const ValidationType = Object.freeze({
@@ -41,29 +42,7 @@ const ValidationType = Object.freeze({
     digits: "digits",
     max_digits: "max_digits",
     min_digits: "min_digits",
-    digits_between: "digits_between", //1 - 2
-})
-
-const MessageType = Object.freeze({
-    must: "must be",
-    matchWith: "must be match with",
-    is: "is",
-    between: "between",
-    digits: ["must be", "digits"],
-    invalidFormat: "must be valid format of",
-    max: "should be less or equal than",
-    min: "should be more or equal than",
-    exists: "not recorded in database",
-    unique: "already used",
-    after: "date must be after the",
-    before: "date must be before the ",
-    afterOrEqual: "date must be after or equal the",
-    beforeOrEqual: "date must be before or equal the",
-    invalidSelected: "selected field is invalid",
-    digitsBetween: [
-        "should be between",
-        "and"
-    ]
+    digits_between: "digits_between", 
 })
 
 
@@ -73,7 +52,9 @@ class RequestValidation {
     isError = false
     constructor(req) {
         this.body = req?.body ?? {}
+        this.locale = req.locale || localeConfig.defaultLocale
     }
+
 
     async load(child) {
         this.rules = child.rules();
@@ -187,109 +168,30 @@ class RequestValidation {
         }
         // ---------- set default message
         attribute = this.rules[fieldKey].attribute ?? (attribute ?? fieldKey)
-        let messageType = this.#errorTypeCategories(rule)
-        return this.#defaultErrorMessage(
-            attribute,
-            rule,
-            messageType,
-            rule,
-            options
-        )
+        return this.#defaultErrorMessage(rule, attribute, options)
     }
 
     /**
      * 
-     * @param {*} rule ex: ex: required, email, max,min
-     * @returns MessageType  is category message. ex:  { matchWith: "must be match with"}
+     * @param {*} rule  ex: required, match,float, min, max
+     * @param {*} attribute ex: name, birthdate
+     * @param {*} options   ex: match:password -> ['password'] | digit_between:1,2 -> [1,2] 
      */
-    #errorTypeCategories(rule) {
-        if (rule === ValidationType.email || rule === ValidationType.date || rule === ValidationType.float ||
-            rule === ValidationType.integer || rule === ValidationType.array || rule === ValidationType.mimetypes ||
-            rule === ValidationType.mimes || rule === ValidationType.bolean || rule === ValidationType.ip || rule == ValidationType.url ||
-            rule === ValidationType.json
-        )
-            return MessageType.invalidFormat
+    #defaultErrorMessage(rule, attribute, options) {
 
+        if (!langValidation[rule] || !langValidation[rule][this.locale])
+            throw "message no exist"
+        attribute = attribute[0].toUpperCase() + attribute.slice(1)
+        let message = langValidation[rule][this.locale].replace("_attribute_", attribute)
 
-
-        if (rule === ValidationType.in_array || rule === ValidationType.not_in_array)
-            return MessageType.invalidSelected
-        if (rule === ValidationType.required)
-            return MessageType.is
-        if (rule === ValidationType.match)
-            return MessageType.matchWith
-        if (rule === ValidationType.max || rule === ValidationType.max_file || rule === ValidationType.max_digits)
-            return MessageType.max
-        if (rule === ValidationType.min || rule === ValidationType.min_digits)
-            return MessageType.min
-        if (rule === ValidationType.exists)
-            return MessageType.exists
-        if (rule === ValidationType.unique)
-            return MessageType.unique
-        if (rule === ValidationType.date_before)
-            return MessageType.before
-        if (rule === ValidationType.date_after)
-            return MessageType.after
-        if (rule === ValidationType.date_before_or_equal)
-            return MessageType.beforeOrEqual
-        if (rule === ValidationType.date_after_or_equal)
-            return MessageType.afterOrEqual
-        if (rule === ValidationType.digits)
-            return MessageType.digits
-        if (rule === ValidationType.digits_between)
-            return MessageType.digitsBetween
-
-        return MessageType.must
-    }
-
-    /**
-     * 
-     * @param {*} attribute ex: E-Mail
-     * @param {*} ruleType ex: mimetypes, required, exist
-     * @param {*} messageType      MessageType  is category message. ex:  { matchWith: "must be match with"}
-     * @param {*} rule ex: ex: required, email, max,min
-     * @param {*} options params of the validation. ex: max:3, then options is "3"
-     * @returns 
-     */
-    #defaultErrorMessage(attribute, ruleType, messageType, rule, options) {
-        attribute = attribute[0].toUpperCase() + attribute.slice(1);
-
-        if (ruleType === ValidationType.matchWith || ruleType === ValidationType.max || ruleType === ValidationType.min ||
-            ruleType === ValidationType.mimetypes || ruleType === ValidationType.mimes
-        ) {
-            rule = options
+        if (options && Array.isArray(options)) {
+            for (let i = 0; i < options.length; i++) {
+                let translateParam = Translate(options[i], this.locale)
+                message = message.replace(("_param" + (i + 1) + "_").toString(), translateParam)
+            }
         }
 
-        if (ruleType === ValidationType.max_file) {
-            rule = options.join(" ") // ["100","KB"] => "100 KB" 
-        }
-
-        if (ruleType === ValidationType.max_digits || ruleType === ValidationType.min_digits) {
-            return ("The " + attribute + " " + messageType + " " + options + " digits").split("_").join(" ")
-        }
-
-
-
-        if (ruleType === ValidationType.date_after || ruleType === ValidationType.date_before ||
-            ruleType === ValidationType.date_after_or_equal || ruleType === ValidationType.date_before_or_equal) {
-            rule = options + "'s date"
-        }
-
-        if (ruleType === ValidationType.exists || ruleType === ValidationType.unique ||
-            ruleType === ValidationType.in_array || ruleType === ValidationType.not_in_array)
-            return ("The " + attribute + " " + messageType).split("_").join(" ")
-
-        if (ruleType === ValidationType.ip)
-            return ("The " + attribute + " " + messageType + " IP address").split("_").join(" ")
-
-        if (ruleType === ValidationType.digits)
-            return ("The " + attribute + " " + messageType[0] + " " + options + " " + messageType[1]).split("_").join(" ")
-
-        if (ruleType === ValidationType.digits_between)
-            return ("The " + attribute + " " + messageType[0] + " " + options[0] + " " + messageType[1] + " " + options[1] + " digits").split("_").join(" ")
-
-        return ("The " + attribute + " " + messageType + " " + rule).split("_").join(" ")
-
+        return message.split("_").join(" ")
     }
 
 
