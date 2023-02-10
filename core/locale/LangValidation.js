@@ -48,16 +48,16 @@ const langValidation = Object.freeze({
         id: "_attribute_ sudah digunakan"
     },
     mimetypes: {
-        en: "The _attribute_ must be in format _param1_",
-        id: "_attribute_ harus dalam format _param1_"
+        en: "The _attribute_ must be in file format of _param1_",
+        id: "_attribute_ harus dalam format file dari _param1_"
     },
     mimes: {
-        en: "The _attribute_ must be in format _param1_",
-        id: "_attribute_ harus dalam format _param1_"
+        en: "The _attribute_ must be in have extention of _param1_",
+        id: "_attribute_ harus memiliki extention _param1_"
     },
     max_file: {
-        en: "The _attribute_ should have size less or equal then _param1_ _param2_",
-        id: "_attribute_ harus berukuran kurang atau sama dengan _param1_ _param2_"
+        en: "The _attribute_ should have file size less or equal then _param1_ _param2_",
+        id: "_attribute_ harus memiliki ukuran file kurang atau sama dengan _param1_ _param2_"
     },
     image: {
         en: "The _attribute_ should be image format",
@@ -80,8 +80,8 @@ const langValidation = Object.freeze({
         id: "_attribute_ harus sebelum atau sama dengan tanggal _param1_"
     },
     bolean: {
-        en: "The _attribute_ must be in bolean",
-        id: "_attribute_ harus dalam format bolean"
+        en: "The _attribute_ must be have true or false format",
+        id: "_attribute_ harus dalam format benar atau salah"
     },
     in_array: {
         en: "The _attribute_ selected field is invalid",

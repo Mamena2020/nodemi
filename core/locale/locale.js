@@ -1,10 +1,9 @@
 import localeConfig from "../config/locale.js"
 
 const isLocale = (locale) => {
-    for (let key in localeConfig.locales) {
-        if (localeConfig.locales[key] === locale)
-            return true
-    }
+    if (localeConfig.locales.includes(locale))
+        return true
+
     return false
 }
 

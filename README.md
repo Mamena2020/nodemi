@@ -11,6 +11,7 @@ Boilerplate backend for nodejs.
    - Role and Permissions
    - Resources
    - Auth - JWT
+   - Locale
    - Seeder
 
 # Getting Started
@@ -754,6 +755,7 @@ Boilerplate backend for nodejs.
    Setup locale in `core/config/locale.js`. by default locale setup to english `en`
 
    ```
+       
        defaultLocale: "en",
        useLocale: useLocale,
        locales: ["en", "id"]
@@ -762,11 +764,12 @@ Boilerplate backend for nodejs.
 
    You can add more locale Code to `locales`. by default `locales` are only available for English `en`, and for Indonesia `id`.
    
-   - Default validation Messages
+   - Default validation error Messages
 
-   After you add more locale, its important to add the validation messages in `core/locale/LangValidation.js` file, so validation messages will generate base on locale.
+   After you add more locale, its important to add the validation messages in `core/locale/LangValidation.js` file, so validation error messages will generate base on locale.
 
    ```
+      
       const langValidation = Object.freeze({
           required: {
               en: "The _attribute_ is required",
@@ -787,20 +790,28 @@ Boilerplate backend for nodejs.
 
    - Use Locale
    
-   Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect to `all` your router that have to has a params for locale, for the API router it should be `/api/:locale` and for the web router it should be `/:locale`.
+   Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect to `all` your router, so that have to has a params for locale, for the API router it should be `/api/:locale` and for the web router it should be `/:locale`.
 
    ```
+      
+      // example for api route
+      const routerAuth = express.Router()
+      routerAuth.use(JwtAuthPass)
       routerAuth.get("/user", UserController.getUser)
-      routerAuth.post("/upload", UserController.upload)
+      routerAuth.post("/upload", UserController.upload)s
       app.use("/api/:locale", routerAuth) // url-> http://localhost:5000/api/en/endpoint or  http://localhost:5000/api/id/endpoint
     
    ```
-   If you don't want to set the locale for all routes, only for a particular route, then simply set up the .env as `LOCALE_USE=false`. Then you can use the `LocalePass` middleware directly.
+   If you don't want to set the locale for all routes, only for a particular route, then simply set up the .env as `LOCALE_USE=false`. Then you can use the `LocalePass` middleware directly to your route.
    
-   ```
+   ``` 
+      
+      // example for web route
       app.get("/:locale",LocalePass, (req, res) => {
       // http://localhost:5000/en | http://localhost:5000/id
+      
 
+      // example for api route
       app.get("/api/:locale/login",LocalePass, (req, res) => {
 
       // http://localhost:5000/api/en/login | http://localhost:5000/api/id/login
@@ -809,7 +820,7 @@ Boilerplate backend for nodejs.
 
    - Noted
 
-   All routers that have the locale middleware will have the locale Code on req, accessible via req.locale.
+   All routers that using `LocalePass` will have the locale Code on req, accessible via `req.locale`.
 
 # Seeder
   

@@ -54,7 +54,7 @@ class TestRequest extends RequestValidation {
 
 }
 
-const testValidation = async (req, res) => {
+const TestValidation = async (req, res) => {
 
     // console.log("BODY REQ:")
     // console.dir(req.body, { depth: null });
@@ -68,4 +68,4 @@ const testValidation = async (req, res) => {
 
 }
 
-export default testValidation
+export default TestValidation
