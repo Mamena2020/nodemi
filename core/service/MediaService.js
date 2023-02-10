@@ -113,12 +113,25 @@ const hasMedia = async (model = Model) => {
     model.prototype.getMedia = function () {
         return getMedia(this)
     }
+    model.prototype.getMediaByName = function (name) {
+        let _medias = getMedia(this)
+        if (!_medias || !name)
+            return 
+
+        for (let m of _medias) {
+            if (m.name === name) {
+                return m
+            }
+        }
+        return 
+    }
+
     model.prototype.getFirstMedia = function () {
-        let _media = getMedia(this)
-        if (!_media)
+        let _medias = getMedia(this)
+        if (!_medias)
             return
 
-        return _media[0] || null
+        return _medias[0] || null
     }
 
     model.prototype.saveMedia = async function (file, name) {

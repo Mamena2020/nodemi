@@ -26,7 +26,7 @@ const JwtAuthPass = async (req, res, next) => {
             return res.status(410).json({ message: "access token expired" })
 
         if (AuthConfig.getUserOnRequest) {
-            req.user = await JwtAuth.getUser(req) 
+            req["user"] = await JwtAuth.getUser(req) 
         }
 
         next()

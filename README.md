@@ -11,12 +11,13 @@ Boilerplate backend for nodejs.
    - Role and Permissions
    - Resources
    - Auth - JWT
+   - Seeder
 
 # Getting Started
 
    - Clone this repo `https` or `SSH`
     
-   Clone and move to directory project
+   Clone and move to directory project and run `npm install`
    
    ```   
       git clone git@github.com:Mamena2020/nodemi.git
@@ -67,7 +68,7 @@ Boilerplate backend for nodejs.
 
    ```
     
-   Automatically registered in the `loadModels()` function in the `core/model/models.js` file.
+   Automatically registered in the `loadModels` function in the `core/model/models.js` file.
    
    ``` 
 
@@ -84,13 +85,14 @@ Boilerplate backend for nodejs.
 
    - Noted
 
-   All relationships between models should be defined in the `loadModels` function. When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels()` function.
+   All relationships between models should be defined in the `loadModels` function. 
+   When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `core/model/models.js` file.
 
 
 
  # Media
  
-   Any model can own media by binding the model to the media inside the `loadModels()` function using `hasMedia(YourModel)`.
+   Any model can own media by binding the model to the media inside the `loadModels` function using `hasMedia(YourModel)`.
 
    ```
 
@@ -106,7 +108,7 @@ Boilerplate backend for nodejs.
    
    - Save a file 
    
-   If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in `storage` directory by default.
+   You can save a file using `instance.saveMedia(file,FileName)`. If the model already has a file with the same name, then the file will be replaced with a new file. All media stored in `storage` directory by default. 
    
    ```
      
@@ -116,13 +118,13 @@ Boilerplate backend for nodejs.
           }
       }) 
 
-      await product.saveMedia(req.body.file,"product-image")
+      await product.saveMedia(req.body.file,"thumbnail")
     
    ```
    
    - Get media
    
-   Get all media by calling `YourModel.getMedia()` or `YourModel.getFirstMedia()`. 
+   Get all media by calling `instance.getMedia()` or `instance.getFirstMedia()` or you can get media by name `instance.getMediaByName(mediaName)`. 
    
    ```
 
@@ -132,16 +134,17 @@ Boilerplate backend for nodejs.
           }
       })
       
-      product.getMedia() // return list of object
-      product.getFirstMedia() // return single object
-      product.getFirstMedia().url // return first media url
+      product.getMedia()                  // return list of object
+      product.getMediaByName("thumbnail") // return single object
+      product.getFirstMedia()             // return single object
+      product.getFirstMedia().url         // return first media url
       
 
    ```
    
    - Destroy media
    
-   Destroy media by calling `YourModel.destroyMedia(mediaName)`. 
+   Destroy media by calling `instance.destroyMedia(mediaName)`. 
    
    ```
 
@@ -151,13 +154,13 @@ Boilerplate backend for nodejs.
           }
       })
 
-      product.destroyMedia("product-image")
+      product.destroyMedia("thumbnail")
       
    ```
 
    - Noted
 
-   All media files will be automatically deleted whenever YourModel is deleted.
+   All media files will be automatically deleted whenever `instance` of your model is deleted.
    
  # Request
    
@@ -167,7 +170,7 @@ Boilerplate backend for nodejs.
       - application/form-data 
       - application/x-www-form-urlencoded
    
-   Handling all upload files and nested field.
+   Handling all upload files and nested fields.
 
  # Validation 
  
@@ -217,39 +220,44 @@ Boilerplate backend for nodejs.
 
    ```
 
-      <form action="http://localhost:5000/api/validation"  method="post" enctype="multipart/form-data">
+      <form action="endpoint" method="post" enctype="multipart/form-data">
          <div class="row justify-content-center d-flex">
+
             <div class="col-md-10">
                 <label>Item</label>
-                <input class="form-control my-2" type="text" name="name" placeholder="name" />
-                <input class="form-control my-2" type="text" name="discount" placeholder="discount" />
-                <input class="form-control my-2" type="date" name="expired_date" placeholder="expired date" />
-                <input class="form-control my-2" type="file" name="product_image" placeholder="file" />
+                <input type="text" name="name" placeholder="name" />
+                <input type="text" name="discount" placeholder="discount" />
+                <input type="date" name="expired_date" placeholder="expired date" />
+                <input type="file" name="product_image" placeholder="file" />
             </div>
             <div class="col-md-10">
                 <label>Item 1</label>
-                <input class="form-control my-2" type="text" name="item[0][name]" placeholder="name" />
-                <input class="form-control my-2" type="text" name="item[0][description]" placeholder="description" />
-                <input class="form-control my-2" type="text" name="price[0]" placeholder="price " />
+                <input type="text" name="item[0][name]" placeholder="name" />
+                <input type="text" name="item[0][description]" placeholder="description" />
+                <input type="text" name="price[0]" placeholder="price " />
             </div>
             <div class="col-md-10 mt-5">
                 <label>Item 2</label>
-                <input class="form-control my-2" type="text" name="item[1][name]" placeholder="name" />
-                <input class="form-control my-2" type="text" name="item[1][description]" placeholder="description" />
-                <input class="form-control my-2" type="text" name="price[1]" placeholder="price" />
+                <input type="text" name="item[1][name]" placeholder="name" />
+                <input type="text" name="item[1][description]" placeholder="description" />
+                <input type="text" name="price[1]" placeholder="price" />
             </div>
-            
+             <div class="col-md-10 mt-5">
                 <input type="text" name="comments[]" />
                 <input type="text" name="comments[]" />
                 <input type="text" name="comments[]" />
-
+            </div>
+             <div class="col-md-10 mt-5">
                 <input type="text" name="seo[title]" value="" placeholder="seo title" />
                 <input type="text" name="seo[description][long]" value="" placeholder="seo long desc" />
                 <input type="text" name="seo[description][short]" value="" placeholder="seo short desc" />
+            </div>
+
 
             <div class="col-md-10 my-2 ">
                 <button class="float-end btn btn-primary" type="submit">Submit</button>
             </div>
+
          </div>
       </form>
    
@@ -299,7 +307,7 @@ Boilerplate backend for nodejs.
 
    ```
    
-   - Example error response
+   - Example error messages
    
    ```
 
@@ -371,34 +379,34 @@ Boilerplate backend for nodejs.
 
        required
        email
-       match                 // "match:password"
+       match                 => "match:password"
        string
        float
        integer
-       max                   // "max:4" -> if string/array its count the length.
-       min                   // "min:1" -> if string/array its count the length.
+       max                   => "max:4" -> if string/array its count the length.
+       min                   => "min:1" -> if string/array its count the length.
        date 
        array
-       exists                // "exists:users,email"  | "exists:users,email,"+super.body.id
-       unique                // "unique:users,email"  | "unique:users,email,"+super.body.id
-       mimetypes             // "mimetypes:image/webp,image/x-icon,video/mp4"
-       mimes                 // "mimes:jpg,png"
-       max_file               // "max_file:1,GB" | "max_file:1,MB"  | "max_file:1,KB"  | "max_file:1,Byte"
+       exists                => "exists:users,email"  | "exists:users,email,"+super.body.id
+       unique                => "unique:users,email"  | "unique:users,email,"+super.body.id
+       mimetypes             => "mimetypes:image/webp,image/x-icon,video/mp4"
+       mimes                 => "mimes:jpg,png"
+       max_file              => "max_file:1,GB" | "max_file:1,MB"  | "max_file:1,KB"  | "max_file:1,Byte"
        image                
-       date_after            // "date_after:now" | "date_after:birthdate"
-       date_after_or_equal   // "date_after_or_equal:now"
-       date_before           // "date_before:now"
-       date_before_or_equal  // "date_before_or_equal:now"
+       date_after            => "date_after:now" | "date_after:birthdate"
+       date_after_or_equal   => "date_after_or_equal:now"
+       date_before           => "date_before:now"
+       date_before_or_equal  => "date_before_or_equal:now"
        bolean       
-       in_array              // "in_array:1,3,4,1,4,5"
-       not_in_array          // "not_in_array:1,3,4,1,4,5"
+       in_array              => "in_array:1,3,4,1,4,5"
+       not_in_array          => "not_in_array:1,3,4,1,4,5"
        ip
        url
        json
-       digits                // "digits:4"
-       max_digits            // "max_digits:20"
-       min_digits            // "min_digits:20"
-       digits_between        // "digits_between:5,10"
+       digits                => "digits:4"
+       max_digits            => "max_digits:20"
+       min_digits            => "min_digits:20"
+       digits_between        => "digits_between:5,10"
 
    ```
 
@@ -430,7 +438,7 @@ Boilerplate backend for nodejs.
 
 # Role and Permissions
    
-  A User model can have a role by binding using `hasRole(YourModel)` function inside `loadModels()` in `core/model/models.js` file.
+  A user model can have a role by binding using `hasRole(YourModel)` function inside `loadModels` in `core/model/models.js` file.
   
    ```
 
@@ -444,7 +452,7 @@ Boilerplate backend for nodejs.
 
   - Set users role
   
-  If the user already has a role, then the user role will be replaced with a new role. `YourModel.setRole(params)` params can be role `id` or `name`.
+  If the user already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`.
    
    ```
 
@@ -461,7 +469,7 @@ Boilerplate backend for nodejs.
    
   - Get role 
   
-  Get role object by calling `YourModel.getRole()`, or direcly access role name `YourModel.getRole().name`.
+  Get role object by calling `instance.getRole()`, or direcly access role name `instance.getRole().name`.
    
    ```
 
@@ -473,7 +481,7 @@ Boilerplate backend for nodejs.
    
   - Get permissions 
   
-  Get permission by calling `YourModel.getPermissions()` will get array of object, or `YourModel.getPermissionsName()` will get array of permissions name.
+  Get permission by calling `instance.getPermissions()` will get array of object, or `instance.getPermissionsName()` will get array of permissions name.
    
    ```
       
@@ -491,10 +499,13 @@ Boilerplate backend for nodejs.
    ``` 
    
   - Check user access
+   
+   Limitation user access using `GateAccess(userInstance,permissionNames)`, `permissionNames` must be an array of permission names. 
 
    ```
     
-       if (!GateAccess(user, ["user-create","user-stored","user-access"])) return res.sendStatus(403)
+       if (!GateAccess(user, ["user-create","user-stored","user-access"])) 
+           return res.sendStatus(403) // return forbidden status code
 
    ```
    
@@ -531,7 +542,7 @@ Boilerplate backend for nodejs.
    
   - Assigning Permissions to Roles
    
-   Assign permissions to a role can be a list of permissions `name` or `id`.
+   Assign permissions to a role by using `roleInstance.assignPermissions(params)`, params can be a list of permissions `name` or `id`.
    
    ```
 
@@ -543,7 +554,7 @@ Boilerplate backend for nodejs.
        let admin = await Role.findOne({ where: { name: "admin" } })
 
        if (admin) {
-           await admin.syncPermissions(permissions)
+           await admin.assignPermissions(permissions)
        }
        
    ```
@@ -577,7 +588,7 @@ Boilerplate backend for nodejs.
 
    - Basic usage
 
-   To make resource of single object use `make` or `collection` for array of object 
+   To create resources from a single object use `make` or `collection` for an array of objects.
 
    ```
 
@@ -589,9 +600,10 @@ Boilerplate backend for nodejs.
 
    - Example Resource
 
+   user resource 
+   
    ``` 
 
-      // user resource
       class UserResource extends Resource {
           constructor(req) {
               super(req).load(this)
@@ -602,14 +614,18 @@ Boilerplate backend for nodejs.
                         "id": data.id,
                         "name": data.name,
                         "email": data.email,
-                        "image": data.getFirstMedia()?.url || '',
+                        "image": data.getMediaByName("avatar")?.url || '',
                         "role": data.getRole()?.name || '',
                         "permissions": new PermissionResource().collection(data.getPermissions() || []),
                     }
           }
        }
 
-      // permissions resource
+   ```
+   permissions resource 
+   
+   ```
+      
       class PermissionResource extends Resource {
           constructor() {
                 super().load(this)
@@ -624,6 +640,8 @@ Boilerplate backend for nodejs.
       }
 
    ```
+
+
  
    - Example calling
    
@@ -635,7 +653,7 @@ Boilerplate backend for nodejs.
           }
       }) 
 
-      let userResource =  new UserResource().make(user)
+      let userResource = new UserResource().make(user)
 
       res.json(userResource)
 
@@ -712,7 +730,7 @@ Boilerplate backend for nodejs.
 
    - Middleware auth
 
-   For secure access to controller by adding `JwtAuthPass` to router.
+   For secure access to controller by adding `JwtAuthPass` to your router.
 
    
    ```
@@ -728,7 +746,7 @@ Boilerplate backend for nodejs.
   
    - Running seeder
 
-  Running seeder via cli
+   Running seeder via cli
 
 
    ```

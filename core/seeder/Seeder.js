@@ -49,12 +49,12 @@ const seeder = async () => {
     let admin = await Role.findOne({ where: { name: "admin" } })
     if (admin) {
         console.log(admin.name)
-        await admin.syncPermissions(permissions)
+        await admin.assignPermissions(permissions)
     }
 
     let customer = await Role.findOne({ where: { name: "customer" } })
     if (customer) {
-        await customer.syncPermissions([
+        await customer.assignPermissions([
             "user-create", "user-stored",
         ])
     }

@@ -192,8 +192,8 @@ const loadRole = async (alter = false) => {
         alter: alter
     })
 
-    Role.prototype.syncPermissions = async function (permissions) {
-        syncPermissions(this, permissions)
+    Role.prototype.assignPermissions = async function (permissions) {
+        assignPermissions(this, permissions)
     }
 
 
@@ -240,7 +240,7 @@ const alterTableRoleHandling = async (alter = false) => {
  * @param {*} role 
  * @param {*} permissions 
  */
-const syncPermissions = async (role, permissions) => {
+const assignPermissions = async (role, permissions) => {
     try {
         await RoleHasPermission.destroy({
             where: {
