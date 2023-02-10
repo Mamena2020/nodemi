@@ -34,7 +34,6 @@ const loadModels = async () => {
     })
 
 
-
 }
 
 export default loadModels
