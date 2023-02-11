@@ -16,7 +16,7 @@ POST  http://localhost:5000/api/login
 Content-Type: application/json
 
 {
-    "email": "andrsseddsds@gmail.com",
+    "email": "andreddsdds@gmail.com",
     "password": "7879"
 }
 
@@ -29,7 +29,7 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsIm5hbWUiOiJBbmRyZSIsImVtYWlsIjoiYW5kcmVkZHNkc0BnbWFpbC5jb20iLCJpYXQiOjE2NzYwMzU3MzksImV4cCI6MTY3NjEyMjEzOX0.7xAMDPhJ1ZwJaf4QQmUp6H60FqdLckNmhtmaPNOkGag
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsIm5hbWUiOiJBbmRyZSIsImVtYWlsIjoiYW5kcmVkZHNkZHNAZ21haWwuY29tIiwiaWF0IjoxNjc2MTEwMTQ3LCJleHAiOjE2NzYxOTY1NDd9.z3LvKNj9QuYMlVh1vOYqtk1DskbKTal5pWDPZD8R7Io
 
 ### get users
 GET   http://localhost:5000/api/users

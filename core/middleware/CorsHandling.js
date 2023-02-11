@@ -1,11 +1,7 @@
 
 import cors from 'cors'
+import corsConfig from '../config/cors.js'
 
 export default (app) => {
-    app.use(cors({
-        credentials: true,
-        origin: ['http:localhost:3000']
-    }))
-
-    app.use(cors())
+    app.use(cors(corsConfig))
 }

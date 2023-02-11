@@ -36,7 +36,6 @@ Boilerplate backend for nodejs.
 
    After creating your database, you can fill in the .env file and start your code.
 
-
 # Model
    
   Create new model via cli.
@@ -45,7 +44,7 @@ Boilerplate backend for nodejs.
       npx nodemi make:model Product
    ```
    
-  The model product will be created in the `models` directory. 
+  The model will be created in the `models` directory. 
    
    ```
 
@@ -74,22 +73,21 @@ Boilerplate backend for nodejs.
    ``` 
 
       const loadModels = async () => {
+
          await Product.sync({
              alter: true, // not recomended on production mode
          })
+
           ....
 
    ```
     
    Full <a target="_blank" href="https://sequelize.org/docs/v6/core-concepts/model-basics/"> documentation </a> of ORM
- 
 
    - Noted
 
    All relationships between models should be defined in the `loadModels` function. 
    When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `core/model/models.js` file.
-
-
 
  # Media
  
@@ -106,7 +104,7 @@ Boilerplate backend for nodejs.
          await hasMedia(Product)
     
    ```
-   
+
    - Save a file 
    
    You can save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
@@ -124,6 +122,7 @@ Boilerplate backend for nodejs.
    ```
    
    All media stored in `storage` directory by default, you can change directory name in .env file `MEDIA_LOCAL_STORAGE_DIR_NAME=storage`. 
+
 
    - Get media
    
@@ -165,6 +164,7 @@ Boilerplate backend for nodejs.
 
    All media files will be automatically deleted whenever `instance` of your model is deleted.
    
+
  # Request
    
    Handling Content-Type header for
@@ -174,6 +174,7 @@ Boilerplate backend for nodejs.
       - application/x-www-form-urlencoded
    
    Handling all upload files and nested fields.
+
 
  # Validation 
  
@@ -437,10 +438,11 @@ Boilerplate backend for nodejs.
        }
    
    ```
-   
+
    - Noted 
 
-   Default error messages output depend on locale, if you not setup locale as middleware, then locale will setup to default `en`.
+   Default error messages outputs are dependent on the locale. If you haven't set up the locale as a middleware, it will be set to English (en) by default.
+
 
 # Role and Permissions
    
@@ -458,7 +460,7 @@ Boilerplate backend for nodejs.
 
   - Set users role
   
-  If the user already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`.
+  If the user instance already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`.
    
    ```
 
@@ -649,7 +651,7 @@ Boilerplate backend for nodejs.
 
 
  
-   - Example calling
+   - Example usage
    
    ```
 
@@ -731,9 +733,20 @@ Boilerplate backend for nodejs.
    ```
 
    Or you just setup the .env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated user by access 
-   `req.user`
+   `req.user`.
 
+   Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model inside the `AuthConfig` in the `core/config/auth.js` file. It is crucial that your User model has a `refresh_token` column, as `JwtAuth.GetUser()` will retrieve the user instance based on the `refresh_token` by default. However, if you prefer to retrieve the current authenticated user in a different manner, you can modify the `JwtAuth.GetUser()` function to suit your needs.
 
+   ```
+      class AuthConfig {
+
+          /**
+          * Default user model for auth
+          * @returns 
+          */
+          static user = User 
+   ``` 
+    
    - Middleware auth
 
    For secure access to controller by adding `JwtAuthPass` to your router.
@@ -762,11 +775,11 @@ Boilerplate backend for nodejs.
 
    ```
 
-   You can add more locale Code to `locales`. by default `locales` are only available for English `en`, and for Indonesia `id`.
+   You can add more locale Code to `locales`. By default `locales` are only available for English `en`, and for Indonesia `id`.
    
    - Default validation error Messages
 
-   After you add more locale, its important to add the validation messages in `core/locale/LangValidation.js` file, so validation error messages will generate base on locale.
+   After adding additional `locales`, it is important to update the validation error messages in the `core/locale/LangValidation.js` file, as the messages generated will depend on the selected locale.
 
    ```
       
@@ -790,16 +803,20 @@ Boilerplate backend for nodejs.
 
    - Use Locale
    
-   Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect to `all` your router, so that have to has a params for locale, for the API router it should be `/api/:locale` and for the web router it should be `/:locale`.
+   Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect to `all` routes, so that have to has a params for locale, for the API router it should be `/api/:locale` and for the web router it should be `/:locale`.
 
    ```
       
       // example for api route
       const routerAuth = express.Router()
+
       routerAuth.use(JwtAuthPass)
       routerAuth.get("/user", UserController.getUser)
       routerAuth.post("/upload", UserController.upload)s
-      app.use("/api/:locale", routerAuth) // url-> http://localhost:5000/api/en/endpoint or  http://localhost:5000/api/id/endpoint
+      
+      app.use("/api/:locale", routerAuth) 
+      
+      // http://localhost:5000/api/en/endpoint |  http://localhost:5000/api/id/endpoint
     
    ```
    If you don't want to set the locale for all routes, only for a particular route, then simply set up the .env as `LOCALE_USE=false`. Then you can use the `LocalePass` middleware directly to your route.
@@ -808,6 +825,7 @@ Boilerplate backend for nodejs.
       
       // example for web route
       app.get("/:locale",LocalePass, (req, res) => {
+
       // http://localhost:5000/en | http://localhost:5000/id
       
 
@@ -844,3 +862,7 @@ Boilerplate backend for nodejs.
       }
 
    ```
+
+# Cors
+   
+   The configuration for Cross-Origin Resource Sharing (CORS) can be found in the `core/config/cors.js` file.
