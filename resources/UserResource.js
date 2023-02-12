@@ -1,4 +1,4 @@
-import Resource from "./../core/resource/Resource.js"
+import Resource from "../core/resource/Resource.js"
 import PermissionResource from "./PermissionResource.js"
 
 class UserResource extends Resource {

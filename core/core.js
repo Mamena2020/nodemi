@@ -1,72 +1,76 @@
 
 import express from "express";
-import db from "./database/Database.js"
+import db from "./database/Database.js";
+import { loadMedia } from "./service/MediaService.js"
+import loadRolePermission from "./service/RolePermission/Service.js"
 import loadModels from "./model/Models.js"
 import defaultMiddleware from "./middleware/Middleware.js"
-import { loadMedia } from "./service/MediaService.js"
-import web from "./../routes/web.js"
-import api from "./../routes/api.js"
-import loadRolePermission from "./service/RolePermission/Service.js";
-import { routeStoragePublic } from "./config/Media.js";
-
-const load = async (app) => {
-
-    try {
-        console.log("load core....")
-        //------------------------------------------------------- Database
-        
-        await db.authenticate()
-
-        // db.drop({cascade: true})
-        
-        // await db.sync({alter: true})
-        
-        //------------------------------------------------------- 
+import { routeStoragePublic } from "./config/Media.js"
+import api from "../routes/api.js";
+import web from "../routes/web.js";
 
 
-        //------------------------------------------------------- Services
+const Load = async (app) => {
+    return await new Promise(async (resolve, reject) => {
+        try {
+            console.log("load core....")
+            //------------------------------------------------------- Database
 
-        await loadMedia()
-        await loadRolePermission()
+            await db.authenticate()
 
-        //------------------------------------------------------- 
+            // db.drop({cascade: true})
+
+            // await db.sync({alter: true})
+
+            //------------------------------------------------------- 
 
 
+            //------------------------------------------------------- Services
 
-        //------------------------------------------------------- Models
+            await loadMedia()
+            await loadRolePermission()
 
-        await loadModels() // all model
-
-        //------------------------------------------------------- 
+            //------------------------------------------------------- 
 
 
 
-        //------------------------------------------------------- Middleware
-        
-        defaultMiddleware(app)
+            //------------------------------------------------------- Models
 
-        //------------------------------------------------------- 
+            await loadModels() // all model
+
+            //------------------------------------------------------- 
 
 
 
-        //------------------------------------------------------- Routers
+            //------------------------------------------------------- Middleware
 
-        app.use(express.static("public"));
-        
-        routeStoragePublic(app)
+            defaultMiddleware(app)
 
-        api(app)
-        web(app)
+            //------------------------------------------------------- 
 
-        //------------------------------------------------------- 
 
-        console.log("Ready!")
 
-    } catch (error) {
-        console.log("\x1b[31m", error, "\x1b[0m");
+            //------------------------------------------------------- Routers
+
+            app.use(express.static("public"));
+
+            routeStoragePublic(app)
+
+            api(app)
+            web(app)
+
+            //------------------------------------------------------- 
+             resolve("Ready")
+
+        } catch (error) {
+             reject(error)
+        }
+
     }
 
-
+    )
 }
 
-export default load
+
+
+export default Load

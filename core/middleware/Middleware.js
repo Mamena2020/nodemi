@@ -1,15 +1,14 @@
-import mediaRequestHandling from './MediaRequestHandling.js'
-import CorsHandling from './CorsHandling.js'
 import express from "express";
 import cookieParser from "cookie-parser";
-import LocalePass from './LocalePass.js';
-import localeConfig from './../config/Locale.js';
-
+import CorsHandling from "./CorsHandling.js"
+import mediaRequestHandling from "./MediaRequestHandling.js"
+import localeConfig from "../config/Locale.js";
+import LocalePass from "./LocalePass.js";
 
 /**
  * Default middleware
  */
-export default function defaultMiddleware(app) {
+const defaultMiddleware = (app) => {
 
     CorsHandling(app)
 
@@ -29,5 +28,6 @@ export default function defaultMiddleware(app) {
         app.use(LocalePass)
     }
     //-------------------------------------------------------
-
 }
+
+export default defaultMiddleware

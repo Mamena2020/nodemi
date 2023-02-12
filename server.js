@@ -1,16 +1,18 @@
 import dotenv from 'dotenv'
 import express from "express";
-import core from "./core/Core.js"
-
+import Load from './core/Core.js';
 dotenv.config()
-
-const port = process.env.APP_PORT || 5000
-// const host = process.env.APP_HOST || "http://localhost"
 const app = express()
 
-await core(app)
+const port = process.env.APP_PORT || 5000
 
-app.listen(port, () => {
-    console.log(`server running on: ${port}`)
+Load(app).then((msg) => {
+    console.log(msg)
+    app.listen(port, () => {
+        console.log(`server running on: ${port}`)
+    })
+}).catch((error) => {
+    console.log("\x1b[31m", error, "\x1b[0m");
 })
+
 

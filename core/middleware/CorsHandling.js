@@ -1,7 +1,8 @@
-
 import cors from 'cors'
-import corsConfig from './../config/Cors.js'
+import corsConfig from "../config/Cors.js"
 
-export default (app) => {
+const CorsHandling = (app) => {
     app.use(cors(corsConfig))
 }
+
+export default CorsHandling

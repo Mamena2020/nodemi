@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import JwtAuth from "./../auth/JwtAuth.js";
-import AuthConfig from "./../config/Auth.js"
+import JwtAuth from "../auth/JwtAuth.js";
+import AuthConfig from "../config/Auth.js";
 
 
 

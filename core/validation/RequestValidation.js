@@ -1,8 +1,8 @@
 import validator from 'validator'
-import localeConfig from './../config/Locale.js'
-import Translate from './../locale/Dictionary.js'
-import langValidation from './../locale/LangValidation.js'
+import localeConfig from '../config/Locale.js'
+import Translate from '../locale/Dictionary.js'
 import ValidationDB from './ValidationDB.js'
+import langValidation from "../locale/LangValidation.js"
 
 /**
  * For add new rule

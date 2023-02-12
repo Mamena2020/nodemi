@@ -1,4 +1,4 @@
-import db from "./../database/Database.js"
+import db from "../database/Database.js"
 
 class ValidationDB {
 

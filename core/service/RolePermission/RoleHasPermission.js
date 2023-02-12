@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import db from "./../../database/Database.js";
+import db from "../../database/Database.js";
 
 class RoleHasPermission extends Model {
 

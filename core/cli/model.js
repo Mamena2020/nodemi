@@ -1,4 +1,3 @@
-// const fse = require("fs-extra")
 import fse from "fs-extra"
 
 
@@ -45,7 +44,7 @@ const makeModel = (name) => {
                 return;
             }
             // add path tree
-            let importDBLine = `core/database/database.js"`
+            let importDBLine = `core/database/Database.js"`
             let count = file.split("").filter(c => c === "/").length
 
             for (let i = 0; i < count; i++) {
@@ -104,7 +103,7 @@ const addToCoreModels = (name, pathModel) => {
             fse.writeFile("core/model/Models.js", data, (err) => {
                 if (err) throw err;
 
-                console.log("\x1b[32m", `${name} model registered on core/model/models`, "\x1b[0m")
+                console.log("\x1b[32m", `${name} model registered on core/model/Models.js`, "\x1b[0m")
             });
         }
     })

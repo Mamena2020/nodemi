@@ -29,7 +29,7 @@ const roles = [
  * Cli command: npx nodemi seed:run
  * @returns 
  */
-const seeder = async () => {
+const Seeder = async () => {
 
     let alreadySeed = await Permission.findAll()
 
@@ -61,4 +61,4 @@ const seeder = async () => {
 
 }
 
-export default seeder
+export default Seeder
