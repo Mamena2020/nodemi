@@ -9,7 +9,7 @@ const port = process.env.APP_PORT || 5000
 Load(app).then((msg) => {
     console.log(msg)
     app.listen(port, () => {
-        console.log(`server running on: ${port}`)
+        console.log(`Server running on: ${port}`)
     })
 }).catch((error) => {
     console.log("\x1b[31m", error, "\x1b[0m");

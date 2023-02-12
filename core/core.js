@@ -71,6 +71,4 @@ const Load = async (app) => {
     )
 }
 
-
-
 export default Load
