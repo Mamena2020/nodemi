@@ -1,13 +1,13 @@
 
 import express from "express";
-import db from "./database/database.js"
+import db from "./database/Database.js"
 import loadModels from "./model/Models.js"
 import defaultMiddleware from "./middleware/Middleware.js"
 import { loadMedia } from "./service/MediaService.js"
-import web from "../routes/web.js"
-import api from "../routes/api.js"
+import web from "./../routes/web.js"
+import api from "./../routes/api.js"
 import loadRolePermission from "./service/RolePermission/Service.js";
-import { routeStoragePublic } from "./config/media.js";
+import { routeStoragePublic } from "./config/Media.js";
 
 const load = async (app) => {
 

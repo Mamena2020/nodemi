@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import express from "express";
-import core from "./core/core.js"
+import core from "./core/Core.js"
 
 dotenv.config()
 

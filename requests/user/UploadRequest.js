@@ -1,4 +1,4 @@
-import RequestValidation from "../../core/validation/RequestValidation.js";
+import RequestValidation from "./../../core/validation/RequestValidation.js";
 
 class UploadRequest extends RequestValidation {
 

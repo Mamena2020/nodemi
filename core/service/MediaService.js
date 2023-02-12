@@ -2,9 +2,8 @@ import { Model, DataTypes } from "sequelize";
 import { v4 as uuid4 } from 'uuid'
 import path from 'path'
 import fse from 'fs-extra'
-import db from "../../core/database/database.js"
-import mediaConfig from "../config/media.js";
-import { unwatchFile } from "fs";
+import db from "./../database/Database.js"
+import mediaConfig from "./../config/Media.js";
 // Helper function
 // const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
 

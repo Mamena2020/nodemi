@@ -9,10 +9,10 @@ if (process.env.DB_DEBUG_LOG == "true" || process.env.DB_DEBUG_LOG == true)
  * Database config
  */
 const databaseConfig = {
-    "username": process.env.DB_USERNAME ?? 'root',
-    "password": process.env.DB_PASSWORD ?? null,
+    "username": process.env.DB_USERNAME || 'root',
+    "password": process.env.DB_PASSWORD || null,
     "database": process.env.DB_NAME || "",
-    "host": process.env.DB_HOST ?? "localhost",
+    "host": process.env.DB_HOST || "localhost",
     "dialect": process.env.DB_CONNECTION,
     "logging": logging
 }

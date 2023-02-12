@@ -1,4 +1,4 @@
-import isLocale from "../locale/locale.js"
+import isLocale from "./../locale/Locale.js"
 
 
 

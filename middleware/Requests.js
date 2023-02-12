@@ -1,4 +1,4 @@
-import LoginRequest from "../requests/auth/LoginRequest.js"
+import LoginRequest from "./../requests/auth/LoginRequest.js"
 
 class Requests {
 

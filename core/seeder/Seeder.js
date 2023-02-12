@@ -1,5 +1,5 @@
-import Permission from "../service/RolePermission/Permission.js"
-import Role from "../service/RolePermission/Role.js"
+import Permission from "./../service/RolePermission/Permission.js"
+import Role from "./../service/RolePermission/Role.js"
 
 // const permissions = [
 //     { name: "user-create" },

@@ -1,6 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import db from "../../database/database.js";
-import Role from "./Role.js";
+import db from "./../../database/Database.js";
 
 class UserHasRole extends Model {
 
