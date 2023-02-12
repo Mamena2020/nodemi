@@ -49,7 +49,7 @@ Boilerplate backend for nodejs.
    ```
 
       import { Model, DataTypes } from "sequelize";
-      import db from "../core/database/database.js"
+      import db from "../core/database/Database.js"
       
       class Product extends Model {}
       Product.init({
@@ -68,7 +68,7 @@ Boilerplate backend for nodejs.
 
    ```
     
-   Automatically registered in the `loadModels` function in the `core/model/models.js` file.
+   Automatically registered in the `loadModels` function in the `core/model/Models.js` file.
    
    ``` 
 
@@ -87,7 +87,7 @@ Boilerplate backend for nodejs.
    - Noted
 
    All relationships between models should be defined in the `loadModels` function. 
-   When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `core/model/models.js` file.
+   When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `core/model/Models.js` file.
 
  # Media
  
@@ -446,7 +446,7 @@ Boilerplate backend for nodejs.
 
 # Role and Permissions
    
-  A user model can have a role by binding using `hasRole(YourModel)` function inside `loadModels` in `core/model/models.js` file.
+  A user model can have a role by binding using `hasRole(YourModel)` function inside `loadModels` in `core/model/Models.js` file.
   
    ```
 
@@ -735,7 +735,7 @@ Boilerplate backend for nodejs.
    Or you just setup the .env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated user by access 
    `req.user`.
 
-   Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model inside the `AuthConfig` in the `core/config/auth.js` file. It is crucial that your User model has a `refresh_token` column, as `JwtAuth.GetUser()` will retrieve the user instance based on the `refresh_token` by default. However, if you prefer to retrieve the current authenticated user in a different manner, you can modify the `JwtAuth.GetUser()` function to suit your needs.
+   Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model inside the `AuthConfig` in the `core/config/Auth.js` file. It is crucial that your User model has a `refresh_token` column, as `JwtAuth.GetUser()` will retrieve the user instance based on the `refresh_token` by default. However, if you prefer to retrieve the current authenticated user in a different manner, you can modify the `JwtAuth.GetUser()` function to suit your needs.
 
    ```
       class AuthConfig {
@@ -765,7 +765,7 @@ Boilerplate backend for nodejs.
   
    - Config
    
-   Setup locale in `core/config/locale.js`. by default locale setup to english `en`
+   Setup locale in `core/config/Locale.js`. by default locale setup to english `en`
 
    ```
        
@@ -865,4 +865,4 @@ Boilerplate backend for nodejs.
 
 # Cors
    
-   The configuration for Cross-Origin Resource Sharing (CORS) can be found in the `core/config/cors.js` file.
+   The configuration for Cross-Origin Resource Sharing (CORS) can be found in the `core/config/Cors.js` file.
