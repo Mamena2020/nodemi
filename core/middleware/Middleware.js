@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import CorsHandling from "./CorsHandling.js"
 import mediaRequestHandling from "./MediaRequestHandling.js"
-import localeConfig from "../config/Locale.js";
+import localeConfig from "../config/Locale_.js";
 import LocalePass from "./LocalePass.js";
 
 /**

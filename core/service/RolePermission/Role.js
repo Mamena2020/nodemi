@@ -1,5 +1,5 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
-import db from "../../database/Database.js";
+import db from "../../database/Database_.js";
 import Permission from "./Permission.js";
 import RoleHasPermission from "./RoleHasPermission.js";
 import UserHasRole from "./UserHasRole.js";
