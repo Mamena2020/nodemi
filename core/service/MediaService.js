@@ -2,8 +2,8 @@ import { Model, DataTypes } from "sequelize";
 import { v4 as uuid4 } from 'uuid'
 import path from 'path'
 import fse from 'fs-extra'
-import db from "../database/Database_.js"
-import mediaConfig from "../config/Media_.js";
+import db from "../database/Database.js"
+import mediaConfig from "../config/Media.js";
 
 
 class Media extends Model {

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import AuthConfig from "../config/Auth_.js";
+import AuthConfig from "../config/Auth.js";
 
 class JwtAuth {
 

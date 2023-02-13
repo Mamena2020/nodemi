@@ -1,11 +1,11 @@
 
 import express from "express";
-import db from "./database/Database_.js";
+import db from "./database/Database.js";
 import { loadMedia } from "./service/MediaService.js"
 import loadRolePermission from "./service/RolePermission/Service.js"
 import loadModels from "./model/Models.js"
 import defaultMiddleware from "./middleware/Middleware.js"
-import { routeStoragePublic } from "./config/Media_.js"
+import { routeStoragePublic } from "./config/Media.js"
 import api from "../routes/api.js";
 import web from "../routes/web.js";
 

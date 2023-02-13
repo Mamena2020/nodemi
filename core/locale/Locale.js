@@ -1,4 +1,4 @@
-import localeConfig from "../config/Locale_.js"
+import localeConfig from "../config/Locale.js"
 
 
 const isLocale = (locale) => {
