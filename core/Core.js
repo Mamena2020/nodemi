@@ -60,7 +60,6 @@ const Load = async (app) => {
             web(app)
 
             //------------------------------------------------------- 
-            console.log("Ready")
             return resolve("Ready")
 
         } catch (error) {
