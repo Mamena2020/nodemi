@@ -60,10 +60,11 @@ const Load = async (app) => {
             web(app)
 
             //------------------------------------------------------- 
-             resolve("Ready")
+            console.log("Ready")
+            return resolve("Ready")
 
         } catch (error) {
-             reject(error)
+            return reject(error)
         }
 
     }
