@@ -1,39 +1,39 @@
 
 ### install REST Client extentions, before use this
 ### register
-POST  http://localhost:5000/api/register
+POST  https://nodemi.onrender.com/api/register
 Content-Type: application/json
 
 {
-    "name": "Andre",
-    "email": "andreddsddssss@gmail.com",
+    "name": "Tester",
+    "email": "Tester@gmail.com",
     "password": "7879",
     "confirmPassword": "7879"
 }
 
 ### login
-POST  http://localhost:5000/api/login
+POST  https://nodemi.onrender.com/api/login
 Content-Type: application/json
 
 {
-    "email": "andreddsddssss@gmail.com",
+    "email": "Tester@gmail.com",
     "password": "7879"
 }
 
 
 ### refresh token
-GET  http://localhost:5000/api/token
+GET  https://nodemi.onrender.com/api/token
 
 ### logout
 DELETE   http://localhost:5000/logout
 
 ### get user
-GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzMsIm5hbWUiOiJBbmRyZSIsImVtYWlsIjoiYW5kcmVkZHNkZHNzQGdtYWlsLmNvbSIsImlhdCI6MTY3NjE5ODI4NywiZXhwIjoxNjc2Mjg0Njg3fQ.zDHjqitUJfZfh6SzHhaPvq6lliCfTt4dtebvYvcUQaI
+GET   https://nodemi.onrender.com/api/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IlRlc3RlciIsImVtYWlsIjoiVGVzdGVyQGdtYWlsLmNvbSIsImlhdCI6MTY3NjI4NDEwMiwiZXhwIjoxNjc2Mjg0NzAyfQ.wcSBK6xabYKDRATg8ai9O5ztI3-NDtZ-3-aiBasyIg0
 
 ### get users
-GET   http://localhost:5000/api/users
+GET   https://nodemi.onrender.com/api/users
 #Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzMsIm5hbWUiOiJBbmRyZSIsImVtYWlsIjoiYW5kcmVkZHNkZHNzQGdtYWlsLmNvbSIsImlhdCI6MTY3NjE5ODI4NywiZXhwIjoxNjc2Mjg0Njg3fQ.zDHjqitUJfZfh6SzHhaPvq6lliCfTt4dtebvYvcUQaI
 
 ### users no auth
-GET   http://localhost:5000/api/users
+GET   https://nodemi.onrender.com/api/users

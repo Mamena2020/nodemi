@@ -1,4 +1,5 @@
 import { Model, DataTypes } from "sequelize";
+import databaseConfig from "../../config/Database.js";
 import db from "../../database/Database.js";
 
 
@@ -57,7 +58,9 @@ const alterTablePermissionHandling = async (alter = false) => {
             })
         }
     } catch (error) {
-        console.log("Failed alter permissions drop index name, permissions not exist yet")
+        if (databaseConfig.dialect == "mysql") {
+            console.log("Failed alter permissions drop index name, permissions not exist yet")
+        }
     }
 }
 

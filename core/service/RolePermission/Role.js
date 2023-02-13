@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
+import databaseConfig from "../../config/Database.js";
 import db from "../../database/Database.js";
 import Permission from "./Permission.js";
 import RoleHasPermission from "./RoleHasPermission.js";
@@ -232,7 +233,9 @@ const alterTableRoleHandling = async (alter = false) => {
             })
         }
     } catch (error) {
-        console.log("Failed alter roles drop index name, roles not exist yet")
+        if (databaseConfig.dialect == "mysql") {
+            console.log("Failed alter roles drop index name, roles not exist yet")
+        }
     }
 }
 

@@ -13,6 +13,31 @@ Boilerplate backend for nodejs.
    - Auth - JWT
    - Locale
    - Seeder
+   
+
+- Live demo
+  
+   | Action    | Method | Auth   | Body            |    EndPoint                              | 
+   |-----------|--------|--------|-----------------|------------------------------------------|
+   | Login     | POST   |        | email           | https://nodemi.onrender.com/api/login    |
+   |           |        |        | password        |                                          |
+   |           |        |        |                 |                                          |
+   | Register  | POST   |        | email           | https://nodemi.onrender.com/api/register |
+   |           |        |        | name            |                                          |
+   |           |        |        | password        |                                          |
+   |           |        |        | confirmPassword |                                          |
+   |           |        |        |                 |                                          |
+   | Token     | GET    |        |                 | https://nodemi.onrender.com/api/token    |
+   |           |        |        |                 |                                          |
+   |           |        |        |                 |                                          |
+   | Logout    | DELETE |        |                 | https://nodemi.onrender.com/api/logout   |
+   |           |        |        |                 |                                          |
+   | Get User  | GET    | Bearer |                 | https://nodemi.onrender.com/api/user     |
+   |           |        | token  |                 |                                          |
+   |           |        |        |                 |                                          |
+   | Get Users | GET    |        |                 | https://nodemi.onrender.com/api/users    |
+   |           |        |        |                 |                                          |
+
 
 # Getting Started
 

@@ -4,6 +4,7 @@ import path from 'path'
 import fse from 'fs-extra'
 import db from "../database/Database.js"
 import mediaConfig from "../config/Media.js";
+import databaseConfig from "../config/Database.js";
 
 
 class Media extends Model {
@@ -68,7 +69,9 @@ Media.loadSync = async function ({ alter = false }) {
             })
         }
     } catch (error) {
-        console.log("Failed alter medias drop index url, medias not exist yet")
+        if (databaseConfig.dialect == "mysql") {
+            console.log("Failed alter medias drop index url, medias not exist yet")
+        }
     }
     await Media.sync({
         alter: alter,
