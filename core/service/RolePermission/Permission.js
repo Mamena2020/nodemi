@@ -26,7 +26,7 @@ Permission.init({
 },
     {
         sequelize: db, // We need to pass the connection instance
-        tableName: "Permissions",
+        tableName: "permissions",
         modelName: 'Permission', // We need to choose the model name
         timestamps: true
     }
@@ -53,11 +53,11 @@ const alterTablePermissionHandling = async (alter = false) => {
     // handling for multiple index of url
     try {
         if (alter) {
-            await db.query(`ALTER TABLE Permissions DROP INDEX name`).then(() => {
+            await db.query(`ALTER TABLE permissions DROP INDEX name`).then(() => {
             })
         }
     } catch (error) {
-        console.log("error")
+        console.log("Failed alter permissions drop index name, permissions not exist yet")
     }
 }
 

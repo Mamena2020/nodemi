@@ -15,14 +15,16 @@
     "busboy": "^1.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fs-extra": "^11.1.0",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.0.1",
+    "pg": "^8.9.0",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.28.0",
     "uuid": "^9.0.0",
-    "validator": "^13.7.0",
-    "dotenv": "^16.0.3"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "commander": "^10.0.0",

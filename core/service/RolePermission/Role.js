@@ -18,12 +18,15 @@ Role.init({
 },
     {
         sequelize: db, // We need to pass the connection instance
-        tableName: "Roles",
+        tableName: "roles",
         modelName: 'Role', // We need to choose the model name
         timestamps: true
     }
 )
 
+Role.prototype.assignPermissions = async function (permissions) {
+    await assignPermissions(this, permissions)
+}
 
 
 
@@ -130,11 +133,15 @@ const setRole = async (model, role) => {
         const roleable_id = model.id
         const roleable_type = model.constructor.options.name.singular
 
+        let roleId = -1
+        if (isInt(role)) {
+            roleId = role
+        }
 
         const roleModel = await Role.findOne({
             where: {
                 [Sequelize.Op.or]: [
-                    { id: role ?? '' },
+                    { id: roleId },
                     { name: role ?? '' }
                 ]
             }
@@ -192,11 +199,6 @@ const loadRole = async (alter = false) => {
         alter: alter
     })
 
-    Role.prototype.assignPermissions = async function (permissions) {
-        assignPermissions(this, permissions)
-    }
-
-
     await UserHasRole.sync({
         alter: alter
     })
@@ -226,11 +228,11 @@ const alterTableRoleHandling = async (alter = false) => {
     // handling for multiple index of url
     try {
         if (alter) {
-            await db.query(`ALTER TABLE Roles DROP INDEX name`).then(() => {
+            await db.query(`ALTER TABLE roles DROP INDEX name`).then(() => {
             })
         }
     } catch (error) {
-        console.log("error")
+        console.log("Failed alter roles drop index name, roles not exist yet")
     }
 }
 
@@ -285,7 +287,11 @@ const assignPermissions = async (role, permissions) => {
     }
 }
 
-
+function isInt(value) {
+    return typeof value === 'number' &&
+        isFinite(value) &&
+        Math.floor(value) === value;
+}
 
 
 export default Role

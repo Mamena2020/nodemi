@@ -45,10 +45,8 @@ const Seeder = async () => {
 
     await Role.bulkCreate(roles)
 
-
     let admin = await Role.findOne({ where: { name: "admin" } })
     if (admin) {
-        console.log(admin.name)
         await admin.assignPermissions(permissions)
     }
 

@@ -15,6 +15,7 @@ export default function api(app) {
     routerGuest.delete("/logout", AuthController.logout)
 
     // routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
+    routerGuest.get("/users", UserController.getUsers)
     app.use("/api", routerGuest)
 
 

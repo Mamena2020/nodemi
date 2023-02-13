@@ -20,10 +20,9 @@ UserDetail.init({
         onDelete: "CASCADE"
     }
 }, {
-    // tableName: "UserDetails",
     sequelize: db, // We need to pass the connection instance
-    // modelName: 'UserDetails', // We need to choose the model name
-    modelName: 'UserDetail', // We need to choose the model name
+    tableName: "user_details",// table name
+    modelName: 'UserDetail', //  model name
     timestamps: true
 });
 

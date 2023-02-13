@@ -1,6 +1,8 @@
 import Permission, { loadPermission } from "./Permission.js";
 import Role, { loadRole } from "./Role.js";
-import RoleHasPermission from "./RoleHasPermission.js";
+import RoleHasPermission, { loadRoleHasPermission } from "./RoleHasPermission.js";
+
+
 
 
 /**
@@ -13,12 +15,9 @@ const loadRolePermission = async () => {
 
     await loadPermission(true)
 
-    await RoleHasPermission.sync({
-        alter: true
-    })
+    await loadRoleHasPermission(true)
 
-
-    Role.belongsToMany(Permission, {
+    await Role.belongsToMany(Permission, {
         through: RoleHasPermission,
         foreignKey: "role_id",
         otherKey: "permission_id",
@@ -27,12 +26,13 @@ const loadRolePermission = async () => {
     })
 
 
-    Permission.belongsToMany(Role, {
+    await Permission.belongsToMany(Role, {
         through: RoleHasPermission,
         foreignKey: "permission_id",
         otherKey: "role_id",
         constraints: false
     })
+
 
 }
 

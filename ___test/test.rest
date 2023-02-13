@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
     "name": "Andre",
-    "email": "andreddsddss@gmail.com",
+    "email": "andreddsddssss@gmail.com",
     "password": "7879",
     "confirmPassword": "7879"
 }
@@ -16,7 +16,7 @@ POST  http://localhost:5000/api/login
 Content-Type: application/json
 
 {
-    "email": "andreddsddss@gmail.com",
+    "email": "andreddsddssss@gmail.com",
     "password": "7879"
 }
 
@@ -35,5 +35,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzMsIm5hbWUiO
 GET   http://localhost:5000/api/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzMsIm5hbWUiOiJBbmRyZSIsImVtYWlsIjoiYW5kcmVkZHNkZHNzQGdtYWlsLmNvbSIsImlhdCI6MTY3NjE5ODI4NywiZXhwIjoxNjc2Mjg0Njg3fQ.zDHjqitUJfZfh6SzHhaPvq6lliCfTt4dtebvYvcUQaI
 
-### get list routes
-GET   http://localhost:5000/apis
+### users no auth
+GET   http://localhost:5000/api/users

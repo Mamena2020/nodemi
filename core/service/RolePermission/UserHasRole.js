@@ -11,7 +11,7 @@ UserHasRole.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "Roles",
+            model: "roles",
             key: 'id'
         },
         onDelete: "CASCADE"
@@ -27,7 +27,7 @@ UserHasRole.init({
 },
     {
         sequelize: db, // We need to pass the connection instance
-        tableName: "UserHasRoles",
+        tableName: "user_has_roles",
         modelName: 'UserHasRole', // We need to choose the model name
         timestamps: true
     }

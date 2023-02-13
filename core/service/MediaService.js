@@ -49,7 +49,7 @@ Media.init({
 },
     {
         sequelize: db, // We need to pass the connection instance
-        tableName: "Medias",
+        tableName: "medias",
         modelName: 'Media', // We need to choose the model name
         timestamps: true
     }
@@ -64,11 +64,11 @@ Media.loadSync = async function ({ alter = false }) {
     // handling for multiple index of url
     try {
         if (alter) {
-            await db.query(`ALTER TABLE Medias DROP INDEX url`).then(() => {
+            await db.query(`ALTER TABLE medias DROP INDEX url`).then(() => {
             })
         }
     } catch (error) {
-        console.log("error")
+        console.log("Failed alter medias drop index url, medias not exist yet")
     }
     await Media.sync({
         alter: alter,
