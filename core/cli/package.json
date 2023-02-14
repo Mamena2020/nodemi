@@ -1,0 +1,18 @@
+{
+  "name": "nodemi-cli",
+  "version": "1.0.45",
+  "description": "",
+   "type": "module", 
+   "bin": {
+    "nodemi": "cli.js"
+  },
+  "scripts": {
+
+  },
+  "author": "Andre Aipassa",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^10.0.0",
+    "fs-extra": "^11.1.0"
+  }
+}
