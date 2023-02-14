@@ -86,6 +86,7 @@ Boilerplate backend for nodejs.
            },
          }, {
            sequelize: db, 
+           tableName: 'products',
            modelName: 'Product',
            timestamps: true
          }

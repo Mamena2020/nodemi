@@ -351,7 +351,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
 // -------------------------------------------------------------------------------------------  helpers
 /**
  * normalize media path to url
- * ex: path   =>  /storage/user-1/image.jpg
+ * ex: path   => /storage/user-1/image.jpg
  *     result => http://localhost:8000/user-1/image.jpd
  * @param {*} filePath 
  * @returns url
@@ -377,7 +377,7 @@ const loadMedia = async () => {
 /**
  * get path local storage if on there is a media stored on local storage
  * @param {*} medias 
- * @returns 
+ * @returns ex: storage/user-1
  */
 const getPathLocalStorage = (medias) => {
     if (!medias || !Array.isArray(medias))

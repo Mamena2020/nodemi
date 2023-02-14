@@ -11,7 +11,7 @@ class FirebaseStorage {
         if (admin.apps.length)
             return
 
-        console.log("init firebase");
+        // console.log("init firebase");
         await new Promise(async (resolve, reject) => {
             return await fse.readFile(mediaConfig.firebaseServiceAccountFile, 'utf-8', async (error, data) => {
                 if (error) {
@@ -92,7 +92,7 @@ class FirebaseStorage {
             const file = bucket.file(fileName);
 
             file.delete().then(() => {
-                console.log(`File deleted successfully.`);
+                // console.log(`File deleted successfully.`);
                 resolve(true)
             }).catch(error => {
                 reject()
@@ -108,7 +108,7 @@ class FirebaseStorage {
      */
     static async deleteMedias(paths) {
         return await new Promise(async (resolve, reject) => {
-            console.log("start delete firebase files", paths)
+            // console.log("start delete firebase files", paths)
 
             if (!Array.isArray(paths))
                 reject()
