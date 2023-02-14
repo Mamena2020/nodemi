@@ -1,6 +1,6 @@
 import User from "../../models/User.js"
 import UserDetail from "../../models/UserDetail.js"
-import { hasMedia } from "../service/MediaService.js"
+import { hasMedia } from "../service/MediaService/MediaService.js"
 import { hasRole } from "../service/RolePermission/Role.js"
 
 

@@ -6,6 +6,8 @@ Boilerplate backend for nodejs.
 
    - Model - ORM
    - Media Libary - binding to any Model
+      - Local storage
+      - Firebase storage
    - File request handling   
    - Request validation
    - Role and Permissions
@@ -145,8 +147,20 @@ Boilerplate backend for nodejs.
       await product.saveMedia(req.body.file,"thumbnail")
     
    ```
-   
-   All media stored in `storage` directory by default, you can change directory name in .env file `MEDIA_LOCAL_STORAGE_DIR_NAME=storage`. 
+   You can save files to either `Local` storage or `Firebase` storage.
+
+   To save to `Local` storage, just set your .env file `MEDIA_STORAGE=local` , and local storage directory name `MEDIA_LOCAL_STORAGE_DIR_NAME=storage`.
+
+   ```
+      MEDIA_STORAGE=local
+      MEDIA_LOCAL_STORAGE_DIR_NAME=storage
+   ```
+   To save to `Firebase` storage, first create your `Service Account` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download it to your project, then setup the .env file.
+   ```
+      MEDIA_STORAGE=firebase
+      MEDIA_FIREBASE_STORAGE_BUCKET=gs://xxxxxx.appspot.com  # your firebase storage bucket
+      MEDIA_FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json #  your firebase service account 
+   ```
 
 
    - Get media

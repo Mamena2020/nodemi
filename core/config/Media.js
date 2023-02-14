@@ -2,17 +2,23 @@ import dotenv from 'dotenv'
 import express from 'express'
 dotenv.config()
 
-let usingLocalStorage = true
-if (process.env.MEDIA_USE_LOCAL_STORAGE == "false" || process.env.MEDIA_USE_LOCAL_STORAGE == false)
-    usingLocalStorage = false
+
+
+const mediaStorages = Object.freeze({
+    local: "local",
+    firebase: "firebase"
+})
 
 let appUrl = process.env.APP_URL ?? "http://localhost::5000"
 
 const mediaConfig = {
     localStorageDirectory: process.env.MEDIA_LOCAL_STORAGE_DIR_NAME || "storage",
-    usingLocalStorage: usingLocalStorage,
-    root_media_url: appUrl + "/"
+    mediaStorage: process.env.MEDIA_STORAGE || mediaStorages.local,
+    rootMediaUrl: appUrl + "/",
+    firebaseBucket: process.env.MEDIA_FIREBASE_STORAGE_BUCKET,
+    firebaseServiceAccountFile: process.env.MEDIA_FIREBASE_SERVICE_ACCOUNT
 }
+
 
 /**
  * Setup dir as public where media is stored 
@@ -23,4 +29,4 @@ const routeStoragePublic = (app) => {
 }
 
 export default mediaConfig
-export { routeStoragePublic }
+export { routeStoragePublic, mediaStorages }

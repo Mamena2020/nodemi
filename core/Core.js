@@ -1,7 +1,7 @@
 
 import express from "express";
 import db from "./database/Database.js";
-import { loadMedia } from "./service/MediaService.js"
+import { loadMedia } from "./service/MediaService/MediaService.js"
 import loadRolePermission from "./service/RolePermission/Service.js"
 import loadModels from "./model/Models.js"
 import defaultMiddleware from "./middleware/Middleware.js"

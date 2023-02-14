@@ -23,7 +23,7 @@ export default function api(app) {
     routerAuth.use(JwtAuthPass)
     routerAuth.get("/user", UserController.getUser)
     routerAuth.post("/upload", UserController.upload)
-    routerAuth.delete("/deletemedia/:userId", UserController.deleteMedia)
+    
     app.use("/api", routerAuth)
 
 }

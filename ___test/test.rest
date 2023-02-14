@@ -7,8 +7,8 @@ Content-Type: application/json
 {
     "name": "Andre",
     "email": "andreddsddssss@gmail.com",
-    "password": "7879",
-    "confirmPassword": "7879"
+    "password": "1234",
+    "confirmPassword": "1234"
 }
 
 ### login
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
     "email": "andreddsddssss@gmail.com",
-    "password": "7879"
+    "password": "1234"
 }
 
 

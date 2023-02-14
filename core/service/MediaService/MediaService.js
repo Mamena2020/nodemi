@@ -2,9 +2,10 @@ import { Model, DataTypes } from "sequelize";
 import { v4 as uuid4 } from 'uuid'
 import path from 'path'
 import fse from 'fs-extra'
-import db from "../database/Database.js"
-import mediaConfig from "../config/Media.js";
-import databaseConfig from "../config/Database.js";
+import db from "../../database/Database.js"
+import mediaConfig, { mediaStorages } from "../../config/Media.js";
+import databaseConfig from "../../config/Database.js";
+import FirebaseStorage from "./FirebaseStorage.js";
 
 
 class Media extends Model {
@@ -30,14 +31,18 @@ Media.init({
         type: DataTypes.JSON,
         allowNull: false,
     },
-    local_storage: {
-        type: DataTypes.BOOLEAN,
+    media_storage: {
+        type: DataTypes.STRING,
         allowNull: true,
     },
-    url: {
-        type: DataTypes.STRING,
+    path: {
+        type: DataTypes.TEXT,
         allowNull: false,
-        unique: true
+    },
+    url: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        // unique: true
     },
     mediatable_id: {
         type: DataTypes.INTEGER,
@@ -62,17 +67,17 @@ Media.init({
  * @param {*} param0 
  */
 Media.loadSync = async function ({ alter = false }) {
-    // handling for multiple index of url
-    try {
-        if (alter) {
-            await db.query(`ALTER TABLE medias DROP INDEX url`).then(() => {
-            })
-        }
-    } catch (error) {
-        if (databaseConfig.dialect == "mysql") {
-            console.log("Failed alter medias drop index url, medias not exist yet")
-        }
-    }
+    // // handling for multiple index of url
+    // try {
+    //     if (alter) {
+    //         await db.query(`ALTER TABLE medias DROP INDEX url`).then(() => {
+    //         })
+    //     }
+    // } catch (error) {
+    //     if (databaseConfig.dialect == "mysql") {
+    //         console.log("Failed alter medias drop index url, medias not exist yet")
+    //     }
+    // }
     await Media.sync({
         alter: alter,
     })
@@ -116,14 +121,14 @@ const hasMedia = async (model = Model) => {
     model.prototype.getMediaByName = function (name) {
         let _medias = getMedia(this)
         if (!_medias || !name)
-            return 
+            return
 
         for (let m of _medias) {
             if (m.name === name) {
                 return m
             }
         }
-        return 
+        return
     }
 
     model.prototype.getFirstMedia = function () {
@@ -161,9 +166,13 @@ const hasMedia = async (model = Model) => {
                     }
                 })
                 try {
-                    if (_medias[i].local_storage) {
-                        await fse.remove(_medias[i].path)
+                    if (_medias[i].media_storage === mediaStorages.local) {
+                        fse.remove(_medias[i].path)
                     }
+                    if (_medias[i].media_storage === mediaStorages.firebase) {
+                        FirebaseStorage.deleteMedia(_medias[i].path)
+                    }
+
                 } catch (error) {
                     console.log("error", error)
                 }
@@ -181,13 +190,19 @@ const hasMedia = async (model = Model) => {
         })
         if (_models && _models.length > 0) {
             for (let _model of _models) {
+                let _medias = await _model.getMedia()
                 Media.destroy({
                     where: {
                         mediatable_id: _model.id,
                         mediatable_type: instance.model.options.name.singular
                     }
                 })
-                let _pathlocalStorage = getPathLocalStorage(_model.getMedia()) // result storage/user-1
+                let paths = getPathsFirebaseFromMedias(_medias)
+                if (paths.length) {
+                    FirebaseStorage.deleteMedias(paths)
+                }
+
+                let _pathlocalStorage = getPathLocalStorage(_medias) // result storage/user-1
                 if (_pathlocalStorage) {
                     try {
                         fse.remove(_pathlocalStorage)
@@ -195,6 +210,7 @@ const hasMedia = async (model = Model) => {
                         console.log(error)
                     }
                 }
+
             }
         }
 
@@ -220,14 +236,17 @@ const getMedia = (_model) => {
         for (let key in m.dataValues) {
             _media[key] = m.dataValues[key]
         }
-        if (_media.local_storage) {
-            _media["path"] = _media["url"]
+        if (_media.media_storage === mediaStorages.local) {
+            // _media["path"] = _media["url"]
             _media["url"] = normalizeLocalStorageToUrl(_media["url"])
         }
         _medias.push(_media)
     }
     return _medias
 }
+
+
+// ------------------------------------------------------------------------------------------- delete file
 
 
 // ------------------------------------------------------------------------------------------- store file functions
@@ -251,11 +270,10 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
         // moving from temporary dir
         await fse.move(file.tempDir, targetDir, (err) => {
             if (err) {
-                console.log("error when rename file to permanent storage")
                 console.log(err);
-                return reject(err);
+                return reject();
             }
-            return resolve(targetDir)
+            return resolve({ path: targetDir, url: targetDir })
         })
     })
 }
@@ -276,11 +294,16 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
     const mediatable_type = model.constructor.options.name.singular
 
 
-    var targetDir
-    if (mediaConfig.usingLocalStorage) {
-        targetDir = await saveToLocal(file, mediatable_type, mediatable_id)
+    var targetStorage
+    if (mediaConfig.mediaStorage === mediaStorages.local) {
+        targetStorage = await saveToLocal(file, mediatable_type, mediatable_id)
     }
-    if (targetDir) {
+    if (mediaConfig.mediaStorage === mediaStorages.firebase) {
+        targetStorage = await FirebaseStorage.saveMedia(file)
+    }
+
+
+    if (targetStorage) {
 
         delete file.tempDir
 
@@ -295,36 +318,41 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             await Media.create({
                 mediatable_id: mediatable_id,
                 mediatable_type: mediatable_type,
-                url: targetDir,
+                url: targetStorage.url,
+                path: targetStorage.path,
                 info: JSON.stringify(file),
                 name: name,
-                local_storage: mediaConfig.usingLocalStorage
+                media_storage: mediaConfig.mediaStorage
             })
         }
         else {
             // remove old media file
             try {
-                if (media.local_storage) {
-                    await fse.remove(media.url)
+                if (media.media_storage === mediaStorages.local) {
+                    await fse.remove(media.path)
+                }
+                if (media.media_storage === mediaStorages.firebase) {
+                    await FirebaseStorage.deleteMedia(media.path)
                 }
             } catch (error) {
             }
 
             await media.update({
-                url: targetDir,
+                url: targetStorage.url,
+                path: targetStorage.path,
                 info: JSON.stringify(file),
-                local_storage: mediaConfig.usingLocalStorage
+                media_storage: mediaConfig.mediaStorage
             })
         }
     }
 
-    return targetDir
+    return targetStorage
 }
 // -------------------------------------------------------------------------------------------  helpers
 /**
  * normalize media path to url
  * ex: path   =>  /storage/user-1/image.jpg
- *     result => http://localhost:8000/storage/user-1/image.jpd
+ *     result => http://localhost:8000/user-1/image.jpd
  * @param {*} filePath 
  * @returns url
  */
@@ -333,7 +361,7 @@ const normalizeLocalStorageToUrl = (filePath) => {
     let directories = filePath.split(path.sep)
     directories = directories.slice(1) // remove first path ->  /storage/
     let newPath = directories.join(path.sep)
-    return mediaConfig.root_media_url + newPath.replace(/\\/g, "/")
+    return mediaConfig.rootMediaUrl + newPath.replace(/\\/g, "/")
 }
 // ------------------------------------------------------------------------------------------- 
 /**
@@ -356,7 +384,7 @@ const getPathLocalStorage = (medias) => {
         return
     try {
         for (let m of medias) {
-            if (m.local_storage) {
+            if (m.media_storage === mediaStorages.local) {
                 // console.log("m.path:", m.path)
                 const parts = m.path.split(path.sep)
                 return parts.slice(0, 2).join('/');
@@ -366,6 +394,30 @@ const getPathLocalStorage = (medias) => {
         console.log(error)
     }
     return
+}
+
+/**
+ * get firebase paths from array of media object
+ * @param {*} medias 
+ * @returns 
+ */
+const getPathsFirebaseFromMedias = (medias) => {
+    if (!medias || !Array.isArray(medias))
+        return []
+
+    let paths = []
+
+    try {
+        for (let m of medias) {
+            if (m.media_storage === mediaStorages.firebase) {
+                paths.push(m.path)
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    return paths
+
 }
 
 // ------------------------------------------------------------------------------------------- 
