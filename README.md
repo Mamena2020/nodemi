@@ -5,7 +5,7 @@ Boilerplate backend for nodejs.
 - Features
 
    - Model - ORM
-   - Media Libary - binding to any Model
+   - Media library - binding to any Model
       - Local storage
       - Firebase storage
    - File request handling   
@@ -155,7 +155,7 @@ Boilerplate backend for nodejs.
       MEDIA_STORAGE=local
       MEDIA_LOCAL_STORAGE_DIR_NAME=storage
    ```
-   To save to `Firebase` storage, first create your `Service Account` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download it to your project, then setup the .env file.
+   To save to `Firebase` storage, first create your `Service Account .json` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download it to your project, then setup the .env file.
    ```
       MEDIA_STORAGE=firebase
       MEDIA_FIREBASE_STORAGE_BUCKET=gs://xxxxxx.appspot.com  # your firebase storage bucket
