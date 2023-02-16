@@ -62,6 +62,20 @@ Clone and move to directory project and run `npm install`
 
 After creating your database, you can fill in the .env file and start your code.
 
+```
+#mysql example
+
+mysql -u root -p 
+# enter your password 
+
+create database mydatabase;
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#pgsql example
+
+createdb -h localhost -p 5432 -U myPgUser mydatabase
+```
+
 # Model
 
 Create new model via cli.
