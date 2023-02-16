@@ -47,12 +47,12 @@ const makeRequest = (name) => {
             }
             importRequestValidaion = `import RequestValidation from "` + importRequestValidaion + `\n`
 
-            // get model name from path
+            // get class name from path
             let names = name.split("/") // Catalog/ProductRequest  
-            let modelName = names[names.length - 1] // ProductRequest
+            let className = names[names.length - 1] // ProductRequest
 
-            // change model name from default script
-            const content = scripts().replace(/ClassName/g, modelName)
+            // change class name from default script
+            const content = scripts().replace(/ClassName/g, className)
 
             // adding import packages on top of line
             let lines = content.split("\n")
@@ -79,4 +79,3 @@ const makeRequest = (name) => {
 
 
 export default makeRequest
-// module.exports = makeRequest

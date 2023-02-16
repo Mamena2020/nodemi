@@ -1,6 +1,6 @@
 {
   "name": "nodemi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "type": "module",
   "main": "server.js",
@@ -16,11 +16,13 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
     "express": "^4.18.2",
     "firebase-admin": "^11.5.0",
     "fs-extra": "^11.1.0",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.0.1",
+    "nodemailer": "^6.9.1",
     "pg": "^8.9.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.28.0",
@@ -29,6 +31,6 @@
   },
   "devDependencies": {
     "commander": "^10.0.0",
-    "nodemi-cli": "^1.0.45"
+    "nodemi-cli": "^1.0.47"
   }
 }

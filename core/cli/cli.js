@@ -4,6 +4,7 @@ import { program } from "commander";
 import makeModel from "./model.js";
 import makeRequest from "./request.js";
 import makeResource from "./resource.js";
+import makeMail from "./mail.js";
 import Seeder from "../../core/seeder/Seeder.js";
 
 program
@@ -22,6 +23,11 @@ program
     .command('make:resource <name>')
     .action((name) => {
         makeResource(name)
+    });
+program
+    .command('make:mail <name>')
+    .action((name) => {
+        makeMail(name)
     });
 
 program.command('seed:run')

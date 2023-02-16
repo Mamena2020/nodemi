@@ -5,7 +5,7 @@ POST  https://nodemi.onrender.com/api/register
 Content-Type: application/json
 
 {
-    "name": "Tester",
+    "name": "Tester ",
     "email": "Tester@gmail.com",
     "password": "1234",
     "confirmPassword": "1234"

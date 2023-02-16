@@ -4,7 +4,6 @@ import { GateAccess } from "../core/service/RolePermission/Service.js";
 import UploadRequest from "../requests/user/UploadRequest.js";
 import UserResource from "../resources/UserResource.js";
 import JwtAuth from "../core/auth/JwtAuth.js";
-import { getPathLocalStorage } from "../core/service/MediaService/MediaService.js";
 
 
 const getUser = async (req, res) => {
@@ -88,7 +87,6 @@ const upload = async (req, res) => {
 //     res.json("media deleted")
 
 // }
-
 
 export default {
     getUser,
