@@ -6,9 +6,8 @@ const scriptsEmail = () => {
     return `
 
 class ClassName extends Mail {
-    constructor(from = String, to = [], subject = String) {
-        super()
-        super.load({
+    constructor(from = '', to = [], subject = '') {
+        super().load({
             from: from,
             to: to,
             subject: subject,

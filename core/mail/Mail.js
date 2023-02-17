@@ -2,52 +2,51 @@ import mailConfig from "../config/Mail.js";
 import nodemailer from "nodemailer"
 import ejs from "ejs"
 
-// global testing account
+/**
+ * Store testing account
+ */
 var testingAccount
-
 const mailAccount = async () => {
-    // console.log("mail account")
-    // console.log("mail config", mailConfig)
     if (mailConfig.testing) {
-        if (testingAccount === null || testingAccount === undefined) {
+        if (!testingAccount) {
             testingAccount = await nodemailer.createTestAccount()
-
         }
         return {
             user: testingAccount.user,// generated ethereal user
             pass: testingAccount.pass // generated ethereal password
         }
     }
-
     return {
         user: mailConfig.username,
         pass: mailConfig.password
     }
 }
 
+/**
+ * create transporter for email
+ * @returns 
+ */
+const transporter = async () => {
+    const mailAuth = await mailAccount()
+    if (!mailAuth.user || !mailAuth.pass) {
+        console.log("\x1b[31m", 'Mail credential invalid, Check your credential mail username or password', "\x1b[0m");
+        throw 'Credential invalid'
+    }
+    const transport = {
+        host: mailConfig.host || "smtp.ethereal.email",
+        port: mailConfig.port || 587,
+        secure: mailConfig.port == 465 ? true : false, // true for 465, false for other ports
+        auth: mailAuth
+    }
+    return nodemailer.createTransport(transport);
+}
 
 class Mail {
 
-    async #transporter() {
-
-        const mailAuth = await mailAccount()
-
-        if (!mailAuth.user || !mailAuth.pass) {
-            console.log("\x1b[31m", 'Mail credential invalid, Check your credential mail username or password', "\x1b[0m");
-            throw 'Credential invalid'
-        }
-
-        const transport = {
-            host: mailConfig.host || "smtp.ethereal.email",
-            port: mailConfig.port || 587,
-            secure: mailConfig.port == 465 ? true : false, // true for 465, false for other ports
-            auth: mailAuth
-        }
-        // console.log(transport)
-
-        return nodemailer.createTransport(transport);
-    }
-
+    /**
+     * Load message options
+     * @param {*} param0 
+     */
     async load({
         // ------------------- common fields
         from = '',
@@ -102,6 +101,11 @@ class Mail {
     }
 
 
+    /**
+     * rendering html to string with data if exist
+     * @param {*} {path and data} 
+     * @returns html string
+     */
     async #renderHtml({ path = String, data }) {
         return await new Promise(async (resolve, reject) => {
             await ejs.renderFile(path, data || {}, (err, html) => {
@@ -115,6 +119,10 @@ class Mail {
     }
 
 
+    /**
+     * preparing message options
+     * @returns 
+     */
     #messageOptions() {
         // ------------------- common fields
         let message = {}
@@ -194,8 +202,12 @@ class Mail {
         return message
     }
 
+    /**
+     * sending mail
+     * @returns 
+     */
     async send() {
-        const _transporter = await this.#transporter()
+        const _transporter = await transporter()
         return await _transporter.sendMail(this.#messageOptions())
     }
 

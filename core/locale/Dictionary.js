@@ -26,7 +26,12 @@ const Dictionary = Object.freeze({
 
 })
 
-
+/**
+ * Translate language to locale base on Dictionary
+ * @param {*} key 
+ * @param {*} locale 
+ * @returns 
+ */
 const Translate = (key, locale) => {
     return Dictionary[key] && Dictionary[key][locale] || key
 }

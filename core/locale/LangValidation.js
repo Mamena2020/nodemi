@@ -1,3 +1,6 @@
+/**
+ * Default error message
+ */
 const langValidation = Object.freeze({
     required: {
         en: "The _attribute_ is required",

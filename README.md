@@ -65,8 +65,8 @@ After creating your database, you can fill in the .env file and start your code.
 ```
 #mysql example
 
-mysql -u root -p 
-# enter your password 
+mysql -u root -p
+# enter your password
 
 create database mydatabase;
 
@@ -437,6 +437,8 @@ The Request will be created in the `requests` directory.
     required
     email
     match                 => "match:password"
+    exists                => "exists:users,email"  | "exists:users,email,"+super.body.id
+    unique                => "unique:users,email"  | "unique:users,email,"+super.body.id
     string
     float
     integer
@@ -444,8 +446,6 @@ The Request will be created in the `requests` directory.
     min                   => "min:1" -> if string/array its count the length.
     date
     array
-    exists                => "exists:users,email"  | "exists:users,email,"+super.body.id
-    unique                => "unique:users,email"  | "unique:users,email,"+super.body.id
     mimetypes             => "mimetypes:image/webp,image/x-icon,video/mp4"
     mimes                 => "mimes:jpg,png"
     max_file              => "max_file:1,GB" | "max_file:1,MB"  | "max_file:1,KB"  | "max_file:1,Byte"
@@ -906,8 +906,7 @@ The mail will be created in the `mails` directory, with `examplefile.txt` and `t
 
    class AccountVerify extends Mail {
          constructor(from = String, to = [], subject = String) {
-             super()
-             super.load({
+             super().load({
                  from: from,
                  to: to,
                  subject: subject,
@@ -933,7 +932,7 @@ The mail will be created in the `mails` directory, with `examplefile.txt` and `t
 
 ```
 
-The `template.ejs` using express view engine `ejs` to render html into your mail content.
+The `template.ejs` using express view engine `ejs` to render html into mail content.
 
 ```
    <!DOCTYPE html>
@@ -962,12 +961,12 @@ The `template.ejs` using express view engine `ejs` to render html into your mail
 
 ```
 
-To use this `template.ejs`, you need to add an `html` object with a `path` and `data` (if needed) into `super.load()` method.
+To use this `template.ejs`, you need to add an `html` object with a `path` and `data` (if needed) into `super().load()` method.
 
 ```
    html: {
             path: "mails/AccountVerify/template.ejs", // path is required
-            data: // data is optional base on your template.ejs 
+            data: // data is optional base on your template.ejs
             {
                 title: "Welcome to the party!",
                 message: "Just need to verify that this is your email address."
@@ -988,7 +987,7 @@ To send email by calling `instance.send()`
 
 - Send file
 
-To send files, you need to add an `attachments` to `super.load()`. See full <a href="https://nodemailer.com/message/attachments/">doc</a>.
+To send files, you need to add an `attachments` to `super().load()`. See full <a href="https://nodemailer.com/message/attachments/">doc</a>.
 
 ```
    attachments: [
@@ -1002,12 +1001,12 @@ To send files, you need to add an `attachments` to `super.load()`. See full <a h
 
 - Mail message options
 
-Message options that you can add into `super.load()`.
+Message options that you can add into `super().load()`.
 
 | Name         | Description                                                                                                                          | Type   | Required |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------ | -------- |
-| from         | The e-mail address of the sender. All e-mail addresses can be plain 'sender@server.com'                                              | string | Yes      |
-| to           | Recipients e-mail addresses that will appear on the To                                                                               | array  | Yes      |
+| from         | The e-mail address of the sender. All e-mail addresses can be plain 'sender@server.com'                                              | string | `Yes`    |
+| to           | Recipients e-mail addresses that will appear on the To                                                                               | array  | `Yes`    |
 | subject      | Subject of the e-mail                                                                                                                | string | No       |
 | text         | If you are using HTML for the body of the email, then this text will not be used again                                               | string | No       |
 | html         | The HTML version of the message                                                                                                      | object | No       |
@@ -1024,7 +1023,7 @@ Message options that you can add into `super.load()`.
 Before using mail, make sure you already setup .env file
 
 ```
-   MAIL_HOST=  #example: smtp.gmail.com
+   MAIL_HOST= #example: smtp.gmail.com | smtp-relay.sendinblue.com
    MAIL_PORT=587
    MAIL_USERNAME=
    MAIL_PASSWORD=
