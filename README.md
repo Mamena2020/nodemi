@@ -54,7 +54,6 @@ Clone and move to directory project and run `npm install`
 
 - Create database `mysql` or `pgsql`
 
-After creating your database, you can fill in the .env file and start your code.
 
 ```
    #mysql example
@@ -72,6 +71,8 @@ After creating your database, you can fill in the .env file and start your code.
 ```
 
 - Setup .env
+
+After creating your database, you can fill in the .env file and start your code.
 
 ```
    cp .env.example .env
@@ -1064,7 +1065,7 @@ Before using mail, make sure you already setup .env file
 
 - Noted
 
-Before using FCM, make sure you already `enable` Firebase Cloud Messaging API on <a href="https://console.cloud.google.com/">Google Cloud Console</a>, and choose your project and select `APIs & Services`, then setup .env file. 
+Before using FCM, make sure you already `enable` Firebase Cloud Messaging API on <a href="https://console.cloud.google.com/">Google Cloud Console</a>, by selecting your project and navigating to `APIs & Services`. Once you have enabled the API, you can set up your 
 
 ```
    FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json # firebase service account
