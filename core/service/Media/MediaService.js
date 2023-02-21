@@ -4,8 +4,7 @@ import path from 'path'
 import fse from 'fs-extra'
 import db from "../../database/Database.js"
 import mediaConfig, { mediaStorages } from "../../config/Media.js";
-import databaseConfig from "../../config/Database.js";
-import FirebaseStorage from "./FirebaseStorage.js";
+import FirebaseService from "../Firebase/FirebaseService.js";
 
 
 class Media extends Model {
@@ -170,7 +169,7 @@ const hasMedia = async (model = Model) => {
                         fse.remove(_medias[i].path)
                     }
                     if (_medias[i].media_storage === mediaStorages.firebase) {
-                        FirebaseStorage.deleteMedia(_medias[i].path)
+                        FirebaseService.deleteMedia(_medias[i].path)
                     }
 
                 } catch (error) {
@@ -199,7 +198,7 @@ const hasMedia = async (model = Model) => {
                 })
                 let paths = getPathsFirebaseFromMedias(_medias)
                 if (paths.length) {
-                    FirebaseStorage.deleteMedias(paths)
+                    FirebaseService.deleteMedias(paths)
                 }
 
                 let _pathlocalStorage = getPathLocalStorage(_medias) // result storage/user-1
@@ -299,7 +298,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
         targetStorage = await saveToLocal(file, mediatable_type, mediatable_id)
     }
     if (mediaConfig.mediaStorage === mediaStorages.firebase) {
-        targetStorage = await FirebaseStorage.saveMedia(file)
+        targetStorage = await FirebaseService.saveMedia(file)
     }
 
 
@@ -332,7 +331,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                     await fse.remove(media.path)
                 }
                 if (media.media_storage === mediaStorages.firebase) {
-                    await FirebaseStorage.deleteMedia(media.path)
+                    await FirebaseService.deleteMedia(media.path)
                 }
             } catch (error) {
             }
@@ -416,10 +415,10 @@ const getPathsFirebaseFromMedias = (medias) => {
     } catch (error) {
         console.log(error)
     }
+  
     return paths
 
 }
-
 // ------------------------------------------------------------------------------------------- 
 
 export default Media

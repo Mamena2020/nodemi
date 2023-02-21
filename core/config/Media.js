@@ -14,9 +14,7 @@ let appUrl = process.env.APP_URL ?? "http://localhost::5000"
 const mediaConfig = {
     localStorageDirectory: process.env.MEDIA_LOCAL_STORAGE_DIR_NAME || "storage",
     mediaStorage: process.env.MEDIA_STORAGE || mediaStorages.local,
-    rootMediaUrl: appUrl + "/",
-    firebaseBucket: process.env.MEDIA_FIREBASE_STORAGE_BUCKET,
-    firebaseServiceAccountFile: process.env.MEDIA_FIREBASE_SERVICE_ACCOUNT
+    rootMediaUrl: appUrl + "/"
 }
 
 

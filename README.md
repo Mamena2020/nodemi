@@ -15,6 +15,7 @@ Boilerplate backend for nodejs.
   - Auth - JWT
   - Locale
   - Mail
+  - Firebase Cloud Messaging
   - Seeder
 
 - Live demo
@@ -51,29 +52,30 @@ Clone and move to directory project and run `npm install`
 
 ```
 
-- Setup .env
-
-```
-   cp .env.example .env
-
-```
-
 - Create database `mysql` or `pgsql`
 
 After creating your database, you can fill in the .env file and start your code.
 
 ```
-#mysql example
+   #mysql example
 
-mysql -u root -p
-# enter your password
+   mysql -u root -p
+   # enter your password
 
-create database mydatabase;
+   create database mydatabase;
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#pgsql example
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #pgsql example
 
-createdb -h localhost -p 5432 -U myPgUser mydatabase
+   createdb -h localhost -p 5432 -U myPgUser mydatabase
+
+```
+
+- Setup .env
+
+```
+   cp .env.example .env
+
 ```
 
 # Model
@@ -174,9 +176,9 @@ To save to `Local` storage, just set your .env file `MEDIA_STORAGE=local` , and 
 To save to `Firebase` storage, first create your `Service Account .json` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download it to your project, then setup the .env file.
 
 ```
-   MEDIA_STORAGE=firebase
-   MEDIA_FIREBASE_STORAGE_BUCKET=gs://xxxxxx.appspot.com  # your firebase storage bucket
-   MEDIA_FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json #  your firebase service account
+   MEDIA_STORAGE=firebase  # set to firebase
+   FIREBASE_STORAGE_BUCKET=gs://xxxxxx.appspot.com  # your firebase storage bucket
+   FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json #  your firebase service account
 ```
 
 - Get media
@@ -1027,6 +1029,34 @@ Before using mail, make sure you already setup .env file
    MAIL_PORT=587
    MAIL_USERNAME=
    MAIL_PASSWORD=
+
+```
+
+# Firebase Cloud Messaging 
+
+- Send message
+  
+```
+   const message = {
+        title: "Notification", // notification title
+        body: "Hello there",   // notification body
+        data: {
+                               // payload 
+        },
+        registrationTokens: ["token1","token2"] // target token
+   }
+
+   await FirebaseService.sendMessage(message)
+
+```
+
+- Noted
+
+Before using FCM, make sure you already `enable` Firebase Cloud Messaging API on <a href="https://console.cloud.google.com/">Google Cloud Console</a>, and choose your project and select `APIs & Services`, then setup .env file. 
+
+```
+   FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json # firebase service account
+   FIREBASE_CLOUD_MESSAGING_SERVER_KEY= #fcm server key
 
 ```
 

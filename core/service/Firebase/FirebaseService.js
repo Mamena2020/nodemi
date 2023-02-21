@@ -1,29 +1,33 @@
+
 import admin from "firebase-admin"
-import mediaConfig from "../../config/Media.js";
 import { v4 as uuid4 } from 'uuid'
 import fse from "fs-extra"
+import firebaseConfig from "../../config/Firebase.js";
 
-class FirebaseStorage {
+class FirebaseService {
 
 
+    /**
+     * Init firebase service to firebase admin
+     * @returns 
+     */
     static async init() {
 
         if (admin.apps.length)
             return
 
-        // console.log("init firebase");
         await new Promise(async (resolve, reject) => {
-            return await fse.readFile(mediaConfig.firebaseServiceAccountFile, 'utf-8', async (error, data) => {
+            return await fse.readFile(firebaseConfig.firebaseServiceAccountFile, 'utf-8', async (error, data) => {
                 if (error) {
                     console.log("error")
                     console.error(error)
                     reject()
                 }
                 const jsonData = JSON.parse(data);
-            
+
                 admin.initializeApp({
                     credential: admin.credential.cert(jsonData),
-                    storageBucket: mediaConfig.firebaseBucket
+                    storageBucket: firebaseConfig.firebaseBucket
                 });
                 resolve()
             })
@@ -32,14 +36,13 @@ class FirebaseStorage {
 
 
     /**
-     * Save single media to firebase storage
-     * @param {*} file 
-     * @returns 
-     */
+   * Save single media to firebase storage
+   * @param {*} file 
+   * @returns 
+   */
     static async saveMedia(file) {
 
         return await new Promise(async (resolve, reject) => {
-
 
             await this.init()
 
@@ -67,7 +70,7 @@ class FirebaseStorage {
                 })
                 resolve({
                     url: url[0],
-                    path: mediaConfig.firebaseBucket + "/" + fileName
+                    path: firebaseConfig.firebaseBucket + "/" + fileName
                 })
             });
 
@@ -119,6 +122,53 @@ class FirebaseStorage {
             resolve()
         })
     }
+
+
+
+
+    static async sendMessage({
+        title = '', body = '', data = {}, registrationTokens = []
+    }) {
+
+        if (!Array.isArray(registrationTokens) || registrationTokens.length === 0)
+            return
+
+        await this.init()
+
+        const message = {}
+        const notification = {}
+        notification["title"] = title
+        notification["body"] = body
+        message["notification"] = notification
+
+        if (Object.keys(data).length > 0) {
+            message["data"] = data
+        }
+        message["token"] = registrationTokens.length === 1 ? registrationTokens[0] : registrationTokens
+
+        if (registrationTokens.length === 1) {
+            await admin.messaging().send(message)
+                .then((response) => {
+                    console.log("Successfully sent message:", response);
+                })
+                .catch((error) => {
+                    console.log("Error sending message:", error);
+                })
+        }
+        else {
+            await admin.messaging().sendMulticast(message)
+                .then((response) => {
+                    console.log(`${response.successCount} messages were sent successfully`);
+                })
+                .catch((error) => {
+                    console.log(`Error sending message: ${error}`);
+                });
+        }
+
+
+    }
+
 }
 
-export default FirebaseStorage
+
+export default FirebaseService

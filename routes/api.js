@@ -17,6 +17,7 @@ export default function api(app) {
     // routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
 
 
+
     const routerAuth = express.Router()
     routerAuth.use(JwtAuthPass)
     routerAuth.get("/user", UserController.getUser)
