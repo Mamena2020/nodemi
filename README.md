@@ -231,6 +231,18 @@ Handling Content-Type header for
 
 Handling all upload files and nested fields.
 
+```
+     // file will have this property
+     name         // file name,
+     encoding     // file encoding,
+     type         // file mimeType,
+     size         // file size,
+     sizeUnit     // file size in bytes
+     extension    // file extension
+     tempDir      // file temporary directory
+
+```
+
 # Validation
 
 Create Request validation via cli.
