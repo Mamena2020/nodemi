@@ -14,7 +14,7 @@ const login = async (req, res) => {
 
         const match = await bcrypt.compare(password, user.password)
 
-        if (!match) return res.json({ message: "wrong password" }).status(400)
+        if (!match) return res.status(400).json({ message: "wrong password" })
 
         const payload = {
             id: user.id,
@@ -101,7 +101,9 @@ const logout = async (req, res) => {
         if (!refreshToken) return res.sendStatus(204)
         const user = await User.findOne(
             {
-                refresh_token: refreshToken
+                where: {
+                    refresh_token: refreshToken
+                }
             }
         )
 

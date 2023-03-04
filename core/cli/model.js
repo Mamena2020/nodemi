@@ -100,7 +100,7 @@ const addToCoreModels = (className, pathModel) => {
         if (index !== -1) {
 
             data = data.substring(0, index) + addModel + data.substring(index);
-            data = addModule + data.substring(0, data.length - 1)
+            data = addModule + data.substring(0, data.length)
             fse.writeFile("core/model/Models.js", data, (err) => {
                 if (err) throw err;
 

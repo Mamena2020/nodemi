@@ -647,8 +647,8 @@ The Resource will be created in `resources` directory.
 
    import Resource from "../core/resource/Resource.js"
    class UserResource extends Resource {
-       constructor(req) {
-           super(req).load(this)
+       constructor() {
+           super().load(this)
        }
 
        toArray(data) {
@@ -679,8 +679,8 @@ user resource
 ```
 
    class UserResource extends Resource {
-       constructor(req) {
-           super(req).load(this)
+       constructor() {
+           super().load(this)
        }
 
        toArray(data) {
