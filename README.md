@@ -1,6 +1,6 @@
 # Nodemi
 
-Boilerplate backend for nodejs.
+Boilerplate backend for nodejs. using Express js as interface.
 
 - Features
 
@@ -151,7 +151,7 @@ Any model can own media by binding the model to the media inside the `loadModels
 
 - Save a file
 
-You can save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
+After binding model with using `hasMedia(YourModel)`, then your model will able to save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
 
 ```
 
@@ -161,7 +161,7 @@ You can save a file using `instance.saveMedia(file,mediaName)`. If the instance 
        }
    })
 
-   await product.saveMedia(req.body.file,"thumbnail")
+   await product.saveMedia(req.body.file,"thumbnail") // if success then will return media url
 
 ```
 
@@ -184,7 +184,7 @@ To save to `Firebase` storage, first create your `Service Account .json` on fire
 
 - Get media
 
-Get all media by calling `instance.getMedia()` or `instance.getFirstMedia()` or you can get media by name `instance.getMediaByName(mediaName)`.
+Get all media by calling `instance.getMedia()`.
 
 ```
 
@@ -195,12 +195,42 @@ Get all media by calling `instance.getMedia()` or `instance.getFirstMedia()` or 
    })
 
    product.getMedia()                  // return list of object
-   product.getMediaByName("thumbnail") // return single object
-   product.getFirstMedia()             // return single object
-   product.getFirstMedia().url         // return first media url
-
+   
 
 ```
+Get media by name, params is media name
+
+```
+    product.getMediaByName("thumbnail") // return single object
+    product.getMediaByName("thumbnail").url // return single object url
+
+```
+Get media first media
+
+```
+    product.getFirstMedia()             // return single object
+    product.getFirstMedia().url         // return first media url
+
+```
+Get media with exception, params can be string or array of string
+
+```
+    product.getMediaExcept("thumbnail_mobile")  // return list of object with exception
+
+```
+Get all media url, 
+
+```
+    product.getMediaUrl()  // return list of media url
+
+```
+Get all media url with exception, params can be string or array of string
+
+```
+    product.getMediaUrlExcept(['thumbnail_mobile'])  // return list of url
+
+```
+
 
 - Destroy media
 
@@ -214,7 +244,7 @@ Destroy media by calling `instance.destroyMedia(mediaName)`.
        }
    })
 
-   product.destroyMedia("thumbnail")
+   product.destroyMedia("thumbnail") // destroy media and return status deleted in bolean
 
 ```
 
@@ -230,10 +260,10 @@ Handling Content-Type header for
       - application/form-data
       - application/x-www-form-urlencoded
 
-Handling all upload files and nested fields.
+Handling all upload files on `POST` and `PUT` method, and nested fields.
 
 ```
-     // file will have this property
+     // upload file will have this property
      name         // file name,
      encoding     // file encoding,
      type         // file mimeType,
@@ -445,7 +475,7 @@ The Request will be created in the `requests` directory.
 
 ```
 
-- List of rules
+- Basic rules
 
 ```
 
@@ -484,25 +514,39 @@ The Request will be created in the `requests` directory.
 
 - Custom
 
-  Custom validation messages and attribute
+
+   Custom validation `messages` and `attribute`
 
 ```
 
     rules() {
-     return {
-          "name": {
-             "rules": ["required"],
-             "attribute": "Product name"
-          },
-          "discount": {
-             "rules": ["required", "float", "min:3", "max:4"],
-             "messages": {
-                 "required": "Need discount",
-                 "float": "The data must be numeric"
-             },
-             "attribute": "DISCOUNT"
+        return {
+                "name": {
+                    "rules": ["required"],
+                    "attribute": "Product name"
+                },
+                "discount": {
+                    "rules": ["required", "float", "min:3", "max:4"],
+                    "messages": {
+                        "required": "The _attribute_ need discount",
+                        "float": "The data must be numeric"
+                    },
+                    "attribute": "DISCOUNT"
+                }
+            }
+    }
 
-         }
+```
+   Direct add error messages
+
+```
+      const valid = new ProductRequest(req)
+      await valid.check()
+    
+    if (valid.isError)
+    {
+        valid.addError("name","Name have to .....")
+        valid.addError("name","Name must be .....")
     }
 
 ```
