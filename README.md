@@ -327,7 +327,7 @@ The Request will be created in the `requests` directory.
 
 ```
 
-- Example html form.
+Example html form.
 
 ```
 
@@ -374,7 +374,7 @@ The Request will be created in the `requests` directory.
 
 ```
 
-- Example rules.
+ Example rules.
 
 ```
 
@@ -418,7 +418,7 @@ The Request will be created in the `requests` directory.
 
 ```
 
-- Example error messages
+Example error messages
 
 ```
 
@@ -523,7 +523,7 @@ The Request will be created in the `requests` directory.
 
 - Custom
 
-  Custom validation `messages` and `attribute`
+Custom validation `messages` and `attribute`
 
 ```
 
@@ -571,33 +571,33 @@ Create Custom Rule via cli.
 The Rule will be created in the `rules` directory.
 
 ```
-   class GmailRule  {
+    class GmailRule  {
 
-    constructor() {
-    }
+        constructor() {
+        }
 
-    /**
-     * Determine if the validation rule passes.
-     * @param {*} attribute
-     * @param {*} value
-     * @returns bolean
-     */
-    passes(attribute, value) {
+        /**
+        * Determine if the validation rule passes.
+        * @param {*} attribute
+        * @param {*} value
+        * @returns bolean
+        */
+        passes(attribute, value) {
 
-        return value.includes("@gmail.com")
-    }
+            return value.includes("@gmail.com")
+        }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    message() {
-        return 'The _attribute_ must be using @gmail.com'
-    }
-}
-
-export default GmailRule
+        /**
+        * Get the validation error message.
+        *
+        * @return string
+        */
+        message() {
+            return 'The _attribute_ must be using @gmail.com'
+        }
+   }  
+ 
+   export default GmailRule
 
 ```
 

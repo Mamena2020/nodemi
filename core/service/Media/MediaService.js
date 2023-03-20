@@ -370,7 +370,7 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
  */
 const saveMedia = async ({ model = Model, file = Object, name = String }) => {
     if (!file || !file.extension || !name || !model) {
-        console.log("require all params")
+        console.log("Save media failed: require all params, Please check file or name")
         return
     }
     const mediatable_id = model.id
