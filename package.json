@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "commander": "^10.0.0",
-    "nodemi-cli": "^1.0.49",
+    "nodemi-cli": "^1.0.50",
     "nodemon": "^2.0.20"
   }
 }

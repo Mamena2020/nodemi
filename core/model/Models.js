@@ -34,10 +34,6 @@ const loadModels = async () => {
         as: 'user'
     })
 
-
-
-
-
 }
 
 export default loadModels

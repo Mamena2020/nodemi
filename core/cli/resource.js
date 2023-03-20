@@ -9,6 +9,11 @@ class ClassName extends Resource {
         super().load(this)
     }
 
+    /**
+     * Transform the resource into custom object.
+     *
+     * @return 
+    */
     toArray(data) {
         return {
            

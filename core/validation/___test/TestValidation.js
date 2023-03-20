@@ -11,7 +11,7 @@ class TestRequest extends RequestValidation {
     rules() {
         return {
             "name": {
-                "rules": ["required"]
+                "rules": ["required", new MyRule]
             },
             "discount": {
                 "rules": ["required", "float", "min:3", "max:4"],
@@ -28,7 +28,7 @@ class TestRequest extends RequestValidation {
                 "rules": ["required", "image", "max_file:1,MB"]
             },
             "item.*.name": {
-                "rules": ["required", "digits_between:5,10"]
+                "rules": ["required", new MyRule, "digits_between:5,10"]
             },
             "item.*.description": {
                 "rules": ["required"]
@@ -57,18 +57,45 @@ class TestRequest extends RequestValidation {
 
 }
 
+class MyRule {
+
+    constructor() {
+    }
+
+    /**
+     * Determine if the validation rule passes.
+     * @param {*} attribute 
+     * @param {*} value 
+     * @returns bolean
+     */
+    passes(attribute, value) {
+        // console.log("attribute",value)
+        return value.includes("and")
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    message() {
+        return 'The _attribute_ must be have and'
+    }
+
+}
+
 const TestValidation = async (req, res) => {
 
     // console.log("BODY REQ:")
     // console.dir(req.body, { depth: null });
 
     const valid = new TestRequest(req)
+    console.dir(req.body,{ depth: null })
     await valid.check()
-    
-    if (valid.isError)
-    {
-        valid.addError("men","ini adalah")
-        valid.addError("men","ini adalah2")
+
+    if (valid.isError) {
+        valid.addError("men", "ini adalah")
+        valid.addError("men", "ini adalah2")
         return valid.responseError(res)
     }
 

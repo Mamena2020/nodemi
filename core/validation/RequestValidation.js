@@ -42,7 +42,7 @@ const ValidationType = Object.freeze({
     digits: "digits",
     max_digits: "max_digits",
     min_digits: "min_digits",
-    digits_between: "digits_between", 
+    digits_between: "digits_between",
 })
 
 
@@ -218,38 +218,69 @@ class RequestValidation {
             console.log("\x1b[31m", "validations not an array", fieldKey, "\x1b[0m");
             return null;
         }
-
+        var isValid = false;
         for (let rule of rules) {
             // val, ex: float, required, date etc...
             // console.log("--------------")
             // console.log(rule, value)
-            let options
-            let ruleName
-            let hasParams = this.#isValidationHasParam(rule)
-            let ruleParams
-            // ex: max:3, min:5    
-            if (hasParams) {
-                // console.log("CREATE PARAMS")
-                options = this.#createOptionsParams(fieldKey, rule)
-                ruleName = this.#getValidateNameFromValidationWithParams(rule)
-            }
-            else {
-                ruleName = rule
-            }
-            let isValid = await this.ValidationCheck(ruleName, value, { options: options })
 
-            if (!isValid) {
-                // console.log("ERROR")
-                // console.log(ruleName)
-                if (hasParams) {
-                    ruleParams = this.#getValidateParams(rule)
-                    // console.log("validationParams", ruleParams)
-                }
-                this.#setError(fieldKey, ruleName, attribute, ruleParams)
+            if (typeof rule === "object") {
+                // custom rule
+                await this.#processCustomRule(rule, fieldKey, value, attribute)
             }
+            if (typeof rule === "string") {
+                let options
+                let ruleName
+                let hasParams = this.#isValidationHasParam(rule)
+                let ruleParams
+                // ex: max:3, min:5    
+                if (hasParams) {
+                    // console.log("CREATE PARAMS")
+                    options = this.#createOptionsParams(fieldKey, rule)
+                    ruleName = this.#getValidateNameFromValidationWithParams(rule)
+                }
+                else {
+                    ruleName = rule
+                }
+                isValid = await this.ValidationCheck(ruleName, value, { options: options })
+                if (!isValid) {
+                    if (hasParams) {
+                        ruleParams = this.#getValidateParams(rule)
+                        // console.log("validationParams", ruleParams)
+                    }
+                    this.#setError(fieldKey, ruleName, attribute, ruleParams)
+                }
+            }
+
 
         }
         // console.log("<<<<---------------------------------------<<<<")
+    }
+
+    /**
+     * checking custom rule validation
+     * @param {*} rule 
+     * @param {*} fieldKey 
+     * @param {*} value 
+     * @param {*} attribute 
+     * @returns 
+     */
+    async #processCustomRule(rule, fieldKey, value, attribute) {
+        if (typeof rule.passes === 'undefined')
+            throw 'Invalid Custom rule, dont have passes() method'
+        if (typeof rule.message === 'undefined')
+            throw 'Invalid Custom rule, dont have passes() message'
+        const message = rule.message()
+        if (typeof message != 'string')
+            throw 'Invalid Custom rule, message() have to return string'
+        attribute = attribute ?? fieldKey
+        const valid = await rule.passes(attribute, value)
+        if (typeof valid != "boolean")
+            throw 'Invalid Custom rule, passes() have to return boolean'
+
+        if (!valid) {
+            this.addError(attribute, message.replace("_attribute_", attribute))
+        }
     }
 
 

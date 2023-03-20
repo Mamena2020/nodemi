@@ -20,6 +20,17 @@ const isArray = (name) => {
     return false
 }
 
+const isArrayNested = (name) => {
+    const a = name.indexOf("[")
+    const b = name.indexOf("]")
+    if (a !== -1 && b !== -1) {
+        if (b - 1 === a) {
+            return true
+        }
+    }
+    return false
+}
+
 /**
  * start remove all temp files after response is send back to client
  * @param {*} res response of expres 
@@ -46,7 +57,7 @@ const clearTempFiles = (res, files) => {
 const parseFields = (fieldName, value, req) => {
     const keys = fieldName.split(/[\[\]]+/).filter(key => key);
     let current = req.body;
-
+    // console.log(keys)
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         if (key.endsWith(']')) {
@@ -55,21 +66,35 @@ const parseFields = (fieldName, value, req) => {
         if (i === keys.length - 1) {
             if (Array.isArray(current)) {
                 current.push(value);
+                // console.log(key, 1)
             } else if (typeof current[key] === 'string') {
                 current[key] = [current[key], value];
+                // console.log(key, 2)
             } else if (Array.isArray(current[key])) {
                 current[key].push(value);
-            }
-            else if (isArray(fieldName)) {
-                current[key] = [value]
+                // console.log(key, 3)
             }
             else {
-                current[key] = value;
+                if (isArrayNested(fieldName)) {
+                    if (!current[key]) {
+                        current[key] = [value];
+                    }
+                    else {
+                        current[key].push(value)
+                    }
+                }
+                else {
+                    current[key] = value;
+                }
+                // console.log(key, 4)
             }
         } else {
             current[key] = current[key] || (isNaN(keys[i + 1]) ? {} : []);
             current = current[key];
+            // console.log(key, 5)
         }
+        // console.log("req body")
+        // console.dir(req.body)
     }
 }
 

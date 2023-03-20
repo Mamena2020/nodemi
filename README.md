@@ -10,6 +10,7 @@ Boilerplate backend for nodejs. using Express js as interface.
     - Firebase storage
   - File request handling
   - Request validation
+    - Custom Rule
   - Role and Permissions
   - Resources
   - Auth - JWT
@@ -53,7 +54,6 @@ Clone and move to directory project and run `npm install`
 ```
 
 - Create database `mysql` or `pgsql`
-
 
 ```
    #mysql example
@@ -195,9 +195,10 @@ Get all media by calling `instance.getMedia()`.
    })
 
    product.getMedia()                  // return list of object
-   
+
 
 ```
+
 Get media by name, params is media name
 
 ```
@@ -205,6 +206,7 @@ Get media by name, params is media name
     product.getMediaByName("thumbnail").url // return single object url
 
 ```
+
 Get media first media
 
 ```
@@ -212,25 +214,27 @@ Get media first media
     product.getFirstMedia().url         // return first media url
 
 ```
+
 Get media with exception, params can be string or array of string
 
 ```
     product.getMediaExcept("thumbnail_mobile")  // return list of object with exception
 
 ```
-Get all media url, 
+
+Get all media url,
 
 ```
     product.getMediaUrl()  // return list of media url
 
 ```
+
 Get all media url with exception, params can be string or array of string
 
 ```
     product.getMediaUrlExcept(['thumbnail_mobile'])  // return list of url
 
 ```
-
 
 - Destroy media
 
@@ -252,7 +256,7 @@ Destroy media by calling `instance.destroyMedia(mediaName)`.
 
 All media files will be automatically deleted whenever `instance` of your model is deleted.
 
-# Request
+# Request & Upload Files
 
 Handling Content-Type header for
 
@@ -274,7 +278,7 @@ Handling all upload files on `POST` and `PUT` method, and nested fields.
 
 ```
 
-# Validation
+# Rule Validation
 
 Create Request validation via cli.
 
@@ -294,6 +298,11 @@ The Request will be created in the `requests` directory.
            super(req).load(this)
        }
 
+        /**
+        * Get the validation rules that apply to the request.
+        *
+        * @return object
+        */
        rules() {
            return {
 
@@ -514,8 +523,7 @@ The Request will be created in the `requests` directory.
 
 - Custom
 
-
-   Custom validation `messages` and `attribute`
+  Custom validation `messages` and `attribute`
 
 ```
 
@@ -537,18 +545,72 @@ The Request will be created in the `requests` directory.
     }
 
 ```
-   Direct add error messages
+
+Direct add error messages
 
 ```
-      const valid = new ProductRequest(req)
-      await valid.check()
-    
+    const valid = new ProductRequest(req)
+    await valid.check()
+
     if (valid.isError)
     {
         valid.addError("name","Name have to .....")
         valid.addError("name","Name must be .....")
     }
 
+```
+
+- Custom Rule
+
+Create Custom Rule via cli.
+
+```
+   npx nodemi make:rule GmailRule
+```
+
+The Rule will be created in the `rules` directory.
+
+```
+   class GmailRule  {
+
+    constructor() {
+    }
+
+    /**
+     * Determine if the validation rule passes.
+     * @param {*} attribute
+     * @param {*} value
+     * @returns bolean
+     */
+    passes(attribute, value) {
+
+        return value.includes("@gmail.com")
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    message() {
+        return 'The _attribute_ must be using @gmail.com'
+    }
+}
+
+export default GmailRule
+
+```
+
+Custom rule usage
+
+```
+    rules() {
+        return {
+                "email": {
+                    "rules": [ new GmailRule, "required","email" ]
+                }
+            }
+    }
 ```
 
 - Noted
@@ -695,6 +757,11 @@ The Resource will be created in `resources` directory.
            super().load(this)
        }
 
+       /**
+        * Transform the resource into custom object.
+        *
+        * @return 
+        */
        toArray(data) {
             return {}
        }
@@ -1089,16 +1156,16 @@ Before using mail, make sure you already setup .env file
 
 ```
 
-# Firebase Cloud Messaging 
+# Firebase Cloud Messaging
 
 - Send message
-  
+
 ```
    const message = {
         title: "Notification", // notification title
         body: "Hello there",   // notification body
         data: {
-                               // payload 
+                               // payload
         },
         registrationTokens: ["token1","token2"] // target token
    }
