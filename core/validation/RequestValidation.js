@@ -141,11 +141,17 @@ class RequestValidation {
      */
     #setError(fieldKey, rule, attribute, options) {
         let message = this.#setErrorMessage(fieldKey, rule, attribute, options)
+
+        let keyError = attribute ?? fieldKey
+
+        this.addError(keyError, message)
+    }
+
+
+    addError(keyError, message) {
         if (Object.keys(this.errors).length === 0) {
             this.errors["errors"] = {}
         }
-        let keyError = attribute ?? fieldKey
-
         if (!this.errors["errors"][keyError]) {
             this.errors["errors"][keyError] = []
         }
@@ -162,12 +168,13 @@ class RequestValidation {
      * @returns 
      */
     #setErrorMessage(fieldKey, rule, attribute, options) {
+
+        attribute = this.rules[fieldKey].attribute ?? (attribute ?? fieldKey)
         // ---------- set custom message
         if (this.rules[fieldKey].messages && this.rules[fieldKey].messages[rule]) {
-            return this.rules[fieldKey].messages[rule]
+            return this.rules[fieldKey].messages[rule].replace("_attribute_", attribute)
         }
         // ---------- set default message
-        attribute = this.rules[fieldKey].attribute ?? (attribute ?? fieldKey)
         return this.#defaultErrorMessage(rule, attribute, options)
     }
 
@@ -523,13 +530,12 @@ class RequestValidation {
             return !validator.isIn(value, options.fieldArray)
         }
 
-
         //------------------------------------------------------ has no params
 
         if (ruleName === ValidationType.image) {
             if (!value || !value.extension)
                 return false
-            return validator.isIn(value.extension.split('.').join(""), Object.values(this.imageFormats))
+            return validator.isIn(value.extension.split('.').join("").toLowerCase(), Object.values(this.imageFormats))
         }
 
         if (ruleName === ValidationType.required) {

@@ -12,8 +12,9 @@ class UserResource extends Resource {
             "id": data.id,
             "name": data.name,
             "email": data.email,
-            // "image": data.getFirstMedia()?.url || '',
-            "image": data.getMediaByName("avatar")?.url || '',
+            "avatar": data.getMediaByName("avatar")?.url || '',
+            "media_urls": data.getMediaUrl(),
+            "media_except": data.getMediaUrlExcept("avatar"),
             "role": data.getRole()?.name || '',
             "permissions": new PermissionResource().collection(data.getPermissions() || []),
         }

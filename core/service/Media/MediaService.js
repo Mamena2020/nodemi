@@ -93,9 +93,9 @@ const hasMedia = async (model = Model) => {
         // as: Media.name,
         foreignKey: 'mediatable_id',
         constraints: false,
-        // scope: {
-        //     mediatable_type: model
-        // }
+        scope: {
+            mediatable_type: model.options.name.singular
+        }
     })
     Media.belongsTo(model, { foreignKey: 'mediatable_id', constraints: false })
 
@@ -117,6 +117,13 @@ const hasMedia = async (model = Model) => {
     model.prototype.getMedia = function () {
         return getMedia(this)
     }
+
+
+    /**
+     * get media object by name
+     * @param {*} name 
+     * @returns array of media object 
+     */
     model.prototype.getMediaByName = function (name) {
         let _medias = getMedia(this)
         if (!_medias || !name)
@@ -129,7 +136,10 @@ const hasMedia = async (model = Model) => {
         }
         return
     }
-
+    /**
+     * get single first media object
+     * @returns media object
+     */
     model.prototype.getFirstMedia = function () {
         let _medias = getMedia(this)
         if (!_medias)
@@ -138,6 +148,72 @@ const hasMedia = async (model = Model) => {
         return _medias[0] || null
     }
 
+    /**
+     * get array of media object with exception 
+     * @param {*} except string or array if string
+     * @returns array of media object 
+     */
+    model.prototype.getMediaExcept = function (except) {
+        let _medias = getMedia(this)
+        if (!_medias)
+            return []
+
+        const data = []
+
+        if (typeof except === "string") {
+            for (let media of _medias) {
+                if (media.name != except) {
+                    data.push(media)
+                }
+            }
+        } else
+            if (Array.isArray(except)) {
+                for (let media of _medias) {
+                    if (!except.includes(media.name)) {
+                        data.push(media)
+                    }
+                }
+            }
+        return data
+    }
+
+    /**
+     * get array of media url
+     */
+    model.prototype.getMediaUrl = function () {
+        let _medias = getMedia(this)
+        if (!_medias)
+            return []
+
+        const urls = []
+        for (let media of _medias) {
+            urls.push(media.url)
+        }
+        return urls
+    }
+
+    /**
+     * get array of media url with exception
+     */
+    model.prototype.getMediaUrlExcept = function (except) {
+        let _medias = this.getMediaExcept(except)
+        if (!_medias)
+            return []
+
+        const urls = []
+        for (let media of _medias) {
+            urls.push(media.url)
+        }
+        return urls
+    }
+
+
+
+    /**
+     * save media
+     * @param {*} file  
+     * @param {*} name 
+     */
     model.prototype.saveMedia = async function (file, name) {
         await saveMedia({
             model: this,
@@ -146,6 +222,11 @@ const hasMedia = async (model = Model) => {
         })
     }
 
+    /**
+     * destroy media
+     * @param {*} name 
+     * @returns 
+     */
     model.prototype.destroyMedia = async function (name) {
         if (!name)
             throw "need media name"
@@ -154,7 +235,7 @@ const hasMedia = async (model = Model) => {
             return
 
         let _medias = await this.getMedia()
-
+        let status = false;
         for (let i = 0; i < _medias.length; i++) {
             if (_medias[i].name === name) {
                 await Media.destroy({
@@ -166,19 +247,22 @@ const hasMedia = async (model = Model) => {
                 })
                 try {
                     if (_medias[i].media_storage === mediaStorages.local) {
-                        fse.remove(_medias[i].path)
+                        await fse.remove(_medias[i].path)
                     }
                     if (_medias[i].media_storage === mediaStorages.firebase) {
-                        FirebaseService.deleteMedia(_medias[i].path)
+                        await FirebaseService.deleteMedia(_medias[i].path)
                     }
-
+                    status = true;
                 } catch (error) {
                     console.log("error", error)
                 }
-                this.Media.splice(i, 1)
-                break
+                if (status) {
+                    this.Media.splice(i, 1)
+                    break
+                }
             }
         }
+        return status
     }
 
 
@@ -254,7 +338,7 @@ const getMedia = (_model) => {
  * @param {*} file 
  * @param {*} mediatable_type 
  * @param {*} mediatable_id 
- * @returns 
+ * @returns { path, url }
  */
 const saveToLocal = async (file, mediatable_type, mediatable_id) => {
     return await new Promise(async (resolve, reject) => {
@@ -282,10 +366,10 @@ const saveToLocal = async (file, mediatable_type, mediatable_id) => {
 /**
  * save a media 
  * @param { model = Model, file = Object, name = String } 
- * @returns 
+ * @returns media url
  */
 const saveMedia = async ({ model = Model, file = Object, name = String }) => {
-    if (!file || !name || !model) {
+    if (!file || !file.extension || !name || !model) {
         console.log("require all params")
         return
     }
@@ -314,6 +398,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             }
         })
         if (!media) {
+            // create new media
             await Media.create({
                 mediatable_id: mediatable_id,
                 mediatable_type: mediatable_type,
@@ -325,13 +410,15 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             })
         }
         else {
+            // update media exists before with same name
+
             // remove old media file
             try {
                 if (media.media_storage === mediaStorages.local) {
-                    await fse.remove(media.path)
+                    fse.remove(media.path)
                 }
                 if (media.media_storage === mediaStorages.firebase) {
-                    await FirebaseService.deleteMedia(media.path)
+                    FirebaseService.deleteMedia(media.path)
                 }
             } catch (error) {
             }
@@ -343,9 +430,14 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                 media_storage: mediaConfig.mediaStorage
             })
         }
+        if (mediaConfig.mediaStorage === mediaStorages.local) {
+            return normalizeLocalStorageToUrl(targetStorage.url)
+        }
+        else {
+            return targetStorage.url
+        }
     }
-
-    return targetStorage
+    return null
 }
 // -------------------------------------------------------------------------------------------  helpers
 /**
@@ -415,7 +507,7 @@ const getPathsFirebaseFromMedias = (medias) => {
     } catch (error) {
         console.log(error)
     }
-  
+
     return paths
 
 }

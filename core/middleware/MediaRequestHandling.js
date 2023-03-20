@@ -59,7 +59,11 @@ const parseFields = (fieldName, value, req) => {
                 current[key] = [current[key], value];
             } else if (Array.isArray(current[key])) {
                 current[key].push(value);
-            } else {
+            }
+            else if (isArray(fieldName)) {
+                current[key] = [value]
+            }
+            else {
                 current[key] = value;
             }
         } else {
@@ -81,10 +85,16 @@ const parseFields = (fieldName, value, req) => {
  */
 const mediaRequestHandling = async (req, res, next) => {
 
-    if (req.method === 'POST'
+    if (
+        req.method === 'POST'
         && req.headers['content-type'].startsWith('multipart/form-data') ||
         req.method === 'POST'
-        && req.headers['content-type'].startsWith('application/x-www-form-urlencoded')) {
+        && req.headers['content-type'].startsWith('application/x-www-form-urlencoded') ||
+        req.method === 'PUT'
+        && req.headers['content-type'].startsWith('multipart/form-data') ||
+        req.method === 'PUT'
+        && req.headers['content-type'].startsWith('application/x-www-form-urlencoded')
+    ) {
 
         var bb = busboy({ headers: req.headers })
         let tempFiles = {}

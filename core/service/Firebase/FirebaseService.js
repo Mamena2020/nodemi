@@ -38,7 +38,7 @@ class FirebaseService {
     /**
    * Save single media to firebase storage
    * @param {*} file 
-   * @returns 
+   * @returns {url, path}
    */
     static async saveMedia(file) {
 
