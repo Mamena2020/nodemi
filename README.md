@@ -151,7 +151,7 @@ Any model can own media by binding the model to the media inside the `loadModels
 
 - Save a file
 
-After binding model with using `hasMedia(YourModel)`, then your model will able to save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
+After binding model using `hasMedia(YourModel)`, then your model will able to save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
 
 ```
 
@@ -783,9 +783,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 ```
 
-- Example Resource
-
-user resource
+Example user resource
 
 ```
 
@@ -827,7 +825,7 @@ permissions resource
 
 ```
 
-- Example usage
+Example usage
 
 ```
 
@@ -843,7 +841,7 @@ permissions resource
 
 ```
 
-- Example result
+Example result
 
 ```
 
