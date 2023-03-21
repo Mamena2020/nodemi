@@ -33,7 +33,7 @@ const ValidationType = Object.freeze({
     date_after_or_equal: "date_after_or_equal",
     date_before: "date_before",
     date_before_or_equal: "date_before_or_equal",
-    bolean: "bolean",
+    boolean: "boolean",
     in_array: "in_array",
     not_in_array: "not_in_array",
     ip: "ip",
@@ -438,7 +438,7 @@ class RequestValidation {
      * @param {*} ruleName ex: required, float
      * @param {*} value value 
      * @param {*} options  ex: {fieldMax: 3 }
-     * @returns bolean
+     * @returns boolean
      */
     async ValidationCheck(ruleName, value, { options }) {
 
@@ -577,7 +577,7 @@ class RequestValidation {
         if (ruleName === ValidationType.email)
             return validator.isEmail(value.toString())
 
-        if (ruleName === ValidationType.bolean)
+        if (ruleName === ValidationType.boolean)
             return validator.isBoolean(value.toString())
 
         if (ruleName === ValidationType.float)

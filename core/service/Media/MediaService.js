@@ -215,7 +215,7 @@ const hasMedia = async (model = Model) => {
      * @param {*} name 
      */
     model.prototype.saveMedia = async function (file, name) {
-        await saveMedia({
+        return await saveMedia({
             model: this,
             file: file,
             name: name
@@ -232,7 +232,7 @@ const hasMedia = async (model = Model) => {
             throw "need media name"
 
         if (!this.Media)
-            return
+            return false
 
         let _medias = await this.getMedia()
         let status = false;

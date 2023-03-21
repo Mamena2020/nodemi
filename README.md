@@ -1,6 +1,6 @@
 # Nodemi
 
-Boilerplate backend for nodejs. using Express js as interface.
+Boilerplate for nodejs. base on express js. 
 
 - Features
 
@@ -194,7 +194,7 @@ Get all media by calling `instance.getMedia()`.
        }
    })
 
-   product.getMedia()                  // return list of object
+   product.getMedia() // return list of object
 
 
 ```
@@ -210,12 +210,12 @@ Get media by name, params is media name
 Get media first media
 
 ```
-    product.getFirstMedia()             // return single object
-    product.getFirstMedia().url         // return first media url
+    product.getFirstMedia()       // return single object
+    product.getFirstMedia().url   // return first media url
 
 ```
 
-Get media with exception, params can be string or array of string
+Get media with exception, params can be `string` or `array` of string
 
 ```
     product.getMediaExcept("thumbnail_mobile")  // return list of object with exception
@@ -229,7 +229,7 @@ Get all media url,
 
 ```
 
-Get all media url with exception, params can be string or array of string
+Get all media url with exception, params can be `string` or `array` of string
 
 ```
     product.getMediaUrlExcept(['thumbnail_mobile'])  // return list of url
@@ -238,7 +238,7 @@ Get all media url with exception, params can be string or array of string
 
 - Destroy media
 
-Destroy media by calling `instance.destroyMedia(mediaName)`.
+Destroy media by calling `instance.destroyMedia(mediaName)`. return status deleted in boolean
 
 ```
 
@@ -248,7 +248,7 @@ Destroy media by calling `instance.destroyMedia(mediaName)`.
        }
    })
 
-   product.destroyMedia("thumbnail") // destroy media and return status deleted in bolean
+   await product.destroyMedia("thumbnail")
 
 ```
 
@@ -267,7 +267,7 @@ Handling Content-Type header for
 Handling all upload files on `POST` and `PUT` method, and nested fields.
 
 ```
-     // upload file will have this property
+     // uploaded file will have this property
      name         // file name,
      encoding     // file encoding,
      type         // file mimeType,
@@ -374,7 +374,7 @@ Example html form.
 
 ```
 
- Example rules.
+Example rules.
 
 ```
 
@@ -486,40 +486,46 @@ Example error messages
 
 - Basic rules
 
-```
+  | Rule                 | Description                                 | Example                                                     |
+  | -------------------- | ------------------------------------------- | ----------------------------------------------------------- |
+  | required             | check empty value                           | "required"                                                  |
+  | email                | check email formats                         | "email"                                                     |
+  | match                | check match value with other value          | "match:password"                                            |
+  | exists               | check exist value on database               | "exists:users,email" or "exists:users,email,"+super.body.id |
+  | unique               | check unique value on database              | "unique:users,email" or "unique:users,email,"+super.body.id |
+  | string               | check string value                          | "string"                                                    |
+  | float                | check float value                           | "float"                                                     |
+  | integer              | check ineteger value                        | "integer"                                                   |
+  | max                  | count maximum value of numeric,             | "max:12"                                                    |
+  |                      | if string/array its count the length        |                                                             |
+  | min                  | count minimum value of numeric,             | "min:5"                                                     |
+  |                      | if string/array its count the length        |                                                             |
+  | date                 | check value is date format                  | "date"                                                      |
+  | array                | check value is an array                     | "array"                                                     |
+  | mimetypes            | check file mimetypes                        | "mimetypes:image/webp,image/x-icon,video/mp4"               |
+  | mimes                | check file extension                        | "mimes:jpg,png,jpeg"                                        |
+  | max_file             | check maximum file size,                    | "max_file:1,GB" or "max_file:1,MB" or "max_file:1,Byte"     |
+  |                      | param can be GB, MB, KB, Byte               |                                                             |
+  | image                | check file is an image format               | "image"                                                     |
+  | date_after           | check value after particular date           | "date_after:now" or "date_after:birthdate"                  |
+  |                      | param can be now, or other field name       |                                                             |
+  | date_after_or_equal  | check value after or equal particular date  | "date_after_or_equal:now"                                   |
+  |                      | param can be now, or other field name       |                                                             |
+  | date_before          | check value before particular date          | "date_before:now" or "date_before:birthdate"                |
+  |                      | param can be now, or other field name       |                                                             |
+  | date_before_or_equal | check value before or equal particular date | "date_before_or_equal:now"                                  |
+  |                      | param can be now, or other field name       |                                                             |
+  | boolean              | check value is an boolean                   | "boolean"                                                   |
+  | in_array             | check value exist in array                  | "in_array:1,3,4,1,4,5"                                      |
+  | not_in_array         | check value exist in array                  | "not_in_array:1,3,4,1,4,5"                                  |
+  | ip                   | check value is as ip address                | "ip"                                                        |
+  | url                  | check value is as url                       | "url"                                                       |
+  | json                 | check value is as json format               | "json"                                                      |
+  | digits               | check value digits,                         | "digits:4"                                                  |
+  | max_digits           | check maximum digits of value               | "max_digits:20"                                             |
+  | min_digits           | check minumum digits of value               | "min_digits:20"                                             |
+  | digits_between       | check digits bewteen of value               | "digits_between:5,10"                                       |
 
-    required
-    email
-    match                 => "match:password"
-    exists                => "exists:users,email"  | "exists:users,email,"+super.body.id
-    unique                => "unique:users,email"  | "unique:users,email,"+super.body.id
-    string
-    float
-    integer
-    max                   => "max:4" -> if string/array its count the length.
-    min                   => "min:1" -> if string/array its count the length.
-    date
-    array
-    mimetypes             => "mimetypes:image/webp,image/x-icon,video/mp4"
-    mimes                 => "mimes:jpg,png"
-    max_file              => "max_file:1,GB" | "max_file:1,MB"  | "max_file:1,KB"  | "max_file:1,Byte"
-    image
-    date_after            => "date_after:now" | "date_after:birthdate"
-    date_after_or_equal   => "date_after_or_equal:now"
-    date_before           => "date_before:now"
-    date_before_or_equal  => "date_before_or_equal:now"
-    bolean
-    in_array              => "in_array:1,3,4,1,4,5"
-    not_in_array          => "not_in_array:1,3,4,1,4,5"
-    ip
-    url
-    json
-    digits                => "digits:4"
-    max_digits            => "max_digits:20"
-    min_digits            => "min_digits:20"
-    digits_between        => "digits_between:5,10"
-
-```
 
 - Custom
 
@@ -595,8 +601,8 @@ The Rule will be created in the `rules` directory.
         message() {
             return 'The _attribute_ must be using @gmail.com'
         }
-   }  
- 
+   }
+
    export default GmailRule
 
 ```
@@ -760,7 +766,7 @@ The Resource will be created in `resources` directory.
        /**
         * Transform the resource into custom object.
         *
-        * @return 
+        * @return
         */
        toArray(data) {
             return {}
@@ -909,7 +915,7 @@ Get authenticated user by `calling JwtAuth.getUser(req)`, that will get user by 
 Or you just setup the .env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can access current authenticated user by access
 `req.user`.
 
-Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model inside the `AuthConfig` in the `core/config/Auth.js` file. It is crucial that your User model has a `refresh_token` column, as `JwtAuth.GetUser()` will retrieve the user instance based on the `refresh_token` by default. However, if you prefer to retrieve the current authenticated user in a different manner, you can modify the `JwtAuth.GetUser()` function to suit your needs.
+Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model inside the `AuthConfig` in the `core/config/Auth.js` file. It is crucial that your User model has a `refresh_token` column, as `JwtAuth.GetUser()` will retrieve the user instance based on the `refresh_token` by default. However, if you prefer to retrieve the current authenticated user in a different manner, you can modify the `JwtAuth.GetUser()` function to suit your needs in `core/auth/JwtAuth.js` file.
 
 ```
    class AuthConfig {
