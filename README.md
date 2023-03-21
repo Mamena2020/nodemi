@@ -1,6 +1,6 @@
 # Nodemi
 
-Boilerplate for nodejs. base on express js. 
+Boilerplate for nodejs. base on express js.
 
 - Features
 
@@ -491,11 +491,11 @@ Example error messages
   | required             | check empty value                           | "required"                                                  |
   | email                | check email formats                         | "email"                                                     |
   | match                | check match value with other value          | "match:password"                                            |
-  | exists               | check exist value on database               | "exists:users,email" or "exists:users,email,"+super.body.id |
-  | unique               | check unique value on database              | "unique:users,email" or "unique:users,email,"+super.body.id |
-  | string               | check string value                          | "string"                                                    |
-  | float                | check float value                           | "float"                                                     |
-  | integer              | check ineteger value                        | "integer"                                                   |
+  | exists               | check value exists in the database          | "exists:users,email" or "exists:users,email,"+super.body.id |
+  | unique               | check value is unique ​in database          | "unique:users,email" or "unique:users,email,"+super.body.id |
+  | string               | check value is an string                    | "string"                                                    |
+  | float                | check value is an float                     | "float"                                                     |
+  | integer              | check value is an ineteger                  | "integer"                                                   |
   | max                  | count maximum value of numeric,             | "max:12"                                                    |
   |                      | if string/array its count the length        |                                                             |
   | min                  | count minimum value of numeric,             | "min:5"                                                     |
@@ -505,19 +505,19 @@ Example error messages
   | mimetypes            | check file mimetypes                        | "mimetypes:image/webp,image/x-icon,video/mp4"               |
   | mimes                | check file extension                        | "mimes:jpg,png,jpeg"                                        |
   | max_file             | check maximum file size,                    | "max_file:1,GB" or "max_file:1,MB" or "max_file:1,Byte"     |
-  |                      | param can be GB, MB, KB, Byte               |                                                             |
+  |                      | param can be `GB`, `MB`, `KB` or `Byte`       |                                                             |
   | image                | check file is an image format               | "image"                                                     |
   | date_after           | check value after particular date           | "date_after:now" or "date_after:birthdate"                  |
-  |                      | param can be now, or other field name       |                                                             |
+  |                      | param can be `now`, or other field name     |                                                             |
   | date_after_or_equal  | check value after or equal particular date  | "date_after_or_equal:now"                                   |
-  |                      | param can be now, or other field name       |                                                             |
+  |                      | param can be `now`, or other field name     |                                                             |
   | date_before          | check value before particular date          | "date_before:now" or "date_before:birthdate"                |
-  |                      | param can be now, or other field name       |                                                             |
+  |                      | param can be `now`, or other field name     |                                                             |
   | date_before_or_equal | check value before or equal particular date | "date_before_or_equal:now"                                  |
-  |                      | param can be now, or other field name       |                                                             |
+  |                      | param can be `now`, or other field name     |                                                             |
   | boolean              | check value is an boolean                   | "boolean"                                                   |
   | in_array             | check value exist in array                  | "in_array:1,3,4,1,4,5"                                      |
-  | not_in_array         | check value exist in array                  | "not_in_array:1,3,4,1,4,5"                                  |
+  | not_in_array         | check value is not include in array         | "not_in_array:1,3,4,1,4,5"                                  |
   | ip                   | check value is as ip address                | "ip"                                                        |
   | url                  | check value is as url                       | "url"                                                       |
   | json                 | check value is as json format               | "json"                                                      |
@@ -525,7 +525,6 @@ Example error messages
   | max_digits           | check maximum digits of value               | "max_digits:20"                                             |
   | min_digits           | check minumum digits of value               | "min_digits:20"                                             |
   | digits_between       | check digits bewteen of value               | "digits_between:5,10"                                       |
-
 
 - Custom
 
