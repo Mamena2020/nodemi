@@ -5,20 +5,41 @@ Boilerplate for nodejs. base on express js.
 - Features
 
   - Model - ORM
-  - Media library - binding to any Model
-    - Local storage
-    - Firebase storage
+  
+    Create model via cli and make relation between. 
+  - Media library 
+  
+    binding media to any Model, so any model can own the media, and will able to save media, get media, and destroy media.
+    Media can be stored to `Local storage` or `Firebase Storage`.
   - File request handling
+    
+    Not worry about handling uploaded file, just upload from client side, and  you can access file in request, `req.body.avatar`.
   - Request validation
-    - Custom Rule
+    
+    Determine if request passes the rule. 
+    You can create `custom rule` via cli.
   - Role and Permissions
-  - Resources
-  - Auth - JWT
-  - Locale
-  - Mail
-  - Firebase Cloud Messaging
-  - Seeder
 
+    Binding to any model, any model can have a role and permissions, set role, checking access.
+  - Resources
+    
+    Create custom resource from resources.
+  - Auth - JWT
+    
+    Create token, re generate token, and set middleware authorization for certain routes.
+  - Locale
+    
+    Enabled or disabled locale or just enabled on certain routes.
+  - Mail
+    
+    create mail via cli, and send mail with html, file, or just text.
+  - Firebase Cloud Messaging
+    
+    Sending push notification from server to client device.
+    
+  - Seeder
+    
+    Running seeder via cli.
 - Live demo
 
   | Action    | Method | Auth   | Body            | EndPoint                                 |
@@ -492,7 +513,7 @@ Example error messages
   | email                | check email formats                         | "email"                                                     |
   | match                | check match value with other value          | "match:password"                                            |
   | exists               | check value exists in the database          | "exists:users,email" or "exists:users,email,"+super.body.id |
-  | unique               | check value is unique ​in database          | "unique:users,email" or "unique:users,email,"+super.body.id |
+  | unique               | check value is unique in database           | "unique:users,email" or "unique:users,email,"+super.body.id |
   | string               | check value is an string                    | "string"                                                    |
   | float                | check value is an float                     | "float"                                                     |
   | integer              | check value is an ineteger                  | "integer"                                                   |
@@ -505,7 +526,7 @@ Example error messages
   | mimetypes            | check file mimetypes                        | "mimetypes:image/webp,image/x-icon,video/mp4"               |
   | mimes                | check file extension                        | "mimes:jpg,png,jpeg"                                        |
   | max_file             | check maximum file size,                    | "max_file:1,GB" or "max_file:1,MB" or "max_file:1,Byte"     |
-  |                      | param can be `GB`, `MB`, `KB` or `Byte`       |                                                             |
+  |                      | param can be `GB`, `MB`, `KB` or `Byte`     |                                                             |
   | image                | check file is an image format               | "image"                                                     |
   | date_after           | check value after particular date           | "date_after:now" or "date_after:birthdate"                  |
   |                      | param can be `now`, or other field name     |                                                             |
@@ -561,7 +582,7 @@ Direct add error messages
     {
         valid.addError("name","Name have to .....")
         valid.addError("name","Name must be .....")
-    }
+    
 
 ```
 
