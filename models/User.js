@@ -29,7 +29,8 @@ User.init({
   sequelize: db, // We need to pass the connection instance
   tableName: 'users', // table name
   modelName: 'User', //  model name
-  timestamps: true
+  timestamps: true,
+  underscored: true
 });
 
 export default User

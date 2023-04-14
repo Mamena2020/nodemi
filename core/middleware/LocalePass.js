@@ -4,7 +4,7 @@ import isLocale from "../locale/Locale.js"
 
 const LocalePass = async (req, res, next) => {
 
-    const prefixs = req.path.split('/'); // prefixs=> [ '', 'api', 'id','endpoint' ]
+    const prefixs = req.originalUrl.split('/'); // prefixs=> [ '', 'api', 'id','endpoint' ]
     let locale = ''
     if (prefixs[1] === 'api') {
         locale = prefixs[2] || '';

@@ -56,7 +56,8 @@ Media.init({
         sequelize: db, // We need to pass the connection instance
         tableName: "medias",
         modelName: 'Media', // We need to choose the model name
-        timestamps: true
+        timestamps: true,
+        underscored: true
     }
 )
 
@@ -397,9 +398,10 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                 name: name
             }
         })
+        var newMedia
         if (!media) {
             // create new media
-            await Media.create({
+            newMedia = await Media.create({
                 mediatable_id: mediatable_id,
                 mediatable_type: mediatable_type,
                 url: targetStorage.url,
@@ -408,6 +410,7 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
                 name: name,
                 media_storage: mediaConfig.mediaStorage
             })
+
         }
         else {
             // update media exists before with same name
@@ -423,19 +426,28 @@ const saveMedia = async ({ model = Model, file = Object, name = String }) => {
             } catch (error) {
             }
 
-            await media.update({
+            const updated = await media.update({
                 url: targetStorage.url,
                 path: targetStorage.path,
                 info: JSON.stringify(file),
                 media_storage: mediaConfig.mediaStorage
             })
+            if (updated) {
+                newMedia = media;
+                newMedia["url"] = targetStorage.url
+                newMedia["path"] = targetStorage.path
+                newMedia["info"] = JSON.stringify(file)
+                newMedia["media_storage"] = mediaConfig.mediaStorage
+            }
         }
-        if (mediaConfig.mediaStorage === mediaStorages.local) {
-            return normalizeLocalStorageToUrl(targetStorage.url)
+
+        if (newMedia) {
+            if (mediaConfig.mediaStorage === mediaStorages.local) {
+                newMedia["url"] = normalizeLocalStorageToUrl(targetStorage.url)
+            }
+            return newMedia
         }
-        else {
-            return targetStorage.url
-        }
+
     }
     return null
 }

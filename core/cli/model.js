@@ -19,7 +19,8 @@ ClassName.init({
    sequelize: db, 
    tableName: 'TableName', 
    modelName: 'ClassName', 
-   timestamps: true
+   timestamps: true,
+   underscored: true
  }
 );
 

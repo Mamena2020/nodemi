@@ -334,8 +334,8 @@ class RequestValidation {
             if (arr.length > 1) {
                 if (arr[0] === ValidationType.match) {
                     let fieldMatch = this.#getData(arr[1])
-                    if (!fieldMatch)
-                        throw "Not right format of validation: " + rule
+                    // if (!fieldMatch)
+                    //     throw "Not right format of validation: " + rule
                     options["fieldMatch"] = fieldMatch
                 }
                 if (arr[0] === ValidationType.max || arr[0] === ValidationType.min) {
@@ -494,13 +494,15 @@ class RequestValidation {
             return parseFloat(size) <= parseFloat(options.fieldMaxSize)
         }
 
-        if (ruleName === ValidationType.match)
-            return validator.matches(value ?? " .", options?.fieldMatch ?? " ")
+        if (ruleName === ValidationType.match) {
+            if (!value && options.fieldMatch || value && !options.fieldMatch || !value && !options.fieldMatch) return false
+            return value.toString() === options.fieldMatch.toString()
+        }
 
         if (ruleName === ValidationType.max) {
             if (Array.isArray(value))
                 return value.length <= options.fieldMax
-            if (validator.isNumeric(value))
+            if (validator.isNumeric(value.toString()))
                 return validator.isFloat(value.toString() ?? "0", { max: options.fieldMax ?? " " })
 
             return value.toString().length <= options.fieldMax
@@ -510,7 +512,7 @@ class RequestValidation {
         if (ruleName === ValidationType.min) {
             if (Array.isArray(value))
                 return value.length >= options.fieldMin
-            if (validator.isNumeric(value))
+            if (validator.isNumeric(value.toString()))
                 return validator.isFloat(value.toString() ?? "0", { min: options.fieldMin ?? " " })
 
             return value.toString().length >= options.fieldMax

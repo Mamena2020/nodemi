@@ -23,7 +23,8 @@ UserDetail.init({
     sequelize: db, // We need to pass the connection instance
     tableName: "user_details",// table name
     modelName: 'UserDetail', //  model name
-    timestamps: true
+    timestamps: true,
+    underscored: true
 });
 
 

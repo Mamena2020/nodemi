@@ -35,7 +35,8 @@ RoleHasPermission.init({
         sequelize: db, // We need to pass the connection instance
         tableName: "role_has_permissions",
         modelName: 'RoleHasPermission', // We need to choose the model name
-        timestamps: true
+        timestamps: true,
+        underscored: true
     }
 )
 
