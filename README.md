@@ -9,11 +9,11 @@ Boilerplate for nodejs. base on express js.
     Create model via cli and make relation between. 
   - Media library 
   
-    binding media to any Model, so any model can own the media, and will able to save media, get media, and destroy media.
+    Binding media to any Model, so any model can own the media, and will able to save media, get media, and destroy media.
     Media can be stored to `Local storage` or `Firebase Storage`.
   - File request handling
     
-    Not worry about handling uploaded file, just upload from client side, and  you can access file in request, `req.body.avatar`.
+    Not worry about handling uploaded file, just upload from client side, and  you can access file in request, ex: `req.body.avatar`.
   - Request validation
     
     Determine if request passes the rule. 
@@ -32,7 +32,7 @@ Boilerplate for nodejs. base on express js.
     Enabled or disabled locale or just enabled on certain routes.
   - Mail
     
-    create mail via cli, and send mail with html, file, or just text.
+    Create mail via cli, and send mail with html, file, or just text.
   - Firebase Cloud Messaging
     
     Sending push notification from server to client device.
@@ -182,7 +182,7 @@ After binding model using `hasMedia(YourModel)`, then your model will able to sa
        }
    })
 
-   await product.saveMedia(req.body.file,"thumbnail") // if success then will return media url
+   await product.saveMedia(req.body.file,"thumbnail") // if success then will return media object
 
 ```
 
