@@ -30,7 +30,9 @@ UserHasRole.init({
         tableName: "user_has_roles",
         modelName: 'UserHasRole', // We need to choose the model name
         timestamps: true,
-        underscored: true
+        underscored: true,
+        createdAt: "created_at",
+        updatedAt: "updated_at"
     }
 )
 

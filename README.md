@@ -195,12 +195,12 @@ To save to `Local` storage, just set your .env file `MEDIA_STORAGE=local` , and 
    MEDIA_LOCAL_STORAGE_DIR_NAME=storage
 ```
 
-To save to `Firebase` storage, first create your `Service Account .json` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download it to your project, then setup the .env file.
+To save to `Firebase` storage, first create your `Service Account .json` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download and convert to `base64` string, then setup the .env file.
 
 ```
    MEDIA_STORAGE=firebase  # set to firebase
    FIREBASE_STORAGE_BUCKET=gs://xxxxxx.appspot.com  # your firebase storage bucket
-   FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json #  your firebase service account
+   FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 string of your firebase service account .json
 ```
 
 - Get media
@@ -254,6 +254,12 @@ Get all media url with exception, params can be `string` or `array` of string
 
 ```
     product.getMediaUrlExcept(['thumbnail_mobile'])  // return list of url
+
+```
+Get url from media object
+
+```
+    product.getFirstMedia().getUrl()
 
 ```
 
@@ -823,9 +829,9 @@ Example user resource
                      "id": data.id,
                      "name": data.name,
                      "email": data.email,
-                     "image": data.getMediaByName("avatar")?.url || '',
-                     "role": data.getRole()?.name || '',
-                     "permissions": new PermissionResource().collection(data.getPermissions() || []),
+                     "image": data.getMediaByName("avatar")?.url ?? '',
+                     "role": data.getRole()?.name ?? '',
+                     "permissions": new PermissionResource().collection(data.getPermissions() ?? []),
                  }
        }
     }
@@ -1203,7 +1209,7 @@ Before using mail, make sure you already setup .env file
 Before using FCM, make sure you already `enable` Firebase Cloud Messaging API on <a href="https://console.cloud.google.com/">Google Cloud Console</a>, by selecting your project and navigating to `APIs & Services`. Once you have enabled the API, you can set up your .env
 
 ```
-   FIREBASE_SERVICE_ACCOUNT=firebaseServiceAccount.json # firebase service account
+   FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 of firebase service account (.json) 
    FIREBASE_CLOUD_MESSAGING_SERVER_KEY= #fcm server key
 
 ```

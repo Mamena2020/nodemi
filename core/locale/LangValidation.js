@@ -82,7 +82,7 @@ const langValidation = Object.freeze({
         en: "The _attribute_ date must be before or equal than _param1_'s date",
         id: "_attribute_ harus sebelum atau sama dengan tanggal _param1_"
     },
-    bolean: {
+    boolean: {
         en: "The _attribute_ must be have true or false format",
         id: "_attribute_ harus dalam format benar atau salah"
     },

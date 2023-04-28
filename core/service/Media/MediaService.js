@@ -15,6 +15,14 @@ class Media extends Model {
     //     return this[mixinMethodName](options);
     // }
 
+    getUrl()
+    {
+        if (this.media_storage === mediaStorages.local) {
+            return normalizeLocalStorageToUrl(this.url)
+        } 
+        return this.url
+    }
+
 }
 
 Media.init({
@@ -57,7 +65,9 @@ Media.init({
         tableName: "medias",
         modelName: 'Media', // We need to choose the model name
         timestamps: true,
-        underscored: true
+        underscored: true,
+        createdAt: "created_at",
+        updatedAt: "updated_at"
     }
 )
 

@@ -16,22 +16,20 @@ class FirebaseService {
         if (admin.apps.length)
             return
 
-        await new Promise(async (resolve, reject) => {
-            return await fse.readFile(firebaseConfig.firebaseServiceAccountFile, 'utf-8', async (error, data) => {
-                if (error) {
-                    console.log("error")
-                    console.error(error)
+            await new Promise(async (resolve, reject) => {
+                try {
+                    const jsonString = await Buffer.from(firebaseConfig.ServiceAccountBase64, 'base64').toString('ascii')
+                    const jsonData = await JSON.parse(jsonString)
+                    admin.initializeApp({
+                        credential: admin.credential.cert(jsonData),
+                        storageBucket: firebaseConfig.firebaseBucket
+                    });
+                    resolve()
+                } catch (error) {
+                    console.log(error)
                     reject()
                 }
-                const jsonData = JSON.parse(data);
-
-                admin.initializeApp({
-                    credential: admin.credential.cert(jsonData),
-                    storageBucket: firebaseConfig.firebaseBucket
-                });
-                resolve()
             })
-        })
     }
 
 

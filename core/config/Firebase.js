@@ -3,7 +3,7 @@ dotenv.config()
 
 const firebaseConfig = {
     firebaseBucket: process.env.FIREBASE_STORAGE_BUCKET,
-    firebaseServiceAccountFile: process.env.FIREBASE_SERVICE_ACCOUNT,
+    ServiceAccountBase64: process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
     firebaseCloudMessagingServerKey: process.env.FIREBASE_CLOUD_MESSAGING_SERVER_KEY,
 }
 

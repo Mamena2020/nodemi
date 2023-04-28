@@ -34,9 +34,14 @@ class JwtAuth {
         return jwt.verify(refreshToken, process.env.AUTH_JWT_REFRESH_TOKEN_SECRET, (err, decoded) => {
             if (err) return
 
-            delete decoded.exp
+            const currentDate = new Date()
+            if (decoded.exp * 1000 < currentDate.getTime())
+                return 
 
-            let accessToken = jwt.sign(decoded, process.env.AUTH_JWT_ACCESS_TOKEN_SECRET, {
+            delete decoded.exp
+            delete decoded.iat
+
+            const accessToken = jwt.sign(decoded, process.env.AUTH_JWT_ACCESS_TOKEN_SECRET, {
                 expiresIn: process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED
             })
             return accessToken
