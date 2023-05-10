@@ -5,41 +5,51 @@ Boilerplate for nodejs. base on express js.
 - Features
 
   - Model - ORM
-  
-    Create model via cli and make relation between. 
-  - Media library 
-  
+
+    Create model via cli and make relation between.
+
+  - Media library
+
     Binding media to any Model, so any model can own the media, and will able to save media, get media, and destroy media.
     Media can be stored to `Local storage` or `Firebase Storage`.
+
   - File request handling
-    
-    Not worry about handling uploaded file, just upload from client side, and  you can access file in request, ex: `req.body.avatar`.
+
+    Not worry about handling uploaded file, just upload from client side, and you can access file in request, ex: `req.body.avatar`.
+
   - Request validation
-    
-    Determine if request passes the rule. 
+
+    Determine if request passes the rule.
     You can create `custom rule` via cli.
+
   - Role and Permissions
 
     Binding to any model, any model can have a role and permissions, set role, checking access.
+
   - Resources
-    
+
     Create custom resource from resources.
+
   - Auth - JWT
-    
+
     Create token, re generate token, and set middleware authorization for certain routes.
+
   - Locale
-    
+
     Enabled or disabled locale or just enabled on certain routes.
+
   - Mail
-    
+
     Create mail via cli, and send mail with html, file, or just text.
+
   - Firebase Cloud Messaging
-    
+
     Sending push notification from server to client device.
-    
+
   - Seeder
-    
+
     Running seeder via cli.
+
 - Live demo
 
   | Action    | Method | Auth   | Body            | EndPoint                                 |
@@ -256,6 +266,7 @@ Get all media url with exception, params can be `string` or `array` of string
     product.getMediaUrlExcept(['thumbnail_mobile'])  // return list of url
 
 ```
+
 Get url from media object
 
 ```
@@ -513,45 +524,53 @@ Example error messages
 
 - Basic rules
 
-  | Rule                 | Description                                 | Example                                                     |
-  | -------------------- | ------------------------------------------- | ----------------------------------------------------------- |
-  | required             | check empty value                           | "required"                                                  |
-  | email                | check email formats                         | "email"                                                     |
-  | match                | check match value with other value          | "match:password"                                            |
-  | exists               | check value exists in the database          | "exists:users,email" or "exists:users,email,"+super.body.id |
-  | unique               | check value is unique in database           | "unique:users,email" or "unique:users,email,"+super.body.id |
-  | string               | check value is an string                    | "string"                                                    |
-  | float                | check value is an float                     | "float"                                                     |
-  | integer              | check value is an ineteger                  | "integer"                                                   |
-  | max                  | count maximum value of numeric,             | "max:12"                                                    |
-  |                      | if string/array its count the length        |                                                             |
-  | min                  | count minimum value of numeric,             | "min:5"                                                     |
-  |                      | if string/array its count the length        |                                                             |
-  | date                 | check value is date format                  | "date"                                                      |
-  | array                | check value is an array                     | "array"                                                     |
-  | mimetypes            | check file mimetypes                        | "mimetypes:image/webp,image/x-icon,video/mp4"               |
-  | mimes                | check file extension                        | "mimes:jpg,png,jpeg"                                        |
-  | max_file             | check maximum file size,                    | "max_file:1,GB" or "max_file:1,MB" or "max_file:1,Byte"     |
-  |                      | param can be `GB`, `MB`, `KB` or `Byte`     |                                                             |
-  | image                | check file is an image format               | "image"                                                     |
-  | date_after           | check value after particular date           | "date_after:now" or "date_after:birthdate"                  |
-  |                      | param can be `now`, or other field name     |                                                             |
-  | date_after_or_equal  | check value after or equal particular date  | "date_after_or_equal:now"                                   |
-  |                      | param can be `now`, or other field name     |                                                             |
-  | date_before          | check value before particular date          | "date_before:now" or "date_before:birthdate"                |
-  |                      | param can be `now`, or other field name     |                                                             |
-  | date_before_or_equal | check value before or equal particular date | "date_before_or_equal:now"                                  |
-  |                      | param can be `now`, or other field name     |                                                             |
-  | boolean              | check value is an boolean                   | "boolean"                                                   |
-  | in_array             | check value exist in array                  | "in_array:1,3,4,1,4,5"                                      |
-  | not_in_array         | check value is not include in array         | "not_in_array:1,3,4,1,4,5"                                  |
-  | ip                   | check value is as ip address                | "ip"                                                        |
-  | url                  | check value is as url                       | "url"                                                       |
-  | json                 | check value is as json format               | "json"                                                      |
-  | digits               | check value digits,                         | "digits:4"                                                  |
-  | max_digits           | check maximum digits of value               | "max_digits:20"                                             |
-  | min_digits           | check minumum digits of value               | "min_digits:20"                                             |
-  | digits_between       | check digits bewteen of value               | "digits_between:5,10"                                       |
+  | Rule                 | Description                                   | Example                                                     |
+  | -------------------- | --------------------------------------------- | ----------------------------------------------------------- |
+  | required             | check empty value                             | "required"                                                  |
+  | email                | check email formats                           | "email"                                                     |
+  | match                | check match value with other value            | "match:password"                                            |
+  | exists               | check value exists in the database            | "exists:users,email" or "exists:users,email,"+super.body.id |
+  | unique               | check value is unique in database             | "unique:users,email" or "unique:users,email,"+super.body.id |
+  | string               | check value is an string                      | "string"                                                    |
+  | float                | check value is an float                       | "float"                                                     |
+  | integer              | check value is an ineteger                    | "integer"                                                   |
+  | max                  | count maximum value of numeric,               | "max:12"                                                    |
+  |                      | if string/array its count the length          |                                                             |
+  | min                  | count minimum value of numeric,               | "min:5"                                                     |
+  |                      | if string/array its count the length          |                                                             |
+  | date                 | check value is date format                    | "date"                                                      |
+  | array                | check value is an array                       | "array"                                                     |
+  | mimetypes            | check file mimetypes                          | "mimetypes:image/webp,image/x-icon,video/mp4"               |
+  | mimes                | check file extension                          | "mimes:jpg,png,jpeg"                                        |
+  | max_file             | check maximum file size,                      | "max_file:1,GB" or "max_file:1,MB" or "max_file:1,Byte"     |
+  |                      | param can be `GB`, `MB`, `KB` or `Byte`       |                                                             |
+  | image                | check file is an image format                 | "image"                                                     |
+  | date_after           | check value after particular date             | "date_after:now" or "date_after:birthdate"                  |
+  |                      | param can be `now`, or other field name       |                                                             |
+  | date_after_or_equal  | check value after or equal particular date    | "date_after_or_equal:now"                                   |
+  |                      | param can be `now`, or other field name       |                                                             |
+  | date_before          | check value before particular date            | "date_before:now" or "date_before:birthdate"                |
+  |                      | param can be `now`, or other field name       |                                                             |
+  | date_before_or_equal | check value before or equal particular date   | "date_before_or_equal:now"                                  |
+  |                      | param can be `now`, or other field name       |                                                             |
+  | boolean              | check value is an boolean                     | "boolean"                                                   |
+  | in_array             | check value exist in array                    | "in_array:1,3,4,1,4,5"                                      |
+  | not_in_array         | check value is not include in array           | "not_in_array:1,3,4,1,4,5"                                  |
+  | ip                   | check value is as ip address                  | "ip"                                                        |
+  | url                  | check value is as url                         | "url"                                                       |
+  | json                 | check value is as json format                 | "json"                                                      |
+  | digits               | check value digits,                           | "digits:4"                                                  |
+  | max_digits           | check maximum digits of value                 | "max_digits:20"                                             |
+  | min_digits           | check minumum digits of value                 | "min_digits:20"                                             |
+  | digits_between       | check digits bewteen of value                 | "digits_between:5,10"                                       |
+  | age_lt               | check value is less than param                | "age_lt:17"                                                 |
+  |                      | value must be an date format                  |                                                             |
+  | age_lte              | check value is less than or equal to param    | "age_lte:17"                                                |
+  |                      | value must be an date format                  |                                                             |
+  | age_gt               | check value is greater than param             | "age_gt:17"                                                 |
+  |                      | value must be an date format                  |                                                             |
+  | age_gte              | check value is greater than or equal to param | "age_gte:17"                                                 |
+  |                      | value must be an date format                  |                                                             |
 
 - Custom
 
@@ -588,7 +607,7 @@ Direct add error messages
     {
         valid.addError("name","Name have to .....")
         valid.addError("name","Name must be .....")
-    
+
 
 ```
 
@@ -665,7 +684,7 @@ A user model can have a role by binding using `hasRole(YourModel)` function insi
 
 - Set users role
 
-If the user instance already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`.
+If the user instance already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`, and will return status in boolean.
 
 ```
 
@@ -675,7 +694,7 @@ If the user instance already has a role, then the user role will be replaced wit
          password: hashPassword
    })
 
-   user.setRole("customer") // role id or name
+   await user.setRole("customer") // params is role id or name
 
 ```
 
@@ -970,7 +989,7 @@ For secure access to controller by adding `JwtAuthPass` to your router.
 
 - Config
 
-Setup locale in `core/config/Locale.js`. by default locale setup to english `en`
+Setup locale in `core/config/Locale.js`. by default locale setup to english `en`, support locale of `english`, `indonesian`, `spanish`, `hindi`, `portuguese`, `russian`, `chinese`, `japanese`,
 
 ```
 
@@ -1209,7 +1228,7 @@ Before using mail, make sure you already setup .env file
 Before using FCM, make sure you already `enable` Firebase Cloud Messaging API on <a href="https://console.cloud.google.com/">Google Cloud Console</a>, by selecting your project and navigating to `APIs & Services`. Once you have enabled the API, you can set up your .env
 
 ```
-   FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 of firebase service account (.json) 
+   FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 of firebase service account (.json)
    FIREBASE_CLOUD_MESSAGING_SERVER_KEY= #fcm server key
 
 ```

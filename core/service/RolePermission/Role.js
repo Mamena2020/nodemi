@@ -132,8 +132,6 @@ const setRole = async (model, role) => {
 
     try {
 
-        // console.log("set role")
-        // console.log("model.id", model.id)
         const roleable_id = model.id
         const roleable_type = model.constructor.options.name.singular
 
@@ -155,6 +153,7 @@ const setRole = async (model, role) => {
             throw "role not found"
 
         // console.log("roleModel.id", roleModel.id)
+        // console.log("roleModel.name", roleModel.name)
         // console.log("roleable_id", roleable_id)
         // console.log("roleable_type", roleable_type)
 
@@ -163,30 +162,33 @@ const setRole = async (model, role) => {
                 roleable_id: roleable_id,
                 roleable_type: roleable_type
             },
-            attributes: ["id"]
         })
-
 
         if (userRole) {
             // console.log("update role model")
-            await userRole.update({
+            const updated = await UserHasRole.update({
                 role_id: roleModel.id
+            }, {
+                where: {
+                    roleable_id: roleable_id,
+                    roleable_type: roleable_type
+                }
             })
+            if (updated > 0) return true
         }
         else {
             // console.log("create new role for user")
-            await UserHasRole.create({
+            const created = await UserHasRole.create({
                 role_id: roleModel.id,
                 roleable_id: roleable_id,
                 roleable_type: roleable_type
             })
+            if (created) return true
         }
     } catch (error) {
         console.error(error)
     }
-
-
-
+    return false;
 }
 
 

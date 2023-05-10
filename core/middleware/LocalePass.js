@@ -1,4 +1,4 @@
-import isLocale from "../locale/Locale.js"
+import Locale from "../locale/Locale.js"
 
 
 
@@ -12,7 +12,7 @@ const LocalePass = async (req, res, next) => {
         locale = prefixs[1] || ''
     }
     
-    if (!isLocale(locale)) {
+    if (!Locale.isLocale(locale)) {
         return res.status(400).json({ "message": "Required valid locale code. Example: https://abc.com/api/en/endpoint or https://abc.com/en/endpoint" })
     }
 
