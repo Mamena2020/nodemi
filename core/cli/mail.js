@@ -6,7 +6,7 @@ const scriptsEmail = () => {
     return `
 
 class ClassName extends Mail {
-    constructor(from = '', to = [], subject = '') {
+    constructor(from = '', to = [], subject = '', token = '') {
         super().load({
             from: from,
             to: to,
@@ -22,7 +22,8 @@ class ClassName extends Mail {
                 path: "htmlName",
                 data: {
                     title: "Welcome to the party!",
-                    message: "Just need to verify that this is your email address."
+                    message: "Just need to verify that this is your email address.",
+                    verification_url: process.env.APP_URL+"/api/email-verification/"+token,
                 }
             },
         })
@@ -51,7 +52,7 @@ const scriptsHtml = () => {
 <body>
     <h3>Hello!</h3>
     <p>
-        <%= message %>
+        <a href="<%= verification_url %>"><%= verification_url %></a>
     </p>
     <p>
         Regards.

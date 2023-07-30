@@ -2,9 +2,11 @@ import User from "../models/User.js"
 import bcrypt from 'bcrypt'
 import RegisterRequest from "../requests/auth/RegisterRequest.js";
 import JwtAuth from "../core/auth/JwtAuth.js";
+// uncomment the line below if AUTH_EMAIL_VERIFICATION on .env is set to "true"
+import AccountVerify from "../mails/AccountVerify/AccountVerify.js"
+import crypto from "crypto"
 
 const login = async (req, res) => {
-
 
     try {
 
@@ -16,23 +18,27 @@ const login = async (req, res) => {
 
         if (!match) return res.status(400).json({ message: "wrong password" })
 
-        const payload = {
-            id: user.id,
-            name: user.name,
-            email: user.email
+        if (user.verified_at > 0) {
+            const payload = {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
+            const token = JwtAuth.createToken(payload)
+
+            await user.update({
+                refresh_token: token.refreshToken
+            })
+
+            res.cookie('refreshToken', token.refreshToken, {
+                httpOnly: true,
+                maxAge: 24 * 60 * 60 * 1000,
+                // secure: true
+            })
+            res.json({ message: "login success", "accessToken": token.accessToken })
+        } else {
+            return res.json({ message: "Verify your account first.." })
         }
-        const token = JwtAuth.createToken(payload)
-
-        await user.update({
-            refresh_token: token.refreshToken
-        })
-
-        res.cookie('refreshToken', token.refreshToken, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-            // secure: true
-        })
-        res.json({ message: "login success", "accessToken": token.accessToken })
     } catch (error) {
         console.log(error)
     }
@@ -49,13 +55,30 @@ const register = async (req, res) => {
         const { name, email, password } = req.body;
         const salt = await bcrypt.genSalt()
         const hashPassword = await bcrypt.hash(password, salt)
+        const authEmailVerification = process.env.AUTH_EMAIL_VERIFICATION
+        const verificationToken = authEmailVerification === "true" ? randomTokenString() : ""
+
         let user = await User.create({
             name: name,
             email: email,
-            password: hashPassword
+            password: hashPassword,
+            verification_token: verificationToken
         })
 
         await user.setRole("customer")
+
+        /** Account Verification
+         * if AUTH_EMAIL_VERIFICATION on .env is set to "true" then:
+         * "create npx nodemi make:mail AccountVerify"
+         * and then place import on the top of this file:
+         * import AccountVerify from "../mails/AccountVerify/AccountVerify.js"
+        */
+        if(authEmailVerification === "true") {
+            const sendMail = new AccountVerify("kitainvite@gmail.com", [email], "Verify Your Account", verificationToken)
+            
+            await sendMail.send()
+        }
+        // ----------- End of account verification
 
         res.json({ message: "register success" }).status(200)
 
@@ -64,6 +87,27 @@ const register = async (req, res) => {
     }
 }
 
+// if AUTH_EMAIL_VERIFICATION on .env is set to "true"
+const emailVerification = async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { verification_token: req.params.token } })
+
+        if (!user) {
+            res.json({ message: "Invalid token." })
+        } else {
+            await user.update({
+                verification_token: '',
+                verified_at: new Date()
+            })
+
+            res.json({ message: "Email verification success" }).status(200)
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+// ----------- End of account verification
 
 const refreshToken = async (req, res) => {
 
@@ -124,10 +168,14 @@ const logout = async (req, res) => {
 
 }
 
+function randomTokenString() {
+    return crypto.randomBytes(25).toString('hex')
+}
 
 export default {
     login,
     register,
+    emailVerification,
     refreshToken,
     logout
 }

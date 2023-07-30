@@ -10,6 +10,8 @@ export default function api(app) {
     const routerGuest = express.Router()
     routerGuest.post("/login", Requests.login, AuthController.login)
     routerGuest.post("/register", AuthController.register)
+    // if AUTH_EMAIL_VERIFICATION on .env is set to "true"
+    routerGuest.get("/email-verification/:token", AuthController.emailVerification)
     routerGuest.get("/token", AuthController.refreshToken)
     routerGuest.delete("/logout", AuthController.logout)
     routerGuest.get("/users", UserController.getUsers)
