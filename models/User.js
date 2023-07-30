@@ -24,6 +24,14 @@ User.init({
     type: DataTypes.TEXT,
     // allowNull defaults to true
   },
+  verification_token: {
+    type: DataTypes.TEXT,
+    // allowNull defaults to true
+  },
+  verified_at: {
+    type: DataTypes.DATE,
+    // allowNull defaults to true
+  },
 
 }, {
   sequelize: db, // We need to pass the connection instance
