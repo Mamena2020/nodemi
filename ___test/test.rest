@@ -5,8 +5,8 @@ POST  http://localhost:5000/api/register
 Content-Type: application/json
 
 {
-    "name": "Andre",
-    "email": "andre@gmail.com",
+    "name": "game",
+    "email": "gamemain90@gmail.com",
     "password": "1234",
     "confirmPassword": "1234"
 }
@@ -16,7 +16,7 @@ POST  http://localhost:5000/api/login
 Content-Type: application/json
 
 {
-    "email": "andre@gmail.com",
+    "email": "gamemain90@gmail.com",
     "password": "1234"
 }
 
@@ -29,11 +29,10 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZWRkc2Rkc3Nzc0BnbWFpbC5jb20iLCJpYXQiOjE2NzkyODUxMDUsImV4cCI6MTY3OTM3MTUwNX0.dnLfhXFrXgltPcrSh3_uF9TR1QCgNYLLqVy39e764G8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZTc4NzlAZ21haWwuY29tIiwiaWF0IjoxNjkwNzc0OTY5LCJleHAiOjE2OTA4NjEzNjl9.Aqae_13F9hSjgGlRfUas38D5ck8eyG_uefagnLSyBU4
 
-### get users
-GET   http://localhost:5000/api/users
-#Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwibmFtZSI6IkFuZHJlIiwiZW1haWwiOiJhbmRyZWRkc2Rkc3Nzc0BnbWFpbC5jb20iLCJpYXQiOjE2NzY1OTM1NTcsImV4cCI6MTY3NjY3OTk1N30.pceYrVvHVVFqsPuG3EySSoT8tjrXamfbmjCExLcWppg
+### email verification 
+GET   http://localhost:5000/api/email-verification/asdasd
 
 ### users no auth
 GET   http://localhost:5000/api/users
