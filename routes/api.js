@@ -13,7 +13,6 @@ export default function api(app) {
     routerGuest.get("/email-verification/:token", AuthController.emailVerification)
     routerGuest.get("/token", AuthController.refreshToken)
     routerGuest.delete("/logout", AuthController.logout)
-    routerGuest.get("/users", UserController.getUsers)
     app.use("/api", routerGuest)
     // routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
 
@@ -22,6 +21,7 @@ export default function api(app) {
     const routerAuth = express.Router()
     routerAuth.use(JwtAuthPass)
     routerAuth.get("/user", UserController.getUser)
+    routerAuth.get("/users", UserController.getUsers)
     routerAuth.post("/upload", UserController.upload)
 
     app.use("/api", routerAuth)
