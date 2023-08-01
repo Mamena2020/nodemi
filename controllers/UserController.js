@@ -11,7 +11,6 @@ const getUser = async (req, res) => {
     try {
 
         const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) return res.sendStatus(401)
         const user = await User.findOne(
             {
                 where: {
@@ -30,14 +29,14 @@ const getUser = async (req, res) => {
 
         if (!user) return res.sendStatus(404)
 
-        if (!GateAccess(user, ["user-create", "user-stored"])) {
+        if (GateAccess(user, ["user-create", "user-stored"])) {
+            let newUser = new UserResource().make(user)
+            res.json({ message: "get success", "user": newUser })
+        } else {
             return res.sendStatus(403)
         }
 
-        let newUser = new UserResource().make(user)
-
-        res.json({ message: "get success", "user": newUser })
-
+        
     } catch (error) {
         console.log(error)
     }
@@ -51,9 +50,6 @@ const getUsers = async (req, res) => {
 
 }
 
-
-
-
 const upload = async (req, res) => {
 
     let valid = new UploadRequest(req)
@@ -62,8 +58,6 @@ const upload = async (req, res) => {
         return valid.responseError(res)
 
     const user = await JwtAuth.getUser(req)
-    if (!user)
-        return res.status(403).json({ message: "need auth" })
 
     await user.saveMedia(
         req.body.file,
@@ -93,6 +87,3 @@ export default {
     getUsers,
     upload
 }
-
-
-
