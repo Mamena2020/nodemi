@@ -2,7 +2,7 @@
 
 Boilerplate for nodejs. base on express js.
 
-- Features
+- ### Features
 
   - Model - ORM
 
@@ -30,7 +30,7 @@ Boilerplate for nodejs. base on express js.
 
     Create custom resource from resources.
 
-  - Auth - JWT
+  - Auth - JWT/Basic Auth
 
     Create token, re generate token, and set middleware authorization for certain routes.
 
@@ -50,7 +50,7 @@ Boilerplate for nodejs. base on express js.
 
     Running seeder via cli.
 
-- Live demo
+- ### Live demo
 
   | Action    | Method | Auth   | Body            | EndPoint                                 |
   | --------- | ------ | ------ | --------------- | ---------------------------------------- |
@@ -70,8 +70,8 @@ Boilerplate for nodejs. base on express js.
   | Get User  | GET    | Bearer |                 | https://nodemi.onrender.com/api/user     |
   |           |        | token  |                 |                                          |
   |           |        |        |                 |                                          |
-  | Get Users | GET    |        |                 | https://nodemi.onrender.com/api/users    |
-  |           |        |        |                 |                                          |
+  | Get Users | GET    | Bearer |                 | https://nodemi.onrender.com/api/users    |
+  |           |        | token  |                 |                                          |
 
 # Getting Started
 
@@ -84,7 +84,9 @@ Clone and move to directory project and run `npm install`
 
 ```
 
-- Create database `mysql` or `pgsql`
+- ### Create database 
+
+Create database `mysql` or `pgsql`.
 
 ```
    #mysql example
@@ -101,7 +103,7 @@ Clone and move to directory project and run `npm install`
 
 ```
 
-- Setup .env
+- ### Setup .env
 
 After creating your database, you can fill in the .env file and start your code.
 
@@ -112,7 +114,7 @@ After creating your database, you can fill in the .env file and start your code.
 
 # Model
 
-Create new model via cli.
+- ### Create new model via cli.
 
 ```
    npx nodemi make:model Product
@@ -159,7 +161,7 @@ Automatically registered in the `loadModels` function in the `core/model/Models.
 
 Full <a target="_blank" href="https://sequelize.org/docs/v6/core-concepts/model-basics/"> documentation </a> of ORM
 
-- Noted
+- ### Noted
 
 All relationships between models should be defined in the `loadModels` function.
 When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `core/model/Models.js` file.
@@ -180,7 +182,7 @@ Any model can own media by binding the model to the media inside the `loadModels
 
 ```
 
-- Save a file
+- ### Save a file
 
 After binding model using `hasMedia(YourModel)`, then your model will able to save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
 
@@ -213,7 +215,7 @@ To save to `Firebase` storage, first create your `Service Account .json` on fire
    FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 string of your firebase service account .json
 ```
 
-- Get media
+- ### Get media
 
 Get all media by calling `instance.getMedia()`.
 
@@ -274,7 +276,7 @@ Get url from media object
 
 ```
 
-- Destroy media
+- ### Destroy media
 
 Destroy media by calling `instance.destroyMedia(mediaName)`. return status deleted in boolean
 
@@ -290,7 +292,7 @@ Destroy media by calling `instance.destroyMedia(mediaName)`. return status delet
 
 ```
 
-- Noted
+- ### Noted
 
 All media files will be automatically deleted whenever `instance` of your model is deleted.
 
@@ -318,7 +320,7 @@ Handling all upload files on `POST` and `PUT` method, and nested fields.
 
 # Rule Validation
 
-Create Request validation via cli.
+- ### Create Request validation via cli.
 
 ```
    npx nodemi make:request ProductRequest
@@ -352,7 +354,7 @@ The Request will be created in the `requests` directory.
 
 ```
 
-- Basic usage.
+- ### Basic usage.
 
 ```
 
@@ -365,7 +367,7 @@ The Request will be created in the `requests` directory.
 
 ```
 
-Example html form.
+- ### Example html form.
 
 ```
 
@@ -412,7 +414,7 @@ Example html form.
 
 ```
 
-Example rules.
+- ### Example rules
 
 ```
 
@@ -456,7 +458,7 @@ Example rules.
 
 ```
 
-Example error messages
+- ### Example error messages
 
 ```
 
@@ -522,7 +524,7 @@ Example error messages
 
 ```
 
-- Basic rules
+- ### Basic rules
 
   | Rule                 | Description                                   | Example                                                     |
   | -------------------- | --------------------------------------------- | ----------------------------------------------------------- |
@@ -569,10 +571,10 @@ Example error messages
   |                      | value must be an date format                  |                                                             |
   | age_gt               | check value is greater than param             | "age_gt:17"                                                 |
   |                      | value must be an date format                  |                                                             |
-  | age_gte              | check value is greater than or equal to param | "age_gte:17"                                                 |
+  | age_gte              | check value is greater than or equal to param | "age_gte:17"                                                |
   |                      | value must be an date format                  |                                                             |
 
-- Custom
+- ### Custom
 
 Custom validation `messages` and `attribute`
 
@@ -597,7 +599,7 @@ Custom validation `messages` and `attribute`
 
 ```
 
-Direct add error messages
+- ### Direct add error messages
 
 ```
     const valid = new ProductRequest(req)
@@ -611,9 +613,9 @@ Direct add error messages
 
 ```
 
-- Custom Rule
+# Custom Rule
 
-Create Custom Rule via cli.
+- ### Create Custom Rule via cli.
 
 ```
    npx nodemi make:rule GmailRule
@@ -652,7 +654,7 @@ The Rule will be created in the `rules` directory.
 
 ```
 
-Custom rule usage
+- ### Custom rule usage
 
 ```
     rules() {
@@ -664,7 +666,7 @@ Custom rule usage
     }
 ```
 
-- Noted
+- ### Noted
 
 Default error messages outputs are dependent on the locale. If you haven't set up the locale as a middleware, it will be set to English `en` by default.
 
@@ -682,7 +684,7 @@ A user model can have a role by binding using `hasRole(YourModel)` function insi
 
 ```
 
-- Set users role
+- ### Set users role
 
 If the user instance already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`, and will return status in boolean.
 
@@ -698,7 +700,7 @@ If the user instance already has a role, then the user role will be replaced wit
 
 ```
 
-- Get role
+- ### Get role
 
 Get role object by calling `instance.getRole()`, or direcly access role name `instance.getRole().name`.
 
@@ -710,7 +712,7 @@ Get role object by calling `instance.getRole()`, or direcly access role name `in
 
 ```
 
-- Get permissions
+- ### Get permissions
 
 Get permission by calling `instance.getPermissions()` will get array of object, or `instance.getPermissionsName()` will get array of permissions name.
 
@@ -721,7 +723,7 @@ Get permission by calling `instance.getPermissions()` will get array of object, 
 
 ```
 
-- Remove role
+- ### Remove role
 
 ```
 
@@ -729,7 +731,7 @@ Get permission by calling `instance.getPermissions()` will get array of object, 
 
 ```
 
-- Check user access
+- ### Check user access
 
 Limitation user access using `GateAccess(userInstance,permissionNames)`, `permissionNames` must be an array of permission names.
 
@@ -740,7 +742,7 @@ Limitation user access using `GateAccess(userInstance,permissionNames)`, `permis
 
 ```
 
-- Add permissions
+- ### Add permissions
 
 ```
 
@@ -759,7 +761,7 @@ Limitation user access using `GateAccess(userInstance,permissionNames)`, `permis
 
 ```
 
-- Add Role
+- ### Add Role
 
 ```
 
@@ -771,7 +773,7 @@ Limitation user access using `GateAccess(userInstance,permissionNames)`, `permis
 
 ```
 
-- Assigning Permissions to Roles
+- ### Assigning Permissions to Roles
 
 Assign permissions to a role by using `roleInstance.assignPermissions(params)`, params can be a list of permissions `name` or `id`.
 
@@ -792,7 +794,7 @@ Assign permissions to a role by using `roleInstance.assignPermissions(params)`, 
 
 # Resource
 
-Create new resource via cli.
+- ### Create new resource via cli.
 
 ```
    npx nodemi make:resource UserResource
@@ -822,7 +824,7 @@ The Resource will be created in `resources` directory.
 
 ```
 
-- Basic usage
+- ### Basic usage
 
 To create resources from a single object use `make` or `collection` for an array of objects.
 
@@ -834,7 +836,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 ```
 
-Example user resource
+- ### Example user resource
 
 ```
 
@@ -857,7 +859,7 @@ Example user resource
 
 ```
 
-permissions resource
+- ### Example permissions resource
 
 ```
 
@@ -876,7 +878,7 @@ permissions resource
 
 ```
 
-Example usage
+- ### Example usage
 
 ```
 
@@ -892,7 +894,7 @@ Example usage
 
 ```
 
-Example result
+- ### Example result
 
 ```
 
@@ -918,7 +920,7 @@ Example result
 
 # Auth Jwt
 
-- Create token
+- ### Create token
 
 Create token by calling `JwtAuth.createToken()`, that will return `refreshToken` and `accessToken`.
 
@@ -937,17 +939,17 @@ Create token by calling `JwtAuth.createToken()`, that will return `refreshToken`
 
 ```
 
-- Regenerate access token
+- ### Regenerate access token
 
 Regenerate access token by calling `JwtAuth.regenerateAccessToken(refreshToken)`, that will return new access token.
 
 ```
 
-   let accessToken = JwtAuth.regenerateAccessToken(refreshToken)
+   const accessToken = JwtAuth.regenerateAccessToken(refreshToken)
 
 ```
 
-- Get Auth user
+- ### Get Auth user
 
 Get authenticated user by `calling JwtAuth.getUser(req)`, that will get user by refresh token on request cookies.
 
@@ -972,11 +974,12 @@ Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model 
        static user = User
 ```
 
-- Middleware auth
+- ### Use Middleware - Auth Jwt
 
 For secure access to controller by adding `JwtAuthPass` to your router.
 
 ```
+   import JwtAuthPass from '../core/middleware/JwtAuthPass.js';
 
    routerAuth.use(JwtAuthPass)
    routerAuth.get("/upload", UserController.upload)
@@ -984,6 +987,42 @@ For secure access to controller by adding `JwtAuthPass` to your router.
    app.use("/api",routerAuth)
 
 ```
+
+Header Request
+
+```
+    Authorization: 'Bearer ' + accessToken
+```
+
+
+- ### Use Middleware - Basic auth
+
+For secure access to controller by adding `BasicAuthPass` to your router.
+
+```
+   import BasicAuthPass from '../core/middleware/BasicAuthPass.js';
+
+   routerAuth.use(BasicAuthPass)
+   routerAuth.get("/upload", UserController.upload)
+
+   app.use("/api",routerAuth)
+
+```
+
+Before using this, make sure already set username and password for basic auth in `.env` file.
+
+```
+    AUTH_BASIC_AUTH_USERNAME=myBasicUsername
+    AUTH_BASIC_AUTH_PASSWORD=myBasicPassword
+```
+
+Header Request
+
+```
+    Authorization: 'Basic ' + encodeBase64(myBasicUsername+':'+myBasicPassword)
+```
+
+
 
 # Locale
 

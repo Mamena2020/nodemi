@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
     "name": "game",
-    "email": "gamemain90@gmail.com",
+    "email": "andre@gmail.com",
     "password": "1234",
     "confirmPassword": "1234"
 }
@@ -16,7 +16,7 @@ POST  http://localhost:5000/api/login
 Content-Type: application/json
 
 {
-    "email": "gamemain90@gmail.com",
+    "email": "andre@gmail.com",
     "password": "1234"
 }
 
@@ -34,5 +34,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6I
 ### email verification 
 GET   http://localhost:5000/api/email-verification/asdasd
 
+
 ### users no auth
 GET   http://localhost:5000/api/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibmFtZSI6ImdhbWUiLCJlbWFpbCI6ImdhbWVtYWluOTBAZ21haWwuY29tIiwiaWF0IjoxNjkwODk3OTAyLCJleHAiOjE2OTA5ODQzMDJ9.vdgN_ZA-_F33NBJGYUyrYIPaCqaTyArbAlLpR3UKIrw
+
+### users basic auth
+GET   http://localhost:5000/api/users2
+Authorization: Basic bXlCYXNpY1VzZXJuYW1lOm15QmFzaWNQYXNzd29yZA==

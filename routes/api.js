@@ -2,6 +2,7 @@ import express from "express";
 import AuthController from "../controllers/AuthController.js";
 import UserController from "../controllers/UserController.js";
 import JwtAuthPass from "../core/middleware/JwtAuthPass.js";;
+// import BasicAuthPass from "../core/middleware/BasicAuthPass.js";;
 import Requests from "../middleware/Requests.js";
 
 
@@ -13,10 +14,9 @@ export default function api(app) {
     routerGuest.get("/email-verification/:token", AuthController.emailVerification)
     routerGuest.get("/token", AuthController.refreshToken)
     routerGuest.delete("/logout", AuthController.logout)
+    // routerGuest.get("/users2", BasicAuthPass, UserController.getUsers)
     app.use("/api", routerGuest)
     // routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
-
-
 
     const routerAuth = express.Router()
     routerAuth.use(JwtAuthPass)
