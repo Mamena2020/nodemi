@@ -21,28 +21,16 @@ User.init({
     allowNull: false
   },
   refresh_token: {
-    type: DataTypes.STRING,
-    allowNull: true
+    type: DataTypes.TEXT,
+    // allowNull defaults to true
   },
   verification_token: {
-    type: DataTypes.STRING(100),
-    allowNull: true
+    type: DataTypes.TEXT,
+    // allowNull defaults to true
   },
   verified_at: {
     type: DataTypes.DATE,
-    allowNull: true
-  },
-  reset_token: {
-    type: DataTypes.STRING(100),
-    allowNull: true
-  },
-  reset_token_expires: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  password_reset: {
-    type: DataTypes.DATE,
-    allowNull: true
+    // allowNull defaults to true
   },
 
 }, {

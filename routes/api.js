@@ -14,8 +14,6 @@ export default function api(app) {
     routerGuest.get("/email-verification/:token", AuthController.emailVerification)
     routerGuest.get("/token", AuthController.refreshToken)
     routerGuest.delete("/logout", AuthController.logout)
-    routerGuest.post("/forgot-password", AuthController.forgotPassword)
-    routerGuest.post("/reset-password/:token", AuthController.resetPassword)
     // routerGuest.get("/users2", BasicAuthPass, UserController.getUsers)
     app.use("/api", routerGuest)
     // routerGuest.get("/:locale/users", LocalePass, UserController.getUsers)
