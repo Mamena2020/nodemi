@@ -4,7 +4,7 @@ import RegisterRequest from "../requests/auth/RegisterRequest.js"
 import JwtAuth from "../core/auth/JwtAuth.js"
 import AccountVerify from "../mails/AccountVerify/AccountVerify.js"
 import ForgotPassword from "../mails/ForgotPassword/ForgotPassword.js"
-import { Op } from "sequelize";
+import { Op } from "sequelize"
 import crypto from "crypto"
 
 const authEmailVerification = process.env.AUTH_EMAIL_VERIFICATION
@@ -208,16 +208,16 @@ const resetPassword = async (req, res) => {
             reset_token: token,
             reset_token_expires: { [Op.gt]: Date.now() }
         }
-    });
+    })
 
     if (!user) return res.json({ message: "Invalid token" })
     if (!password) return res.json({ message: "New password is required" })
 
-    user.password = await passwordHash(password);
-    user.password_reset = Date.now();
-    user.reset_token = null;
-    user.reset_token_expires = null;
-    await user.save();
+    user.password = await passwordHash(password)
+    user.password_reset = Date.now()
+    user.reset_token = null
+    user.reset_token_expires = null
+    await user.save()
 
     res.json({ message: "Your password has been successfully reset." })
 }
