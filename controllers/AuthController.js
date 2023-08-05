@@ -47,6 +47,7 @@ const login = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 }
 
@@ -58,12 +59,13 @@ const register = async (req, res) => {
         if (valid.isError)
             return valid.responseError(res)
 
-        const { name, email, password } = req.body
+        var { name, email, password } = req.body
         const verificationToken = randomTokenString()
+        password = await passwordHash(password);
         const user = await User.create({
             name: name,
             email: email,
-            password: passwordHash(password),
+            password: password,
             verification_token: verificationToken
         })
 
@@ -78,6 +80,7 @@ const register = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 }
 
@@ -97,6 +100,7 @@ const emailVerification = async (req, res) => {
         res.status(200).json({ message: "Email verification success" })
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 }
 
@@ -125,6 +129,7 @@ const refreshToken = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 }
 
@@ -154,6 +159,7 @@ const logout = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 
 }
@@ -190,38 +196,45 @@ const forgotPassword = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 }
 
 const resetPassword = async (req, res) => {
 
-    const token = req.params.token
+    try {
+        const token = req.params.token
 
-    const valid = new ResetPasswordRequest(req)
-    await valid.check()
-    if (valid.isError) return valid.responseError(res)
+        const valid = new ResetPasswordRequest(req)
+        await valid.check()
+        if (valid.isError) return valid.responseError(res)
 
-    const user = await User.findOne({
-        where: {
-            reset_token: token,
-            reset_token_expires: { [Op.gt]: Date.now() }
+        const user = await User.findOne({
+            where: {
+                reset_token: token,
+                reset_token_expires: { [Op.gt]: Date.now() }
+            }
+        })
+
+        if (!user) {
+            valid.addError("token", "Inavalid token or token expired")
+            return valid.responseError(res)
         }
-    })
 
-    if (!user) {
-        valid.addError("token", "Inavalid token or token expired")
-        return valid.responseError(res)
+        const { new_password } = req.body
+
+        user.password = await passwordHash(new_password)
+        user.password_reset = Date.now()
+        user.reset_token = null
+        user.reset_token_expires = null
+        await user.save()
+
+        res.json({ message: "Your password has been successfully reset." })
+
+    } catch (error) {
+        console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
-
-    const { new_password } = req.body
-
-    user.password = await passwordHash(new_password)
-    user.password_reset = Date.now()
-    user.reset_token = null
-    user.reset_token_expires = null
-    await user.save()
-
-    res.json({ message: "Your password has been successfully reset." })
 }
 
 async function passwordHash(password) {
