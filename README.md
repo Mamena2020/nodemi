@@ -75,7 +75,7 @@ Boilerplate for nodejs. base on express js.
   |                 |        |        |                 |                                                 |     |
   | Forgot Password | POST   |        | email           | https://nodemi.onrender.com/api/forgot-password |     |
   |                 |        |        |                 |                                                 |     |
-  | Reset Password  | POST   |        | new_password    | https://nodemi.onrender.com/api/reset-password  |     |
+  | Reset Password  | PUT    |        | new_password    | https://nodemi.onrender.com/api/reset-password  |     |
 
 # Getting Started
 
