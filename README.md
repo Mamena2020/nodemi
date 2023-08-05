@@ -52,30 +52,30 @@ Boilerplate for nodejs. base on express js.
 
 - ### Live demo
 
-    | Action          | Method | Auth   | Body            | EndPoint                                 |   |
-    |-----------------|--------|--------|-----------------|------------------------------------------|---|
-    | Login           | POST   |        | email           | https://nodemi.onrender.com/api/login    |   |
-    |                 |        |        | password        |                                          |   |
-    |                 |        |        |                 |                                          |   |
-    | Register        | POST   |        | email           | https://nodemi.onrender.com/api/register |   |
-    |                 |        |        | name            |                                          |   |
-    |                 |        |        | password        |                                          |   |
-    |                 |        |        | confirmPassword |                                          |   |
-    |                 |        |        |                 |                                          |   |
-    | Token           | GET    |        |                 | https://nodemi.onrender.com/api/token    |   |
-    |                 |        |        |                 |                                          |   |
-    |                 |        |        |                 |                                          |   |
-    | Logout          | DELETE |        |                 | https://nodemi.onrender.com/api/logout   |   |
-    |                 |        |        |                 |                                          |   |
-    | Get User        | GET    | Bearer |                 | https://nodemi.onrender.com/api/user     |   |
-    |                 |        | token  |                 |                                          |   |
-    |                 |        |        |                 |                                          |   |
-    | Get Users       | GET    | Bearer |                 | https://nodemi.onrender.com/api/users    |   |
-    |                 |        | token  |                 |                                          |   |
-    |                 |        |        |                 |                                          |   |
-    | Forgot Password | POST   |        | email           | /api/forgot-password                     |   |
-    |                 |        |        |                 |                                          |   |
-    | Reset Password  | POST   |        | new_password    | /api/reset-password                      |   |
+  | Action          | Method | Auth   | Body            | EndPoint                                        |     |
+  | --------------- | ------ | ------ | --------------- | ----------------------------------------------- | --- |
+  | Login           | POST   |        | email           | https://nodemi.onrender.com/api/login           |     |
+  |                 |        |        | password        |                                                 |     |
+  |                 |        |        |                 |                                                 |     |
+  | Register        | POST   |        | email           | https://nodemi.onrender.com/api/register        |     |
+  |                 |        |        | name            |                                                 |     |
+  |                 |        |        | password        |                                                 |     |
+  |                 |        |        | confirmPassword |                                                 |     |
+  |                 |        |        |                 |                                                 |     |
+  | Token           | GET    |        |                 | https://nodemi.onrender.com/api/token           |     |
+  |                 |        |        |                 |                                                 |     |
+  |                 |        |        |                 |                                                 |     |
+  | Logout          | DELETE |        |                 | https://nodemi.onrender.com/api/logout          |     |
+  |                 |        |        |                 |                                                 |     |
+  | Get User        | GET    | Bearer |                 | https://nodemi.onrender.com/api/user            |     |
+  |                 |        | token  |                 |                                                 |     |
+  |                 |        |        |                 |                                                 |     |
+  | Get Users       | GET    | Bearer |                 | https://nodemi.onrender.com/api/users           |     |
+  |                 |        | token  |                 |                                                 |     |
+  |                 |        |        |                 |                                                 |     |
+  | Forgot Password | POST   |        | email           | https://nodemi.onrender.com/api/forgot-password |     |
+  |                 |        |        |                 |                                                 |     |
+  | Reset Password  | POST   |        | new_password    | https://nodemi.onrender.com/api/reset-password  |     |
 
 # Getting Started
 
@@ -88,7 +88,7 @@ Clone and move to directory project and run `npm install`
 
 ```
 
-- ### Create database 
+- ### Create database
 
 Create database `mysql` or `pgsql`.
 
@@ -998,7 +998,6 @@ Header Request
     Authorization: 'Bearer ' + accessToken
 ```
 
-
 - ### Use Middleware - Basic auth
 
 For secure access to controller by adding `BasicAuthPass` to your router.
@@ -1025,8 +1024,6 @@ Header Request
 ```
     Authorization: 'Basic ' + encodeBase64(myBasicUsername+':'+myBasicPassword)
 ```
-
-
 
 # Locale
 
