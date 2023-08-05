@@ -6,10 +6,10 @@ import AccountVerify from "../mails/AccountVerify/AccountVerify.js"
 import ForgotPassword from "../mails/ForgotPassword/ForgotPassword.js"
 import { Op } from "sequelize"
 import crypto from "crypto"
-
-const authEmailVerification = process.env.AUTH_EMAIL_VERIFICATION
-const mailFrom = process.env.MAIL_FROM
-const smtp = process.env.MAIL_HOST
+import mailConfig from "../core/config/Mail.js"
+import AuthConfig from "../core/config/Auth.js"
+import ResetPasswordRequest from "../requests/auth/ResetPasswordRequest.js"
+import ForgotPasswordRequest from "../requests/auth/ForgotPasswordRequest.js"
 
 const login = async (req, res) => {
 
@@ -23,7 +23,8 @@ const login = async (req, res) => {
 
         if (!match) return res.status(400).json({ message: "Wrong password" })
 
-        if (authEmailVerification === "true" && !user.verified_at) {
+        if (AuthConfig.emailVerification === "true" && !user.verified_at
+            || AuthConfig.emailVerification === true && !user.verified_at) {
             return res.json({ message: "Verify your account first.." })
         }
 
@@ -53,14 +54,14 @@ const login = async (req, res) => {
 const register = async (req, res) => {
     try {
 
-        let valid = new RegisterRequest(req)
+        const valid = new RegisterRequest(req)
         await valid.check()
         if (valid.isError)
             return valid.responseError(res)
 
         const { name, email, password } = req.body
         const verificationToken = randomTokenString()
-        let user = await User.create({
+        const user = await User.create({
             name: name,
             email: email,
             password: passwordHash(password),
@@ -69,8 +70,8 @@ const register = async (req, res) => {
 
         await user.setRole("customer")
 
-        if (authEmailVerification === "true") {
-            const sendMail = new AccountVerify(mailFrom, [email], "Verify Your Account", verificationToken)
+        if (AuthConfig.emailVerification === "true" || AuthConfig.emailVerification === true) {
+            const sendMail = new AccountVerify(mailConfig.from, [email], "Verify Your Account", verificationToken)
             await sendMail.send()
         }
 
@@ -117,10 +118,9 @@ const refreshToken = async (req, res) => {
 
         if (!user) return res.sendStatus(403)
 
-        let accessToken = JwtAuth.regenerateAccessToken(refreshToken)
+        const accessToken = JwtAuth.regenerateAccessToken(refreshToken)
 
-        if (!accessToken)
-            res.status(403)
+        if (!accessToken) res.status(403)
 
         res.json({ message: "Get token success", "accessToken": accessToken })
 
@@ -163,9 +163,13 @@ const forgotPassword = async (req, res) => {
 
     try {
 
+        if (!mailConfig.host) return res.status(409).json({ message: "You are not set SMTP at MAIL_HOST on .env" })
+
+        const valid = new ForgotPasswordRequest(req)
+        await valid.check()
+        if (valid.isError) return valid.responseError(res)
+
         const { email } = req.body
-        
-        if (!email) return res.json({ message: "The email is required" })
 
         const user = await User.findOne(
             {
@@ -175,24 +179,15 @@ const forgotPassword = async (req, res) => {
             }
         )
 
-        if (user) {
-            if (smtp) { // if SMTP is set on .env
-                const resetToken = randomTokenString()
-                user.reset_token = resetToken
-                user.reset_token_expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
-                await user.save()
+        const resetToken = randomTokenString()
+        user.reset_token = resetToken
+        user.reset_token_expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+        await user.save()
 
-                const sendMail = new ForgotPassword(mailFrom, [email], "Password Reset Request", resetToken)
-                await sendMail.send()
+        const sendMail = new ForgotPassword(mailConfig.from, [email], "Password Reset Request", resetToken)
+        await sendMail.send()
 
-                res.json({ message: "Please check your email." })
-            } else {
-                res.json({ message: "You are not set SMTP at MAIL_HOST on .env" })
-            }
-
-        } else {
-            res.json({ message: "Email " + [email] + " not found in our database" })
-        }
+        res.json({ message: "Please check your email." })
 
     } catch (error) {
         console.log(error)
@@ -200,8 +195,12 @@ const forgotPassword = async (req, res) => {
 }
 
 const resetPassword = async (req, res) => {
+
     const token = req.params.token
-    const password = req.body.new_password
+
+    const valid = new ResetPasswordRequest(req)
+    await valid.check()
+    if (valid.isError) return valid.responseError(res)
 
     const user = await User.findOne({
         where: {
@@ -210,10 +209,14 @@ const resetPassword = async (req, res) => {
         }
     })
 
-    if (!user) return res.json({ message: "Invalid token" })
-    if (!password) return res.json({ message: "New password is required" })
+    if (!user) {
+        valid.addError("token", "Inavalid token or token expired")
+        return valid.responseError(res)
+    }
 
-    user.password = await passwordHash(password)
+    const { new_password } = req.body
+
+    user.password = await passwordHash(new_password)
     user.password_reset = Date.now()
     user.reset_token = null
     user.reset_token_expires = null

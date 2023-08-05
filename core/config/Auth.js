@@ -1,9 +1,7 @@
 import User from "../../models/User.js"
 
-
-
 const getUserOnRequest = process.env.AUTH_GET_CURRENT_USER_ON_REQUEST ?? false
-
+const authEmailVerification = process.env.AUTH_EMAIL_VERIFICATION ?? false
 
 class AuthConfig {
 
@@ -15,6 +13,8 @@ class AuthConfig {
 
 
     static getUserOnRequest = getUserOnRequest
+
+    static emailVerification = authEmailVerification
 
 }
 
