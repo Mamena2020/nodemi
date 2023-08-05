@@ -1,7 +1,15 @@
 import User from "../../models/User.js"
 
-const getUserOnRequest = process.env.AUTH_GET_CURRENT_USER_ON_REQUEST ?? false
-const authEmailVerification = process.env.AUTH_EMAIL_VERIFICATION ?? false
+const getUserOnRequest = () => {
+    if (process.env.AUTH_GET_CURRENT_USER_ON_REQUEST == "true" || process.env.AUTH_GET_CURRENT_USER_ON_REQUEST == true)
+        return true;
+    return false
+}
+const authEmailVerification = () => {
+    if (process.env.AUTH_EMAIL_VERIFICATION == "true" || process.env.AUTH_EMAIL_VERIFICATION == true)
+        return true;
+    return false
+}
 
 class AuthConfig {
 

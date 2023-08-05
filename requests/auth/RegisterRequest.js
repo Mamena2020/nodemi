@@ -20,7 +20,7 @@ class RegisterRequest extends RequestValidation {
                 "rules": ["required"],
                 "attribute": "Password"
             },
-            "confirmPassword": {
+            "confirm_password": {
                 "rules": ["required","match:password"],
             },
         };

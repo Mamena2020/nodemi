@@ -2,9 +2,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
-
-
-
 /**
  * Mail config
  */

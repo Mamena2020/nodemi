@@ -23,8 +23,7 @@ const login = async (req, res) => {
 
         if (!match) return res.status(400).json({ message: "Wrong password" })
 
-        if (AuthConfig.emailVerification === "true" && !user.verified_at
-            || AuthConfig.emailVerification === true && !user.verified_at) {
+        if (AuthConfig.emailVerification && !user.verified_at) {
             return res.json({ message: "Verify your account first.." })
         }
 
@@ -70,7 +69,7 @@ const register = async (req, res) => {
 
         await user.setRole("customer")
 
-        if (AuthConfig.emailVerification === "true" || AuthConfig.emailVerification === true) {
+        if (AuthConfig.emailVerification && mailConfig.host) {
             const sendMail = new AccountVerify(mailConfig.from, [email], "Verify Your Account", verificationToken)
             await sendMail.send()
         }

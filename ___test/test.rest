@@ -8,7 +8,7 @@ Content-Type: application/json
     "name": "game",
     "email": "andre@gmail.com",
     "password": "1234",
-    "confirmPassword": "1234"
+    "confirm_password": "1234"
 }
 
 ### login
