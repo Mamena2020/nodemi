@@ -32,9 +32,9 @@ const getUser = async (req, res) => {
         // example permission, should use-> user-access
         if (!GateAccess(user, ["user-create", "user-stored"])) return res.status(403).json({ message: "don't have permission" })
 
-        const newUser = new UserResource().make(user)
+        const userResource = new UserResource().make(user)
 
-        res.json({ message: "get success", "user": newUser })
+        res.json({ message: "get success", "user": userResource })
 
     } catch (error) {
         console.log(error)
