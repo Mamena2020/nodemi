@@ -75,7 +75,7 @@ Boilerplate for nodejs. base on express js.
   |                 |        |        |                  |                                                 |
   | Forgot Password | POST   |        | email            | https://nodemi.onrender.com/api/forgot-password |
   |                 |        |        |                  |                                                 |
-  | Reset Password  | PUT    |        | new_password     | https://nodemi.onrender.com/api/reset-password  |
+  | Reset Password  | PUT    |        | new_password     | https://nodemi.onrender.com/api/reset-password/:token  |
 
 # Getting Started
 
@@ -1242,6 +1242,7 @@ Before using mail, make sure you already setup .env file
    MAIL_PORT=587
    MAIL_USERNAME=
    MAIL_PASSWORD=
+   MAIL_FROM=
 
 ```
 
