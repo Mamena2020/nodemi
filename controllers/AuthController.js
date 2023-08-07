@@ -10,10 +10,15 @@ import mailConfig from "../core/config/Mail.js"
 import AuthConfig from "../core/config/Auth.js"
 import ResetPasswordRequest from "../requests/auth/ResetPasswordRequest.js"
 import ForgotPasswordRequest from "../requests/auth/ForgotPasswordRequest.js"
+import LoginRequest from "../requests/auth/LoginRequest.js"
 
 const login = async (req, res) => {
 
     try {
+
+        const request = new LoginRequest(req)
+        await request.check()
+        if (request.isError) return request.responseError(res)
 
         const { email, password } = req.body
 
@@ -21,7 +26,10 @@ const login = async (req, res) => {
 
         const match = await bcrypt.compare(password, user.password)
 
-        if (!match) return res.status(400).json({ message: "Wrong password" })
+        if (!match) {
+            request.addError("password", "wrong password")
+            return request.responseError(res)
+        }
 
         if (AuthConfig.emailVerification && !user.verified_at) {
             return res.json({ message: "Verify your account first.." })
@@ -32,6 +40,7 @@ const login = async (req, res) => {
             name: user.name,
             email: user.email
         }
+
         const token = JwtAuth.createToken(payload)
 
         await user.update({
@@ -54,10 +63,9 @@ const login = async (req, res) => {
 const register = async (req, res) => {
     try {
 
-        const valid = new RegisterRequest(req)
-        await valid.check()
-        if (valid.isError)
-            return valid.responseError(res)
+        const request = new RegisterRequest(req)
+        await request.check()
+        if (request.isError) return request.responseError(res)
 
         var { name, email, password } = req.body
         const verificationToken = randomTokenString()
@@ -86,6 +94,7 @@ const register = async (req, res) => {
 
 const emailVerification = async (req, res) => {
     try {
+
         const user = await User.findOne({ where: { verification_token: req.params.token } })
 
         if (!user) {
@@ -98,6 +107,7 @@ const emailVerification = async (req, res) => {
         })
 
         res.status(200).json({ message: "Email verification success" })
+
     } catch (error) {
         console.log(error)
         res.status(409).json({ message: "something went wrong", reason: String(error) })
@@ -107,6 +117,7 @@ const emailVerification = async (req, res) => {
 const refreshToken = async (req, res) => {
 
     try {
+
         const refreshToken = req.cookies.refreshToken
 
         if (!refreshToken) return res.sendStatus(401)
@@ -136,8 +147,11 @@ const refreshToken = async (req, res) => {
 const logout = async (req, res) => {
 
     try {
+
         const refreshToken = req.cookies.refreshToken
+        
         if (!refreshToken) return res.sendStatus(204)
+
         const user = await User.findOne(
             {
                 where: {
@@ -156,7 +170,6 @@ const logout = async (req, res) => {
 
         res.status(200).json({ message: "Logout success" })
 
-
     } catch (error) {
         console.log(error)
         res.status(409).json({ message: "something went wrong", reason: String(error) })
@@ -168,11 +181,11 @@ const forgotPassword = async (req, res) => {
 
     try {
 
-        if (!mailConfig.host) return res.status(409).json({ message: "You are not set SMTP at MAIL_HOST on .env" })
+        if (!mailConfig.host) throw Error("You are not set SMTP at MAIL_HOST on .env")
 
-        const valid = new ForgotPasswordRequest(req)
-        await valid.check()
-        if (valid.isError) return valid.responseError(res)
+        const request = new ForgotPasswordRequest(req)
+        await request.check()
+        if (request.isError) return request.responseError(res)
 
         const { email } = req.body
 
@@ -203,11 +216,12 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
 
     try {
+
         const token = req.params.token
 
-        const valid = new ResetPasswordRequest(req)
-        await valid.check()
-        if (valid.isError) return valid.responseError(res)
+        const request = new ResetPasswordRequest(req)
+        await request.check()
+        if (request.isError) return request.responseError(res)
 
         const user = await User.findOne({
             where: {
@@ -217,8 +231,8 @@ const resetPassword = async (req, res) => {
         })
 
         if (!user) {
-            valid.addError("token", "Inavalid token or token expired")
-            return valid.responseError(res)
+            request.addError("token", "Inavalid token or token expired")
+            return request.responseError(res)
         }
 
         const { new_password } = req.body

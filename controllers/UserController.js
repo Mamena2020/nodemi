@@ -27,32 +27,34 @@ const getUser = async (req, res) => {
             }
         )
 
-        if (!user) return res.sendStatus(404)
+        if (!user) return res.status(404).json({ message: "user not found" })
 
-        if (GateAccess(user, ["user-create", "user-stored"])) {
-            let newUser = new UserResource().make(user)
-            res.json({ message: "get success", "user": newUser })
-        } else {
-            return res.sendStatus(403)
-        }
+        // example permission, should use-> user-access
+        if (!GateAccess(user, ["user-create", "user-stored"])) return res.status(403).json({ message: "don'tdo not have permission" })
 
-        
+        const newUser = new UserResource().make(user)
+
+        res.json({ message: "get success", "user": newUser })
+
     } catch (error) {
         console.log(error)
+        res.status(409).json({ message: "something went wrong", reason: String(error) })
     }
 }
 
 const getUsers = async (req, res) => {
 
-    let users = await User.findAll()
-    let resources = new UserResource().collection(users)
+    const users = await User.findAll()
+    
+    const resources = new UserResource().collection(users)
+
     res.json(resources)
 
 }
 
 const upload = async (req, res) => {
 
-    let valid = new UploadRequest(req)
+    const valid = new UploadRequest(req)
     await valid.check()
     if (valid.isError)
         return valid.responseError(res)
@@ -69,8 +71,8 @@ const upload = async (req, res) => {
 
 
 // const deleteMedia = async (req, res) => {
-//     let userId = req.params.userId
-//     let user = await User.findOne({
+//     const userId = req.params.userId
+//     const user = await User.findOne({
 //         where: {
 //             id: userId
 //         }

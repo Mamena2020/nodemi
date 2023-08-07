@@ -52,30 +52,30 @@ Boilerplate for nodejs. base on express js.
 
 - ### Live demo
 
-  | Action          | Method | Auth   | Body             | EndPoint                                        |
-  | --------------- | ------ | ------ | ---------------- | ----------------------------------------------- |
-  | Login           | POST   |        | email            | https://nodemi.onrender.com/api/login           |
-  |                 |        |        | password         |                                                 |
-  |                 |        |        |                  |                                                 |
-  | Register        | POST   |        | email            | https://nodemi.onrender.com/api/register        |
-  |                 |        |        | name             |                                                 |
-  |                 |        |        | password         |                                                 |
-  |                 |        |        | confirm_password |                                                 |
-  |                 |        |        |                  |                                                 |
-  | Token           | GET    |        |                  | https://nodemi.onrender.com/api/token           |
-  |                 |        |        |                  |                                                 |
-  |                 |        |        |                  |                                                 |
-  | Logout          | DELETE |        |                  | https://nodemi.onrender.com/api/logout          |
-  |                 |        |        |                  |                                                 |
-  | Get User        | GET    | Bearer |                  | https://nodemi.onrender.com/api/user            |
-  |                 |        | token  |                  |                                                 |
-  |                 |        |        |                  |                                                 |
-  | Get Users       | GET    | Bearer |                  | https://nodemi.onrender.com/api/users           |
-  |                 |        | token  |                  |                                                 |
-  |                 |        |        |                  |                                                 |
-  | Forgot Password | POST   |        | email            | https://nodemi.onrender.com/api/forgot-password |
-  |                 |        |        |                  |                                                 |
-  | Reset Password  | PUT    |        | new_password     | https://nodemi.onrender.com/api/reset-password/:token  |
+  | Action          | Method | Auth   | Body             | EndPoint                                              |
+  | --------------- | ------ | ------ | ---------------- | ----------------------------------------------------- |
+  | Login           | POST   |        | email            | https://nodemi.onrender.com/api/login                 |
+  |                 |        |        | password         |                                                       |
+  |                 |        |        |                  |                                                       |
+  | Register        | POST   |        | email            | https://nodemi.onrender.com/api/register              |
+  |                 |        |        | name             |                                                       |
+  |                 |        |        | password         |                                                       |
+  |                 |        |        | confirm_password |                                                       |
+  |                 |        |        |                  |                                                       |
+  | Token           | GET    |        |                  | https://nodemi.onrender.com/api/token                 |
+  |                 |        |        |                  |                                                       |
+  |                 |        |        |                  |                                                       |
+  | Logout          | DELETE |        |                  | https://nodemi.onrender.com/api/logout                |
+  |                 |        |        |                  |                                                       |
+  | Get User        | GET    | Bearer |                  | https://nodemi.onrender.com/api/user                  |
+  |                 |        | token  |                  |                                                       |
+  |                 |        |        |                  |                                                       |
+  | Get Users       | GET    | Bearer |                  | https://nodemi.onrender.com/api/users                 |
+  |                 |        | token  |                  |                                                       |
+  |                 |        |        |                  |                                                       |
+  | Forgot Password | POST   |        | email            | https://nodemi.onrender.com/api/forgot-password       |
+  |                 |        |        |                  |                                                       |
+  | Reset Password  | PUT    |        | new_password     | https://nodemi.onrender.com/api/reset-password/:token |
 
 # Getting Started
 
@@ -310,15 +310,19 @@ Handling Content-Type header for
 
 Handling all upload files on `POST` and `PUT` method, and nested fields.
 
+- ### File properties
+
+Uploaded file will have this properties.
+
 ```
-     // uploaded file will have this property
-     name         // file name,
-     encoding     // file encoding,
-     type         // file mimeType,
-     size         // file size,
-     sizeUnit     // file size in bytes
-     extension    // file extension
-     tempDir      // file temporary directory
+
+     name           -> file name,
+     encoding       -> file encoding,
+     type           -> file mimeType,
+     size           -> file size,
+     sizeUnit       -> file size in bytes
+     extension      -> file extension
+     tempDir        -> file temporary directory
 
 ```
 
@@ -362,12 +366,12 @@ The Request will be created in the `requests` directory.
 
 ```
 
-   const valid = new ProductRequest(req)
+   const request = new ProductRequest(req)
 
-   await valid.check()
+   await request.check()
 
-   if (valid.isError)
-      return valid.responseError(res) // or  return res.status(422).json(valid.errors)
+   if (request.isError)
+      return request.responseError(res) // or  return res.status(422).json(request.errors)
 
 ```
 
@@ -605,14 +609,16 @@ Custom validation `messages` and `attribute`
 
 - ### Direct add error messages
 
-```
-    const valid = new ProductRequest(req)
-    await valid.check()
+Direct add error message required key and error message.
 
-    if (valid.isError)
+```
+    const request = new ProductRequest(req)
+    await request.check()
+
+    if (request.isError)
     {
-        valid.addError("name","Name have to .....")
-        valid.addError("name","Name must be .....")
+        request.addError("name","Name have to .....")
+        request.addError("name","Name must be .....")
 
 
 ```
@@ -694,7 +700,7 @@ If the user instance already has a role, then the user role will be replaced wit
 
 ```
 
-   let user = await User.create({
+   const user = await User.create({
          name: name,
          email: email,
          password: hashPassword
@@ -788,7 +794,7 @@ Assign permissions to a role by using `roleInstance.assignPermissions(params)`, 
        "user-stored"
     ]
 
-    let admin = await Role.findOne({ where: { name: "admin" } })
+    const admin = await Role.findOne({ where: { name: "admin" } })
 
     if (admin) {
         await admin.assignPermissions(permissions)
@@ -834,9 +840,9 @@ To create resources from a single object use `make` or `collection` for an array
 
 ```
 
-     let userResource = new UserResource().make(user) // for single object
+     const userResource = new UserResource().make(user) // for single object
 
-     let userResources = new UserResource().collection(users) // for array of object
+     const userResources = new UserResource().collection(users) // for array of object
 
 ```
 
@@ -892,7 +898,7 @@ To create resources from a single object use `make` or `collection` for an array
        }
    })
 
-   let userResource = new UserResource().make(user)
+   const userResource = new UserResource().make(user)
 
    res.json(userResource)
 
