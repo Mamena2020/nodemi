@@ -682,7 +682,7 @@ Default error messages outputs are dependent on the locale. If you haven't set u
 
 # Role and Permissions
 
-A user model can have a role by binding using `hasRole(YourModel)` function inside `loadModels` in `core/model/Models.js` file.
+A user model can have a role by binding using `hasRole(YourModel)` function inside `loadModels` in `models/Models.js` file.
 
 ```
 
