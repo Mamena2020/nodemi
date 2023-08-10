@@ -1,15 +1,13 @@
-import User from "../../models/User.js"
-import UserDetail from "../../models/UserDetail.js"
-import { hasMedia } from "../service/Media/MediaService.js"
-import { hasRole } from "../service/RolePermission/Role.js"
-
+import User from "./User.js"
+import UserDetail from "./UserDetail.js"
+import { hasMedia } from "../core/service/Media/MediaService.js"
+import { hasRole } from "../core/service/RolePermission/Role.js"
 
 
 /**
  * All model will load here
  */
 const loadModels = async () => {
-
 
 
     await User.sync({
@@ -33,6 +31,7 @@ const loadModels = async () => {
         foreignKey: 'user_id',
         as: 'user'
     })
+    
 
 }
 

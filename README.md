@@ -149,7 +149,7 @@ The model will be created in the `models` directory.
 
 ```
 
-Automatically registered in the `loadModels` function in the `core/model/Models.js` file.
+Automatically registered in the `loadModels` function in the `models/Models.js` file.
 
 ```
 
@@ -168,7 +168,7 @@ Full <a target="_blank" href="https://sequelize.org/docs/v6/core-concepts/model-
 - ### Noted
 
 All relationships between models should be defined in the `loadModels` function.
-When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `core/model/Models.js` file.
+When a model is removed from the `models` directory, it is important to also remove its corresponding relationship from the `loadModels` function in the `models/Models.js` file.
 
 # Media
 
