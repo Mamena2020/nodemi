@@ -3,7 +3,7 @@ import express from "express";
 import db from "./database/Database.js";
 import { loadMedia } from "./service/Media/MediaService.js"
 import loadRolePermission from "./service/RolePermission/Service.js"
-import loadModels from "./model/Models.js"
+import loadModels from "../models/Models.js"
 import defaultMiddleware from "./middleware/Middleware.js"
 import { routeStoragePublic } from "./config/Media.js"
 import api from "../routes/api.js";

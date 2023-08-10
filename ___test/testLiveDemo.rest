@@ -29,11 +29,11 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   https://nodemi.onrender.com/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlRlc3RlciAiLCJlbWFpbCI6IlRlc3RlckBnbWFpbC5jb20iLCJpYXQiOjE2OTE0MDM1ODYsImV4cCI6MTY5MTQwNDE4Nn0.k1wbH29fzEJd3j76kT851MtBS8LgPPvP27mDLfTGY2M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlRlc3RlciAiLCJlbWFpbCI6IlRlc3RlckBnbWFpbC5jb20iLCJpYXQiOjE2OTE3MTA0MTIsImV4cCI6MTY5MTcxMTAxMn0.uufasynY26o7jBnV6IV_q4I1BgRej-E8mYg5rcKdJ6E
 
 ### get users
 GET   https://nodemi.onrender.com/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlRlc3RlciAiLCJlbWFpbCI6IlRlc3RlckBnbWFpbC5jb20iLCJpYXQiOjE2OTE0MDM1ODYsImV4cCI6MTY5MTQwNDE4Nn0.k1wbH29fzEJd3j76kT851MtBS8LgPPvP27mDLfTGY2M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlRlc3RlciAiLCJlbWFpbCI6IlRlc3RlckBnbWFpbC5jb20iLCJpYXQiOjE2OTE3MTA0MTIsImV4cCI6MTY5MTcxMTAxMn0.uufasynY26o7jBnV6IV_q4I1BgRej-E8mYg5rcKdJ6E
 
 # ### users no auth
 # GET   https://nodemi.onrender.com/api/users2
