@@ -3,89 +3,127 @@ import UserDetail from "../models/UserDetail.js";
 import { GateAccess } from "../core/service/RolePermission/Service.js";
 import UploadRequest from "../requests/user/UploadRequest.js";
 import UserResource from "../resources/UserResource.js";
-import JwtAuth from "../core/auth/JwtAuth.js";
 
 
-const getUser = async (req, res) => {
+export default class UserController {
 
-    try {
+    /**
+     * get current user
+     * @param {*} req express req
+     * @param {*} res express res
+     * @returns res
+     */
+    static async getUser(req, res) {
 
-        const refreshToken = req.cookies.refreshToken;
-        const user = await User.findOne(
-            {
-                where: {
-                    refresh_token: refreshToken
-                },
-                attributes: ['id', 'name', 'email'],
-                include: [
-                    {
-                        model: UserDetail,
-                        as: 'user_details',
-                        attributes: ['bio']
-                    }
-                ]
-            }
-        )
+        try {
 
-        if (!user) return res.status(404).json({ message: "user not found" })
+            const refreshToken = req.cookies.refreshToken;
+            const user = await User.findOne(
+                {
+                    where: {
+                        refresh_token: refreshToken
+                    },
+                    attributes: ['id', 'name', 'email'],
+                    include: [
+                        {
+                            model: UserDetail,
+                            as: 'user_details',
+                            attributes: ['bio']
+                        }
+                    ]
+                }
+            )
 
-        // example permission, should use-> user-access
-        if (!GateAccess(user, ["user-create", "user-stored"])) return res.status(403).json({ message: "don't have permission" })
+            if (!user) return res.status(404).json({ message: "user not found" })
 
-        const userResource = new UserResource().make(user)
+            // example permission, should use-> user-access
+            if (!GateAccess(user, ["user-create", "user-stored"])) return res.status(403).json({ message: "don't have permission" })
 
-        res.json({ message: "get success", "user": userResource })
+            const userResource = new UserResource().make(user)
 
-    } catch (error) {
-        console.log(error)
-        res.status(409).json({ message: "something went wrong", reason: String(error) })
+            res.json({ message: "get success", "user": userResource })
+
+        } catch (error) {
+            console.log(error)
+            res.status(409).json({ message: "something went wrong", reason: String(error) })
+        }
     }
-}
 
-const getUsers = async (req, res) => {
+    /**
+     * get users
+     * @param {*} req express req
+     * @param {*} res express res
+     * @returns res
+     */
+    static async getUsers(req, res) {
+        try {
 
-    const users = await User.findAll()
-    
-    const resources = new UserResource().collection(users)
+            const users = await User.findAll()
 
-    res.json(resources)
+            const resources = new UserResource().collection(users)
 
-}
+            res.json(resources)
 
-const upload = async (req, res) => {
+        } catch (error) {
+            console.log(error)
+            res.status(409).json({ message: "something went wrong", reason: String(error) })
+        }
+    }
 
-    const valid = new UploadRequest(req)
-    await valid.check()
-    if (valid.isError)
-        return valid.responseError(res)
+    /**
+     * upload current user avatar
+     * @param {*} req express req
+     * @param {*} res express res
+     * @returns res
+     */
+    static async uploadAvatar(req, res) {
 
-    const user = await JwtAuth.getUser(req)
+        try {
 
-    await user.saveMedia(
-        req.body.file,
-        "avatar"
-    )
+            const valid = new UploadRequest(req)
+            await valid.check()
+            if (valid.isError)
+                return valid.responseError(res)
 
-    res.json("upload successfuly")
-}
+            const user = req.user
+
+            await user.saveMedia(
+                req.body.file,
+                "avatar"
+            )
+
+            res.json("upload successfuly")
+
+        } catch (error) {
+            console.log(error)
+            res.status(409).json({ message: "something went wrong", reason: String(error) })
+        }
+
+    }
 
 
-// const deleteMedia = async (req, res) => {
-//     const userId = req.params.userId
-//     const user = await User.findOne({
-//         where: {
-//             id: userId
-//         }
-//     })
+    /**
+     * delete current user avatar
+     * @param {*} req express req
+     * @param {*} res express res
+     * @returns res
+     */
+    static async deleteAvatar(req, res) {
 
-//     user.destroyMedia("avatar")
+        try {
 
-//     res.json("media deleted")
+            const user = req.user
 
-// }
+            await user.destroyMedia("avatar")
 
-export default {
-    getUser,
-    getUsers,
-    upload
+            res.json("media deleted")
+
+        } catch (error) {
+            console.log(error)
+            res.status(409).json({ message: "something went wrong", reason: String(error) })
+        }
+
+    }
+
+
 }

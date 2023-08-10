@@ -29,7 +29,7 @@ DELETE   http://localhost:5000/logout
 
 ### get user
 GET   http://localhost:5000/api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6ImdhbWUyIiwiZW1haWwiOiJhbmRyZTJAZ21haWwuY29tIiwiaWF0IjoxNjkxNDAzNTE5LCJleHAiOjE2OTE0ODk5MTl9.65x-UGZGsJINXWPeixhqcAQFLf0WskRAsKAOnu4FeDE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6ImdhbWUyIiwiZW1haWwiOiJhbmRyZTJAZ21haWwuY29tIiwiaWF0IjoxNjkxNzA4MzMxLCJleHAiOjE2OTE3OTQ3MzF9.6sHc8MOWgC0vmsH1HjQcsNyF3MV1_e5Y3TIGtXSnjnU
 
 ### email verification 
 GET   http://localhost:5000/api/email-verification/asdasd
@@ -37,7 +37,7 @@ GET   http://localhost:5000/api/email-verification/asdasd
 
 ### users 
 GET   http://localhost:5000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6ImdhbWUyIiwiZW1haWwiOiJhbmRyZTJAZ21haWwuY29tIiwiaWF0IjoxNjkxNDAzNTE5LCJleHAiOjE2OTE0ODk5MTl9.65x-UGZGsJINXWPeixhqcAQFLf0WskRAsKAOnu4FeDE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6ImdhbWUyIiwiZW1haWwiOiJhbmRyZTJAZ21haWwuY29tIiwiaWF0IjoxNjkxNzA4MzMxLCJleHAiOjE2OTE3OTQ3MzF9.6sHc8MOWgC0vmsH1HjQcsNyF3MV1_e5Y3TIGtXSnjnU
 
 ### users basic auth
 GET   http://localhost:5000/api/users2

@@ -23,7 +23,8 @@ export default function api(app) {
     const routerAuth = express.Router()
     routerAuth.get("/user", JwtAuthPass, UserController.getUser)
     routerAuth.get("/users", JwtAuthPass, UserController.getUsers)
-    routerAuth.post("/upload", JwtAuthPass, UserController.upload)
+    routerAuth.post("/avatar", JwtAuthPass, UserController.uploadAvatar)
+    routerAuth.delete("/avatar", JwtAuthPass, UserController.deleteAvatar)
 
     app.use("/api", routerAuth)
 
