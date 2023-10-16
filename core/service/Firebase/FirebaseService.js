@@ -51,8 +51,9 @@ class FirebaseService {
             const fileFirebase = bucket.file(fileName);
 
             const stream = fileFirebase.createWriteStream({
-                resumable: false,
-                public: true
+                resumable: true,
+                public: true,
+                timeout: 120000, //  2m
             });
 
             stream.on('error', (err) => {
@@ -61,18 +62,14 @@ class FirebaseService {
             });
 
             stream.on('finish', async () => {
-                // console.log(`File ${file.tempDir} uploaded to Firebase Storage`);
-                const url = await bucket.file(fileName).getSignedUrl({
-                    action: "read",
-                    expires: '03-09-2491'
-                })
+                // uploaded
                 resolve({
-                    url: url[0],
+                    url: fileFirebase.publicUrl(),
                     path: firebaseConfig.firebaseBucket + "/" + fileName
                 })
             });
 
-            await fse.createReadStream(file.tempDir).pipe(stream);
+            fse.createReadStream(file.tempDir).pipe(stream);
         })
 
     }
