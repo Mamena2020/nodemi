@@ -83,7 +83,7 @@ Boilerplate for nodejs. base on express js.
 
 Clone and move to directory project and run `npm install`
 
-```
+``` 
    git clone git@github.com:Mamena2020/nodemi.git
 
 ```
@@ -92,7 +92,7 @@ Clone and move to directory project and run `npm install`
 
 Create database `mysql` or `pgsql`.
 
-```
+``` 
    #mysql example
 
    mysql -u root -p
@@ -100,7 +100,6 @@ Create database `mysql` or `pgsql`.
 
    create database mydatabase;
 
-   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #pgsql example
 
    createdb -h localhost -p 5432 -U myPgUser mydatabase
@@ -111,7 +110,7 @@ Create database `mysql` or `pgsql`.
 
 After creating your database, you can fill in the .env file and start your code.
 
-```
+``` 
    cp .env.example .env
 
 ```
@@ -126,7 +125,7 @@ After creating your database, you can fill in the .env file and start your code.
 
 The model will be created in the `models` directory.
 
-```
+``` js
 
    import { Model, DataTypes } from "sequelize";
    import db from "../core/database/Database.js"
@@ -151,7 +150,7 @@ The model will be created in the `models` directory.
 
 Automatically registered in the `loadModels` function in the `models/Models.js` file.
 
-```
+``` js
 
    const loadModels = async () => {
 
@@ -174,7 +173,7 @@ When a model is removed from the `models` directory, it is important to also rem
 
 Any model can own media by binding the model to the media inside the `loadModels` function using `hasMedia(YourModel)`.
 
-```
+``` js
 
    const loadModels = async () => {
 
@@ -190,7 +189,7 @@ Any model can own media by binding the model to the media inside the `loadModels
 
 After binding model using `hasMedia(YourModel)`, then your model will able to save a file using `instance.saveMedia(file,mediaName)`. If the instance already has a file with the same name, then the file will be replaced with a new file.
 
-```
+``` js
 
    const product = await Product.findOne({
        where: {
@@ -206,14 +205,14 @@ You can save files to either `Local` storage or `Firebase` storage.
 
 To save to `Local` storage, just set your .env file `MEDIA_STORAGE=local` , and local storage directory name `MEDIA_LOCAL_STORAGE_DIR_NAME=storage`.
 
-```
+``` env
    MEDIA_STORAGE=local
    MEDIA_LOCAL_STORAGE_DIR_NAME=storage
 ```
 
 To save to `Firebase` storage, first create your `Service Account .json` on firebase <a href="https://console.firebase.google.com/">Firebase Console</a>, and download and convert to `base64` string, then setup the .env file.
 
-```
+``` env
    MEDIA_STORAGE=firebase  # set to firebase
    FIREBASE_STORAGE_BUCKET=gs://xxxxxx.appspot.com  # your firebase storage bucket
    FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 string of your firebase service account .json
@@ -223,7 +222,7 @@ To save to `Firebase` storage, first create your `Service Account .json` on fire
 
 Get all media by calling `instance.getMedia()`.
 
-```
+``` js
 
    const product = await Product.findOne({
        where: {
@@ -238,7 +237,7 @@ Get all media by calling `instance.getMedia()`.
 
 Get media by name, params is media name
 
-```
+``` js
     product.getMediaByName("thumbnail") // return single object
     product.getMediaByName("thumbnail").url // return single object url
 
@@ -246,7 +245,7 @@ Get media by name, params is media name
 
 Get media first media
 
-```
+``` js
     product.getFirstMedia()       // return single object
     product.getFirstMedia().url   // return first media url
 
@@ -254,28 +253,28 @@ Get media first media
 
 Get media with exception, params can be `string` or `array` of string
 
-```
+``` js
     product.getMediaExcept("thumbnail_mobile")  // return list of object with exception
 
 ```
 
 Get all media url,
 
-```
+``` js
     product.getMediaUrl()  // return list of media url
 
 ```
 
 Get all media url with exception, params can be `string` or `array` of string
 
-```
+``` js
     product.getMediaUrlExcept(['thumbnail_mobile'])  // return list of url
 
 ```
 
 Get url from media object
 
-```
+``` js
     product.getFirstMedia().getUrl()
 
 ```
@@ -284,7 +283,7 @@ Get url from media object
 
 Destroy media by calling `instance.destroyMedia(mediaName)`. return status deleted in boolean
 
-```
+``` js
 
    const product = await Product.findOne({
        where: {
@@ -336,7 +335,7 @@ Uploaded file will have this properties.
 
 The Request will be created in the `requests` directory.
 
-```
+``` js
 
    import RequestValidation from "../core/validation/RequestValidation.js"
 
@@ -364,7 +363,7 @@ The Request will be created in the `requests` directory.
 
 - ### Basic usage.
 
-```
+``` js
 
    const request = new ProductRequest(req)
 
@@ -377,7 +376,7 @@ The Request will be created in the `requests` directory.
 
 - ### Example html form.
 
-```
+``` html
 
    <form action="endpoint" method="post" enctype="multipart/form-data">
       <div class="row justify-content-center d-flex">
@@ -424,7 +423,7 @@ The Request will be created in the `requests` directory.
 
 - ### Example rules
 
-```
+``` js
 
    rules() {
      return {
@@ -468,7 +467,7 @@ The Request will be created in the `requests` directory.
 
 - ### Example error messages
 
-```
+``` js
 
    {
      "errors": {
@@ -586,7 +585,7 @@ The Request will be created in the `requests` directory.
 
 Custom validation `messages` and `attribute`
 
-```
+``` js
 
     rules() {
         return {
@@ -611,7 +610,7 @@ Custom validation `messages` and `attribute`
 
 Direct add error message required key and error message.
 
-```
+``` js
     const request = new ProductRequest(req)
     await request.check()
 
@@ -633,7 +632,7 @@ Direct add error message required key and error message.
 
 The Rule will be created in the `rules` directory.
 
-```
+``` js
     class GmailRule  {
 
         constructor() {
@@ -666,7 +665,7 @@ The Rule will be created in the `rules` directory.
 
 - ### Custom rule usage
 
-```
+``` js
     rules() {
         return {
                 "email": {
@@ -684,7 +683,7 @@ Default error messages outputs are dependent on the locale. If you haven't set u
 
 A user model can have a role by binding using `hasRole(YourModel)` function inside `loadModels` in `models/Models.js` file.
 
-```
+``` js
 
    const loadModels = async () => {
 
@@ -698,7 +697,7 @@ A user model can have a role by binding using `hasRole(YourModel)` function insi
 
 If the user instance already has a role, then the user role will be replaced with a new role. `instance.setRole(params)` params can be role `id` or `name`, and will return status in boolean.
 
-```
+``` js
 
    const user = await User.create({
          name: name,
@@ -714,7 +713,7 @@ If the user instance already has a role, then the user role will be replaced wit
 
 Get role object by calling `instance.getRole()`, or direcly access role name `instance.getRole().name`.
 
-```
+``` js
 
    user.getRole() // role object
    user.getRole().name // role name
@@ -726,7 +725,7 @@ Get role object by calling `instance.getRole()`, or direcly access role name `in
 
 Get permission by calling `instance.getPermissions()` will get array of object, or `instance.getPermissionsName()` will get array of permissions name.
 
-```
+``` js
 
    user.getPermissions()     //  array of permissions object
    user.getPermissionsName() //  array of permissions name [ "user-create","user-stored"]
@@ -735,7 +734,7 @@ Get permission by calling `instance.getPermissions()` will get array of object, 
 
 - ### Remove role
 
-```
+``` js
 
    user.removeRole()
 
@@ -745,7 +744,7 @@ Get permission by calling `instance.getPermissions()` will get array of object, 
 
 Limitation user access using `GateAccess(userInstance,permissionNames)`, `permissionNames` must be an array of permission names.
 
-```
+``` js
 
     if (!GateAccess(user, ["user-create","user-stored","user-access"]))
         return res.sendStatus(403) // return forbidden status code
@@ -754,7 +753,7 @@ Limitation user access using `GateAccess(userInstance,permissionNames)`, `permis
 
 - ### Add permissions
 
-```
+``` js
 
    const permissions = [
        "user-create",
@@ -773,7 +772,7 @@ Limitation user access using `GateAccess(userInstance,permissionNames)`, `permis
 
 - ### Add Role
 
-```
+``` js
 
     const roles = [ "admin","customer" ]
 
@@ -787,7 +786,7 @@ Limitation user access using `GateAccess(userInstance,permissionNames)`, `permis
 
 Assign permissions to a role by using `roleInstance.assignPermissions(params)`, params can be a list of permissions `name` or `id`.
 
-```
+``` js
 
     const permissions = [
        "user-create",
@@ -812,7 +811,7 @@ Assign permissions to a role by using `roleInstance.assignPermissions(params)`, 
 
 The Resource will be created in `resources` directory.
 
-```
+``` js
 
    import Resource from "../core/resource/Resource.js"
    class UserResource extends Resource {
@@ -838,7 +837,7 @@ The Resource will be created in `resources` directory.
 
 To create resources from a single object use `make` or `collection` for an array of objects.
 
-```
+``` js
 
      const userResource = new UserResource().make(user) // for single object
 
@@ -848,7 +847,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 - ### Example user resource
 
-```
+``` js
 
    class UserResource extends Resource {
        constructor() {
@@ -871,7 +870,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 - ### Example permissions resource
 
-```
+``` js
 
    class PermissionResource extends Resource {
        constructor() {
@@ -890,7 +889,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 - ### Example usage
 
-```
+``` js
 
    const user = await User.findOne({
        where: {
@@ -906,7 +905,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 - ### Example result
 
-```
+``` js
 
    {
        "id": 1,
@@ -934,7 +933,7 @@ To create resources from a single object use `make` or `collection` for an array
 
 Create token by calling `JwtAuth.createToken()`, that will return `refreshToken` and `accessToken`.
 
-```
+``` js
    const payload = {
          id: user.id,
          name: user.name,
@@ -953,7 +952,7 @@ Create token by calling `JwtAuth.createToken()`, that will return `refreshToken`
 
 Regenerate access token by calling `JwtAuth.regenerateAccessToken(refreshToken)`, that will return new access token.
 
-```
+``` js
 
    const accessToken = JwtAuth.regenerateAccessToken(refreshToken)
 
@@ -963,7 +962,7 @@ Regenerate access token by calling `JwtAuth.regenerateAccessToken(refreshToken)`
 
 Get authenticated user by `calling JwtAuth.getUser(req)`, that will get user by refresh token on request cookies.
 
-```
+``` js
 
    const user = await JwtAuth.getUser(req)
 
@@ -974,7 +973,7 @@ Or you just setup the .env `AUTH_GET_CURRENT_USER_ON_REQUEST=true` and you can a
 
 Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model inside the `AuthConfig` in the `core/config/Auth.js` file. It is crucial that your User model has a `refresh_token` column, as `JwtAuth.GetUser()` will retrieve the user instance based on the `refresh_token` by default. However, if you prefer to retrieve the current authenticated user in a different manner, you can modify the `JwtAuth.GetUser()` function to suit your needs in `core/auth/JwtAuth.js` file.
 
-```
+``` js
    class AuthConfig {
 
        /**
@@ -988,7 +987,7 @@ Before using `JwtAuth.GetUser()`, ensure that you have set up your `User` model 
 
 For secure access to controller by adding `JwtAuthPass` to your router.
 
-```
+``` js
    import JwtAuthPass from '../core/middleware/JwtAuthPass.js';
 
    routerAuth.use(JwtAuthPass)
@@ -1000,7 +999,7 @@ For secure access to controller by adding `JwtAuthPass` to your router.
 
 Header Request
 
-```
+``` js
     Authorization: 'Bearer ' + accessToken
 ```
 
@@ -1008,7 +1007,7 @@ Header Request
 
 For secure access to controller by adding `BasicAuthPass` to your router.
 
-```
+``` js
    import BasicAuthPass from '../core/middleware/BasicAuthPass.js';
 
    routerAuth.use(BasicAuthPass)
@@ -1020,14 +1019,14 @@ For secure access to controller by adding `BasicAuthPass` to your router.
 
 Before using this, make sure already set username and password for basic auth in `.env` file.
 
-```
+``` env
     AUTH_BASIC_AUTH_USERNAME=myBasicUsername
     AUTH_BASIC_AUTH_PASSWORD=myBasicPassword
 ```
 
 Header Request
 
-```
+``` js
     Authorization: 'Basic ' + encodeBase64(myBasicUsername+':'+myBasicPassword)
 ```
 
@@ -1037,7 +1036,7 @@ Header Request
 
 Setup locale in `core/config/Locale.js`. by default locale setup to english `en`, support locale of `english`, `indonesian`, `spanish`, `hindi`, `portuguese`, `russian`, `chinese`, `japanese`,
 
-```
+``` js
 
     defaultLocale: "en",
     useLocale: useLocale,
@@ -1051,7 +1050,7 @@ You can add more locale Code to `locales`. By default `locales` are only availab
 
 After adding additional `locales`, it is important to update the validation error messages in the `core/locale/LangValidation.js` file, as the messages generated will depend on the selected locale.
 
-```
+``` js
 
    const langValidation = Object.freeze({
        required: {
@@ -1075,7 +1074,7 @@ After adding additional `locales`, it is important to update the validation erro
 
 Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect to `all` routes, so that have to has a params for locale, for the API router it should be `/api/:locale` and for the web router it should be `/:locale`.
 
-```
+``` js
 
    // example for api route
    const routerAuth = express.Router()
@@ -1092,7 +1091,7 @@ Its easy to use locale, just setup .env `LOCALE_USE=true`, then this will effect
 
 If you don't want to set the locale for all routes, only for a particular route, then simply set up the .env as `LOCALE_USE=false`. Then you can use the `LocalePass` middleware directly to your route.
 
-```
+``` js
 
    // example for web route
    app.get("/:locale",LocalePass, (req, res) => {
@@ -1121,7 +1120,7 @@ Create mail via cli.
 
 The mail will be created in the `mails` directory, with `examplefile.txt` and `template.ejs`
 
-```
+``` js
 
    import Mail from "../../core/mail/Mail.js"
 
@@ -1155,7 +1154,7 @@ The mail will be created in the `mails` directory, with `examplefile.txt` and `t
 
 The `template.ejs` using express view engine `ejs` to render html into mail content.
 
-```
+``` ejs
    <!DOCTYPE html>
      <html lang="en">
      <head>
@@ -1184,7 +1183,7 @@ The `template.ejs` using express view engine `ejs` to render html into mail cont
 
 To use this `template.ejs`, you need to add an `html` object with a `path` and `data` (if needed) into `super().load()` method.
 
-```
+``` js
    html: {
             path: "mails/AccountVerify/template.ejs", // path is required
             data: // data is optional base on your template.ejs
@@ -1199,7 +1198,7 @@ To use this `template.ejs`, you need to add an `html` object with a `path` and `
 
 To send email by calling `instance.send()`
 
-```
+``` js
    const sendMail = new AccountVerify("from@gmail.com",["receiver@gmail.com"],"Verify Account")
 
    await sendMail.send()
@@ -1210,7 +1209,7 @@ To send email by calling `instance.send()`
 
 To send files, you need to add an `attachments` to `super().load()`. See full <a href="https://nodemailer.com/message/attachments/">doc</a>.
 
-```
+``` js
    attachments: [
                      {
                          filename: "theFile.txt",
@@ -1243,7 +1242,7 @@ Message options that you can add into `super().load()`.
 
 Before using mail, make sure you already setup .env file
 
-```
+``` env
    MAIL_HOST= #example: smtp.gmail.com | smtp-relay.sendinblue.com
    MAIL_PORT=587
    MAIL_USERNAME=
@@ -1256,7 +1255,7 @@ Before using mail, make sure you already setup .env file
 
 - Send message
 
-```
+``` js
    const message = {
         title: "Notification", // notification title
         body: "Hello there",   // notification body
@@ -1274,7 +1273,7 @@ Before using mail, make sure you already setup .env file
 
 Before using FCM, make sure you already `enable` Firebase Cloud Messaging API on <a href="https://console.cloud.google.com/">Google Cloud Console</a>, by selecting your project and navigating to `APIs & Services`. Once you have enabled the API, you can set up your .env
 
-```
+``` env
    FIREBASE_SERVICE_ACCOUNT_BASE64= # base64 of firebase service account (.json)
    FIREBASE_CLOUD_MESSAGING_SERVER_KEY= #fcm server key
 
@@ -1292,7 +1291,7 @@ Running seeder via cli
 
 You can put your seeder code inside `seeder` function in the `core/seeder/Seeder.js` file
 
-```
+``` js
 
    const seeder = async () => {
 
