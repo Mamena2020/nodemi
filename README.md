@@ -22,7 +22,7 @@ Boilerplate for nodejs. base on express js.
 
   | Project          | Platform      | Icon                                                                              | Link                                                                                          |
   | ---------------- | ------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-  | Bliss Dating App | Web & Mobile  | ![Bliss Dating App](https://s3.envato.com/files/450175186/thumnail.png)              | [View on CodeCanyon](https://codecanyon.net/item/bliss-dating-app-flutter-expressjs/45802427) |
+  | Bliss Dating App | Desktop, Web & Mobile  | ![Bliss Dating App](https://s3.envato.com/files/450175186/thumnail.png)              | [View on CodeCanyon](https://codecanyon.net/item/bliss-dating-app-flutter-expressjs/45802427) |
 
 - ### Live demo api
 
