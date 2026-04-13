@@ -20,9 +20,9 @@ Boilerplate for nodejs. base on express js.
 
 - ### Projects Built with Nodemi
 
-  | Project          | Platform      | Icon                                                                              | Link                                                                                          |
-  | ---------------- | ------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-  | Bliss Dating App | Desktop, Web & Mobile  | ![Bliss Dating App](https://s3.envato.com/files/450175186/thumnail.png)              | [View on CodeCanyon](https://codecanyon.net/item/bliss-dating-app-flutter-expressjs/45802427) |
+  | Project          | Platform      | Icon                                                                              | Source Code                                                                                 | Demo/Tutorial |
+  | ---------------- | ------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- | -------- |
+  | Bliss Dating App | Desktop, Web & Mobile  | ![Bliss Dating App](https://s3.envato.com/files/450175186/thumnail.png)              | [View on CodeCanyon](https://codecanyon.net/item/bliss-dating-app-flutter-expressjs/45802427) | [Watch on YouTube](https://www.youtube.com/watch?v=uE7REbbWzF4) |
 
 - ### Live demo api
 
